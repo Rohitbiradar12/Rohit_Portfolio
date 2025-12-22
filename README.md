@@ -1,21 +1,16 @@
 <div align="center">
   <br />
-    <a href="https://www.youtube.com/watch?v=E-fdPfRxkzQ" target="_blank">
-      <img src="public/images/readme.png" alt="Project Banner">
-    </a>
+  <img src="public/images/readme.png" alt="Rohit's 3D Portfolio">
   <br />
 
   <div>
     <img src="https://img.shields.io/badge/-Three.js-black?style=for-the-badge&logo=three.js&logoColor=white" />
+    <img src="https://img.shields.io/badge/-React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
     <img src="https://img.shields.io/badge/-GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" />
     <img src="https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
   </div>
 
-  <h3 align="center">Interactive 3D Portfolio Website</h3>
-
-   <div align="center">
-     Build this project step by step with our detailed tutorial on <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a> YouTube. Join the JSM family!
-    </div>
+  <h3 align="center">Rohit's Interactive 3D Portfolio</h3>
 </div>
 
 ## 📋 <a name="table">Table of Contents</a>
@@ -24,119 +19,105 @@
 2. ⚙️ [Tech Stack](#tech-stack)
 3. 🔋 [Features](#features)
 4. 🤸 [Quick Start](#quick-start)
-5. 🔗 [Assets & Snippets](#links)
-6. 🚀 [More](#more)
-
-## ⚠️ Tutorial
-
-This repository contains the code corresponding to an in-depth tutorial available on our YouTube channel, <a href="https://www.youtube.com/@javascriptmastery/videos" target="_blank"><b>JavaScript Mastery</b></a>.
-
-If you prefer visual learning, this is the perfect resource for you. Follow our tutorial to learn how to build projects like these step-by-step in a beginner-friendly manner!
-
-<a href="https://www.youtube.com/watch?v=E-fdPfRxkzQ" target="_blank"><img src="https://github.com/sujatagunale/EasyRead/assets/151519281/1736fca5-a031-4854-8c09-bc110e3bc16d" /></a>
+5. 📧 [Contact](#contact)
 
 ## <a name="introduction">🤖 Introduction</a>
 
-The 3D Portfolio project is a highly engaging personal website that features animated 3D scenes, smooth camera transitions, interactive model showcases, and responsive design. It’s ideal for developers, designers, or freelancers looking to stand out in the digital crowd.
-
-If you're getting started and need assistance or face any bugs, join our active Discord community with over **50k+** members. It's a place where people help each other out.
-
-<a href="https://discord.com/invite/n6EdbFJ" target="_blank"><img src="https://github.com/sujatagunale/EasyRead/assets/151519281/618f4872-1e10-42da-8213-1d69e486d02e" /></a>
+Welcome to my 3D Portfolio! This is a highly engaging personal website featuring animated 3D scenes, smooth camera transitions, interactive model showcases, and responsive design. Built with modern web technologies to create a memorable and immersive user experience.
 
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
-- Three.js
-- React Three Fiber
-- Drei
-- GSAP
-- Tailwind CSS
-- Vite
-- React 19
+- **Three.js** - 3D graphics and animations
+- **React Three Fiber** - React renderer for Three.js
+- **Drei** - Useful helpers for React Three Fiber
+- **GSAP** - Professional-grade animations
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Fast build tool and dev server
+- **React 19** - Latest React with concurrent features
+- **EmailJS** - Contact form functionality
 
 ## <a name="features">🔋 Features</a>
 
-### Features of the 3D Portfolio Project
+👉 **Animated 3D Models** - Interactive room scene with glowing effects
 
-👉 Animated 3D models and reveal animations
+👉 **Realistic Lighting** - Dynamic spotlights and ambient lighting
 
-👉 Realistic lighting and shadows
+👉 **GSAP Scroll Animations** - Smooth scroll-triggered interactions
 
-👉 GSAP-powered scroll interactions
+👉 **Premium UI Design** - Glassmorphism, gradients, and micro-animations
 
-👉 Responsive design with Tailwind CSS and Flexbox/Grid
+👉 **Responsive Design** - Fully optimized for all devices
 
-👉 Micro Interactions
+👉 **Multiple Sections**:
+- 🏠 Hero with 3D room scene
+- 👨‍💻 About Me with social links
+- 💼 Projects showcase with 3D pin cards
+- 🏢 Experience timeline
+- 📄 Resume viewer & download
+- 🛠️ Tech Stack with category filters
+- ⭐ Testimonials
+- 📧 Contact form with EmailJS
 
-👉 Multi-section layout (About, Projects, Contact)
-
-👉 Mobile optimized 3D experience
-
-and many more, including code architecture and reusability.
+👉 **Mobile Optimized** - Adapted 3D experience for mobile devices
 
 ## <a name="quick-start">🤸 Quick Start</a>
 
-Follow these steps to set up the project locally on your machine.
+Follow these steps to run the project locally:
 
 **Prerequisites**
 
-Make sure you have the following installed on your machine:
-
 - [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/en)
-- [npm](https://www.npmjs.com/) (Node Package Manager)
+- [Node.js](https://nodejs.org/en) (v18+)
+- [npm](https://www.npmjs.com/)
 
-**Cloning the Repository**
-
-```bash
-git clone https://github.com/adrianhajdin/3d-portfolio.git
-cd 3d-portfolio
-```
-
-**Installation**
-
-Install the project dependencies using npm:
+**Clone & Install**
 
 ```bash
+git clone https://github.com/Rohitbiradar12/Rohit_Portfolio.git
+cd Rohit_Portfolio
 npm install
 ```
 
-**Set Up Environment Variables**
+**Environment Variables**
 
-Create a new file named `.env` in the root of your project and add the following content:
+Create a `.env` file in the root directory:
 
 ```env
-VITE_APP_EMAILJS_SERVICE_ID=
-VITE_APP_EMAILJS_TEMPLATE_ID=
-VITE_APP_EMAILJS_PUBLIC_KEY=
+VITE_APP_EMAILJS_SERVICE_ID=your_service_id
+VITE_APP_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_APP_EMAILJS_AUTOREPLY_TEMPLATE_ID=your_autoreply_template_id
+VITE_APP_EMAILJS_PUBLIC_KEY=your_public_key
 ```
 
-Replace the placeholder values with your actual **[EmailJS](https://www.emailjs.com/)** credentials.
+Get your credentials from [EmailJS](https://www.emailjs.com/).
 
-**Running the Project**
+**Run Development Server**
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173/) in your browser to view the project.
+Open [http://localhost:5173](http://localhost:5173/) in your browser.
 
+**Build for Production**
 
-## <a name="links">🔗 Assets and Snippets</a>
+```bash
+npm run build
+npm run preview
+```
 
-Assets and snippets used in the project can be found in the **[video kit](https://jsm.dev/pfolio25-kit)**.
+## <a name="contact">📧 Contact</a>
 
-<a href="https://jsm.dev/pfolio25-kit" target="_blank">
-  <img src="public/images/readme-video-kit.png" alt="Video Kit Banner">
-</a>
+**Rohit Biradar** - Software Developer
 
+- 🔗 [LinkedIn](https://www.linkedin.com/in/biradar-rohit/)
+- 💻 [GitHub](https://github.com/Rohitbiradar12/)
+- 🐦 [X/Twitter](https://x.com/iamRohit1567)
+- 🧩 [LeetCode](https://leetcode.com/rohit_394)
+- 📧 Email: biradarrohit155@gmail.com
 
-## <a name="more">🚀 More</a>
+---
 
-**Advance your skills with JSM Pro Courses**
-
-Enjoyed creating this project? Dive deeper into our PRO courses for a richer learning adventure. They're packed with
-detailed explanations, cool features, and exercises to boost your skills. Give it a go!
-
-<a href="https://beta.jsmastery.pro/" target="_blank">
-  <img src="public/images/readme-bottom.png" alt="Project Banner">
-</a>
+<div align="center">
+  <p>Built with ❤️ by Rohit Biradar</p>
+</div>
