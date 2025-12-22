@@ -132,7 +132,7 @@ const About = () => {
                             <h2 className="about-content-item gradient-text text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                                 About Me
                             </h2>
-                           <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
+                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
                                 Hi, I'm <span className="text-highlight">Rohit</span>, a Software Developer Engineer with hands-on experience in building
                                 <span className="text-highlight"> scalable microservices</span>, optimizing backend systems, and improving enterprise efficiency.
                                 At <span className="text-highlight">Torry Harris Integration Solutions</span>, I worked on a Loan Management System across African markets,
@@ -140,7 +140,7 @@ const About = () => {
                             </p>
 
 
-                           <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
+                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
                                 My expertise includes <span className="text-highlight">Spring Boot</span>, <span className="text-highlight">PostgreSQL</span>,
                                 <span className="text-highlight"> Kafka</span>, <span className="text-highlight">Redis</span>, and automation pipelines —
                                 driving system performance and achieving 99.99% transaction success rates.
@@ -168,10 +168,13 @@ const About = () => {
                                         href={social.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="social-icon-3d"
+                                        className="group w-12 h-12 bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/50 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/20"
                                         aria-label={`Visit my ${social.name} profile`}
                                     >
-                                        <social.icon size={24} className="text-white" />
+                                        <social.icon
+                                            size={22}
+                                            className="text-white/70 group-hover:text-purple-300 transition-colors duration-300"
+                                        />
                                     </a>
                                 ))}
                             </div>
