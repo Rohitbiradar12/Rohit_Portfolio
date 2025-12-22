@@ -132,24 +132,29 @@ const About = () => {
                             <h2 className="about-content-item gradient-text text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                                 About Me
                             </h2>
-                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
-                                Hi, I'm <span className="text-highlight">Rohit</span>, a passionate software developer
-                                based in Boston with expertise in building exceptional digital experiences.
-                                I specialize in creating innovative web applications that combine
-                                <span className="text-highlight"> cutting-edge technology</span> with
-                                elegant design.
+                           <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
+                                Hi, I'm <span className="text-highlight">Rohit</span>, a Software Developer Engineer with hands-on experience in building
+                                <span className="text-highlight"> scalable microservices</span>, optimizing backend systems, and improving enterprise efficiency.
+                                At <span className="text-highlight">Torry Harris Integration Solutions</span>, I worked on a Loan Management System across African markets,
+                                contributing to the development of 15+ microservices that reduced loan processing time by 35% and improved data reliability.
+                            </p>
+
+
+                           <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
+                                My expertise includes <span className="text-highlight">Spring Boot</span>, <span className="text-highlight">PostgreSQL</span>,
+                                <span className="text-highlight"> Kafka</span>, <span className="text-highlight">Redis</span>, and automation pipelines —
+                                driving system performance and achieving 99.99% transaction success rates.
                             </p>
 
                             <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-8">
-                                With a strong foundation in <span className="text-highlight">React</span>,
-                                <span className="text-highlight"> Three.js</span>, and modern backend technologies,
-                                I transform complex ideas into seamless, user-centric solutions.
-                                My goal is to craft software that not only works flawlessly but also
-                                delivers <span className="text-highlight">memorable experiences</span>.
+                                With a Computer Science degree from <span className="text-highlight">REVA University</span>, I thrive on solving complex problems
+                                and delivering impactful solutions. Starting September 2025, I'll be pursuing my
+                                <span className="text-highlight"> MS in Computer Science</span> at <span className="text-highlight">Northeastern University</span> (Khoury College),
+                                focusing on cloud computing and scalable system design.
                             </p>
 
                             <div className="about-content-item flex flex-wrap gap-3 mb-8">
-                                {["React", "Three.js", "Node.js", "Python", "TypeScript", "AWS"].map((skill) => (
+                                {["Spring Boot", "kafka", "Redis", "PostgreSQL", "Java", "Docker", "Jenkins", "AWS", "Kubernetes"].map((skill) => (
                                     <span key={skill} className="skill-pill">
                                         {skill}
                                     </span>

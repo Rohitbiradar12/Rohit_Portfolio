@@ -1,7 +1,7 @@
 const navLinks = [
   {
-    name: "Work",
-    link: "#work",
+    name: "Projects",
+    link: "#projects",
   },
   {
     name: "Experience",
@@ -12,9 +12,14 @@ const navLinks = [
     link: "#skills",
   },
   {
+    name: "Resume",
+    link: "#resume",
+  },
+  {
     name: "Testimonials",
     link: "#testimonials",
-  },
+  }
+
 ];
 
 const words = [
@@ -26,13 +31,6 @@ const words = [
   { text: "Concepts", imgPath: "/images/concepts.svg" },
   { text: "Designs", imgPath: "/images/designs.svg" },
   { text: "Code", imgPath: "/images/code.svg" },
-];
-
-const counterItems = [
-  { value: 15, suffix: "+", label: "Years of Experience" },
-  { value: 200, suffix: "+", label: "Satisfied Clients" },
-  { value: 108, suffix: "+", label: "Completed Projects" },
-  { value: 90, suffix: "%", label: "Client Retention Rate" },
 ];
 
 const logoIconsList = [
@@ -162,34 +160,40 @@ const expCards = [
     title: " Software Developer",
     date: "March 2024 - August 2025",
     responsibilities: [
-      "Developed and maintained user-facing features for the Hostinger website.",
-      "Collaborated closely with UI/UX designers to ensure seamless user experiences.",
-      "Optimized web applications for maximum speed and scalability.",
-    ],
+      "Engineered Spring Boot microservices for loan onboarding, eligibility, disbursement, repayment, and early closure using Oracle/PostgreSQL with both SOAP and REST APIs, aligned to financial rules and validations.",
+      "Integrated Kafka-based schedulers for asynchronous workflows i.e. repayment settlement, autostrike, auto-debit to improve scalability and throughput.",
+      "Implemented Redis caching for high-read configurations, product limits, global settings to reduce database load and improve latency.",
+      "Automated hourly monitoring by combining shell scripts and PostgreSQL procedures to generate HTML loan reports and deliver them via SMTP.",
+      "Ensured smooth Amodcus fund flow through audit-compliant WebServiceTemplate-based integrations and reliable service-to-service communication.",
+],
   },
   {
-    review: "Rohit contributions to Docker's web applications have been outstanding. He approaches challenges with a problem-solving mindset.",
+    review: "Rohit contributions to LMS's applications have been outstanding. He approaches challenges with a problem-solving mindset.",
     imgPath: "/images/exp1.png",
     logoPath: "/images/torry-harris.png",
     title: "Software Developer Intern",
     date: "September 2023 - March 2024",
     responsibilities: [
-      "Led the development of Docker's web applications, focusing on scalability.",
-      "Worked with backend engineers to integrate APIs seamlessly with the frontend.",
-      "Contributed to open-source projects that were used with the Docker ecosystem.",
+      "Collaborated on backend development of a cloud-based LMS using Spring Boot microservices with a focus on secure authentication and authorization via JWT.",
+      "Designed and implemented centralized authentication workflows, including secure token storage in AWS S3 for scalable and resilient session management.",
+      "Built and enhanced API Gateway filter chains for authentication and dynamic routing, ensuring secure and efficient request flow across microservices.",
+      "Partnered with cross-functional teams to integrate scalable security patterns, improving system integrity, reliability, and cloud readiness.",
     ],
+
   },
   {
-    review: "Rohit's work on Appwrite’s mobile app brought a high level of quality and efficiency. He delivered solutions that enhanced our mobile experience & meet our product goals.",
-    imgPath: "/images/exp3.png",
-    logoPath: "/images/logo3.png",
+    review: "Rohit’s backend work in the REVA Developer’s Club was outstanding. He built and delivered the core APIs for our Project Showcase & Team-Matching platform, enabling secure project postings, applications, and role-based access with a scalable, reliable backend.",
+    imgPath: "/images/reva-university-logo.png",
+    logoPath: "/images/reva.png",
     title: "Backend Developer Intern",
-    date: "March 2019 - May 2020",
-    responsibilities: [
-      "Built cross-platform mobile apps using React Native, integrating with Appwrite's backend services.",
-      "Improved app performance and user experience through code optimization and testing.",
-      "Coordinated with the product team to implement features based on feedback.",
-    ],
+    date: "August 2021 - May 2023",
+responsibilities: [
+  "Built the backend for a club-wide ‘Project Showcase & Team-Matching’ platform that let students publish projects, tag skills/tech stacks, and get matched to teams using a simple scoring-based recommendation workflow.",
+  "Designed REST APIs for project posting, applications, approvals, and role-based access (Admin/Lead/Member) with secure authentication and authorization.",
+  "Modeled and optimized the database schema for projects, users, skills, and applications; added validation, pagination, and search filters for scalable usage.",
+  "Implemented production-ready practices: structured error handling, logging, API documentation, and basic rate limiting to improve reliability.",
+],
+
   },
 ];
 
@@ -270,19 +274,19 @@ const projects = [
   },
   {
     id: 3,
-    title: "AI Image SaaS - Canva Alternative",
-    des: "A REAL Software-as-a-Service app with AI features and payments & credits system using the latest tech stack.",
-    img: "/images/project3.png",
+    title: "Money-Mates",
+    des: "MoneyMates is a full-stack web application designed for students and roommates who want to easily track shared expenses (like Splitwise) and manage their education loans with interest, EMI, and service fee calculations.",
+    img: "/images/money-mates.png",
     iconLists: ["/images/logos/react.png", "/images/logos/python.svg", "/images/logos/git.svg"],
-    link: "https://github.com/yourprofile/ai-image-saas",
+    link: "https://github.com/Rohitbiradar12/MoneyMates",
   },
   {
     id: 4,
-    title: "Animated Apple iPhone 3D Website",
-    des: "Recreated the Apple iPhone 15 Pro website, combining GSAP animations and Three.js 3D effects.",
-    img: "/images/project1.png",
-    iconLists: ["/images/logos/react.png", "/images/logos/three.png", "/images/logos/git.svg"],
-    link: "https://github.com/yourprofile/apple-clone",
+    title: "Full-Stack Banking System",
+    des: "A full-stack banking application built with Spring MVC, featuring secure account management, fund transfers, transaction history, and role-based authentication.",
+    img: "/images/bank.png",
+    iconLists: ["/images/logos/java.webp", "/images/logos/html5.svg", "/images/logos/css3.svg", "/images/logos/spring.png"],
+    link: "https://github.com/Rohitbiradar12/Banking-System",
   },
 ];
 
@@ -290,7 +294,6 @@ export {
   words,
   abilities,
   logoIconsList,
-  counterItems,
   expCards,
   expLogos,
   testimonials,

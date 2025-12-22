@@ -1,12 +1,12 @@
-const Button = ({ text, className, id }) => {
+const Button = ({ text, className, id, href = "about" }) => {
   return (
     <a
       onClick={(e) => {
         e.preventDefault();
 
-        const target = document.getElementById("counter");
+        const target = document.getElementById(href);
 
-        if (target && id) {
+        if (target) {
           const offset = window.innerHeight * 0.15;
 
           const top =

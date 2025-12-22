@@ -57,7 +57,13 @@ section::before {
 section:first-of-type::before {
   display: none;
 }
+
 section:last-of-type::after {
+  display: none;
+}
+
+/* Remove top gradient from Contact section to prevent blur */
+#contact::before {
   display: none;
 }
 
@@ -578,6 +584,7 @@ section:last-of-type::after {
   background: transparent;
   position: relative;
 }
+
 .about-orb {
   position: absolute;
   border-radius: 50%;
@@ -1576,6 +1583,7 @@ section:last-of-type::after {
   background: transparent;
   position: relative;
 }
+
 .resume-orb {
   position: absolute;
   border-radius: 50%;
@@ -2108,6 +2116,7 @@ section:last-of-type::after {
   background: transparent;
   position: relative;
 }
+
 .skills-bg-gradient {
   position: absolute;
   inset: 0;
@@ -2116,6 +2125,7 @@ section:last-of-type::after {
     radial-gradient(ellipse at 100% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 40%);
   pointer-events: none;
 }
+
 .skills-orb {
   position: absolute;
   border-radius: 50%;
@@ -2190,6 +2200,7 @@ section:last-of-type::after {
 .skills-grid-pattern {
   display: none;
 }
+
 .skills-particles {
   position: absolute;
   inset: 0;
@@ -2657,6 +2668,7 @@ section:last-of-type::after {
 .testimonials-grid-pattern {
   display: none;
 }
+
 .testimonials-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -2932,5 +2944,826 @@ section:last-of-type::after {
 
   .testimonial-shine {
     display: none;
+  }
+}
+
+/* ============================================
+   PREMIUM MOBILE SIDEBAR STYLES
+   ============================================ */
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+}
+
+/* Hamburger Icon */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 20px;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transform-origin: center;
+}
+
+.hamburger.open span:first-child {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.open span:last-child {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 998;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile Sidebar */
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 85%;
+  max-width: 320px;
+  height: 100vh;
+  background: linear-gradient(180deg, #13162d 0%, #0a0a1a 100%);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.mobile-sidebar.open {
+  transform: translateX(0);
+}
+
+.mobile-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 1.5rem;
+}
+
+/* Sidebar Header */
+.mobile-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.mobile-sidebar-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mobile-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #a78bfa;
+}
+
+/* Sidebar Navigation */
+.mobile-sidebar-nav {
+  flex: 1;
+}
+
+.mobile-sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-sidebar-nav li {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.mobile-sidebar-nav li.animate {
+  animation: slideInRight 0.4s forwards;
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.mobile-sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  color: #d4d4d8;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.mobile-sidebar-nav a:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: white;
+  transform: translateX(5px);
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+}
+
+.nav-text {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.nav-arrow {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  color: #a78bfa;
+}
+
+.mobile-sidebar-nav a:hover .nav-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Sidebar Footer */
+.mobile-sidebar-footer {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #8B5CF6 0%, #a78bfa 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.mobile-contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+.mobile-sidebar-credit {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #71717a;
+}
+
+/* Hide desktop nav elements on mobile */
+@media (max-width: 768px) {
+  .navbar .desktop {
+    display: none;
+  }
+
+  .navbar .contact-btn {
+    display: none;
+  }
+}
+
+/* ============================================
+   PREMIUM EXPERIENCE SECTION STYLES
+   ============================================ */
+
+.experience-section {
+  position: relative;
+  background: transparent;
+}
+
+/* Background Effects */
+.experience-bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(19, 22, 45, 0.5) 20%,
+      rgba(10, 10, 26, 0.8) 50%,
+      rgba(19, 22, 45, 0.5) 80%,
+      transparent 100%);
+  pointer-events: none;
+}
+
+.experience-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.experience-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #8B5CF6 0%, transparent 70%);
+  top: 10%;
+  left: -10%;
+  animation: float 8s ease-in-out infinite;
+}
+
+.experience-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #06B6D4 0%, transparent 70%);
+  bottom: 20%;
+  right: -5%;
+  animation: float 10s ease-in-out infinite reverse;
+}
+
+.experience-grid-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+/* Timeline */
+.experience-timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+@media (min-width: 768px) {
+  .experience-timeline {
+    padding-left: 80px;
+  }
+}
+
+.experience-timeline-track {
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+@media (min-width: 768px) {
+  .experience-timeline-track {
+    left: 30px;
+  }
+}
+
+.experience-timeline-line {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      transparent 0%,
+      #8B5CF6 10%,
+      #a78bfa 50%,
+      #8B5CF6 90%,
+      transparent 100%);
+  border-radius: 2px;
+  transform-origin: top;
+}
+
+.experience-timeline-glow {
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(139, 92, 246, 0.5) 50%,
+      transparent 100%);
+  filter: blur(8px);
+  border-radius: 4px;
+}
+
+/* Timeline Node */
+.experience-card-row {
+  position: relative;
+}
+
+.experience-timeline-node {
+  position: absolute;
+  left: -40px;
+  top: 40px;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .experience-timeline-node {
+    left: -80px;
+  }
+}
+
+.experience-node {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.experience-node-inner {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #8B5CF6, #a78bfa);
+  border-radius: 50%;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.experience-node.active .experience-node-inner {
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
+}
+
+.experience-node-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.experience-node.active .experience-node-ring {
+  border-color: #8B5CF6;
+  transform: scale(1.3);
+}
+
+.experience-node-pulse {
+  position: absolute;
+  inset: -8px;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.experience-node.active .experience-node-pulse {
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Experience Card */
+.experience-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.experience-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-5px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1);
+}
+
+.experience-card.active {
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.experience-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.experience-card:hover .experience-spotlight {
+  opacity: 1;
+}
+
+.experience-border-glow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg,
+      rgba(139, 92, 246, 0.5) 0%,
+      transparent 50%,
+      rgba(6, 182, 212, 0.5) 100%);
+  border-radius: 25px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+
+.experience-card:hover .experience-border-glow {
+  opacity: 1;
+}
+
+.experience-card-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background: rgba(10, 10, 26, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+}
+
+@media (min-width: 1024px) {
+  .experience-card-inner {
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px;
+  }
+}
+
+/* Image Section */
+.experience-image-section {
+  position: relative;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .experience-image-section {
+    width: 280px;
+  }
+}
+
+.experience-image-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+}
+
+.experience-image-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(139, 92, 246, 0.2) 0%,
+      transparent 50%);
+  z-index: 1;
+}
+
+.experience-company-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.experience-card:hover .experience-company-image {
+  transform: scale(1.05);
+}
+
+.experience-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(10, 10, 26, 0.8) 0%,
+      transparent 50%);
+  z-index: 2;
+}
+
+.experience-logo-container {
+  position: absolute;
+  bottom: -20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.experience-logo {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #1a1a2e, #0a0a1a);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.experience-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.experience-card:hover .experience-logo {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  transform: translateY(-3px);
+}
+
+.experience-logo-ring {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Content Section */
+.experience-content-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 10px;
+}
+
+@media (min-width: 1024px) {
+  .experience-content-section {
+    padding-top: 0;
+  }
+}
+
+.experience-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.experience-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #a78bfa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+
+.experience-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.experience-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.3;
+}
+
+@media (min-width: 768px) {
+  .experience-title {
+    font-size: 1.75rem;
+  }
+}
+
+.experience-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #71717a;
+  font-size: 0.9rem;
+}
+
+.experience-date svg {
+  color: #8B5CF6;
+}
+
+/* Quote Section */
+.experience-quote {
+  position: relative;
+  padding: 16px 20px;
+  background: rgba(139, 92, 246, 0.05);
+  border-left: 3px solid #8B5CF6;
+  border-radius: 0 12px 12px 0;
+}
+
+.experience-quote-icon {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  color: rgba(139, 92, 246, 0.3);
+}
+
+.experience-quote p {
+  color: #a1a1aa;
+  font-style: italic;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Responsibilities */
+.experience-responsibilities {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.experience-responsibilities-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.experience-responsibilities-icon {
+  font-size: 1.1rem;
+}
+
+.experience-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.experience-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.experience-list-bullet {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, #8B5CF6, #06B6D4);
+  border-radius: 50%;
+  margin-top: 8px;
+}
+
+/* Shine Effect */
+.experience-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent);
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.experience-card:hover .experience-shine {
+  animation: shine 1s forwards;
+}
+
+@keyframes shine {
+  to {
+    left: 150%;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .experience-timeline {
+    padding-left: 30px;
+  }
+
+  .experience-timeline-track {
+    left: 5px;
+    width: 2px;
+  }
+
+  .experience-timeline-node {
+    left: -30px;
+  }
+
+  .experience-node {
+    width: 16px;
+    height: 16px;
+  }
+
+  .experience-node-inner {
+    width: 8px;
+    height: 8px;
+  }
+
+  .experience-card-inner {
+    padding: 20px;
+  }
+
+  .experience-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .experience-title {
+    font-size: 1.25rem;
   }
 }

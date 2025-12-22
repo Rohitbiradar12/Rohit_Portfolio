@@ -1,27 +1,25 @@
-import Testimonials from "./sections/Testimonials";
-import Footer from "./sections/Footer";
-import Contact from "./sections/Contact";
-import TechStack from "./sections/TechStack";
-import Experience from "./sections/Experience";
-import Resume from "./sections/Resume";
 import Hero from "./sections/Hero";
-import ShowcaseSection from "./sections/ShowcaseSection";
-import LogoShowcase from "./sections/LogoShowcase";
 import About from "./sections/About";
 import Projects from "./sections/Projects";
+import Experience from "./sections/Experience";
+import Achievements from "./sections/ShowcaseSection";
+import TechStack from "./sections/TechStack";
+import Testimonials from "./sections/Testimonials";
+import Resume from "./sections/Resume";
+import Contact from "./sections/Contact";
+import Footer from "./sections/Footer";
 import Navbar from "./components/NavBar";
 
 const App = () => (
   <>
     <Navbar />
     <Hero />
-    <ShowcaseSection />
-    <LogoShowcase />
     <About />
     <Projects />
     <Experience />
-    <Resume />
+    <Achievements />
     <TechStack />
+    <Resume />
     <Testimonials />
     <Contact />
     <Footer />
@@ -29,4 +27,3 @@ const App = () => (
 );
 
 export default App;
-

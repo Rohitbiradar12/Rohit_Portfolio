@@ -3,6 +3,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { testimonials } from "../constants";
+import TitleHeader from "../components/TitleHeader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,34 +11,19 @@ const Testimonials = () => {
   const sectionRef = useRef(null);
 
   useGSAP(() => {
-    gsap.fromTo(
-      ".testimonials-header > *",
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-        },
-      }
-    );
-
+    // Cards entrance animation
     gsap.fromTo(
       ".testimonial-card",
       {
         y: 80,
         opacity: 0,
-        scale: 0.9,
+        scale: 0.95,
       },
       {
         y: 0,
         opacity: 1,
         scale: 1,
-        duration: 0.8,
+        duration: 1,
         stagger: 0.2,
         ease: "power3.out",
         scrollTrigger: {
@@ -47,6 +33,7 @@ const Testimonials = () => {
       }
     );
 
+    // Quote marks animation
     gsap.fromTo(
       ".quote-icon",
       { scale: 0, rotation: -180 },
@@ -63,110 +50,152 @@ const Testimonials = () => {
         },
       }
     );
+
+    // Stars animation
+    gsap.fromTo(
+      ".testimonial-star",
+      { scale: 0, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.4,
+        stagger: 0.05,
+        delay: 0.5,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: ".testimonials-grid",
+          start: "top 85%",
+        },
+      }
+    );
   }, []);
 
   return (
     <section
       id="testimonials"
       ref={sectionRef}
-      className="testimonials-section relative overflow-hidden py-20 md:py-32"
+      className="relative overflow-hidden py-20 md:py-32"
     >
-      <div className="testimonials-bg-gradient" />
-      <div className="testimonials-orb testimonials-orb-1" />
-      <div className="testimonials-orb testimonials-orb-2" />
-      <div className="testimonials-grid-pattern" />
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/5 to-transparent pointer-events-none" />
+      <div className="absolute top-1/4 left-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
-        <div className="testimonials-header flex flex-col items-center gap-5 mb-16">
-          <div className="hero-badge">
-            <p>⭐ Words from Colleagues</p>
-          </div>
-          <h2 className="font-bold md:text-5xl text-3xl text-center">
-            What People <span className="gradient-text">Say About Me</span>
-          </h2>
-          <p className="text-white-50 text-center max-w-2xl text-lg">
-            Feedback from amazing people I've had the pleasure of working with
-          </p>
-        </div>
+        {/* Header */}
+        <TitleHeader
+          title="What People Say About Me"
+          sub="⭐ Words from Colleagues"
+        />
 
-        <div className="testimonials-grid">
+        {/* Testimonials Grid */}
+        <div className="testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="testimonial-card group">
-              <div className="testimonial-card-glow" />
-              <div className="testimonial-card-border" />
-              <div className="testimonial-card-inner">
-                <div className="quote-icon">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 7H7C5.89543 7 5 7.89543 5 9V13C5 14.1046 5.89543 15 7 15H9C10.1046 15 11 15.8954 11 17V17C11 18.1046 10.1046 19 9 19H8"
-                      stroke="url(#gradient1)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M19 7H15C13.8954 7 13 7.89543 13 9V13C13 14.1046 13.8954 15 15 15H17C18.1046 15 19 15.8954 19 17V17C19 18.1046 18.1046 19 17 19H16"
-                      stroke="url(#gradient2)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <defs>
-                      <linearGradient id="gradient1" x1="5" y1="7" x2="11" y2="19">
-                        <stop stopColor="#8B5CF6" />
-                        <stop offset="1" stopColor="#3B82F6" />
-                      </linearGradient>
-                      <linearGradient id="gradient2" x1="13" y1="7" x2="19" y2="19">
-                        <stop stopColor="#8B5CF6" />
-                        <stop offset="1" stopColor="#3B82F6" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
+            <div
+              key={index}
+              className="testimonial-card group relative"
+            >
+              {/* Card Glow on Hover */}
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-purple-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <p className="testimonial-text">{testimonial.review}</p>
+              {/* Main Card */}
+              <div className="relative h-full bg-gradient-to-br from-white/[0.08] via-white/[0.05] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 hover:border-purple-500/40 transition-all duration-500 flex flex-col">
 
-                <div className="testimonial-divider" />
-
-                <div className="testimonial-author">
-                  <div className="testimonial-avatar-wrapper">
-                    <div className="testimonial-avatar-glow" />
-                    <img
-                      src={testimonial.imgPath}
-                      alt={testimonial.name}
-                      className="testimonial-avatar"
-                    />
-                    <div className="testimonial-avatar-ring" />
+                {/* Top Row: Quote Icon + Stars */}
+                <div className="flex items-center justify-between mb-5">
+                  {/* Quote Icon */}
+                  <div className="quote-icon relative">
+                    <div className="absolute inset-0 bg-purple-500/30 blur-md rounded-lg" />
+                    <div className="relative w-10 h-10 bg-gradient-to-br from-purple-500/40 to-purple-600/30 rounded-lg border border-purple-500/40 flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-purple-300"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                    </div>
                   </div>
-                  <div className="testimonial-author-info">
-                    <h4 className="testimonial-name">{testimonial.name}</h4>
-                    <p className="testimonial-role">{testimonial.mentions}</p>
+
+                  {/* Stars */}
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="testimonial-star w-4 h-4"
+                        fill="#FBBF24"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    ))}
                   </div>
                 </div>
 
-                <div className="testimonial-stars">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="testimonial-star"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="#FBBF24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  ))}
+                {/* Review Text */}
+                <p className="text-white-50 text-base leading-relaxed flex-grow mb-6 group-hover:text-white/90 transition-colors duration-300">
+                  "{testimonial.review}"
+                </p>
+
+                {/* Divider */}
+                <div className="h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent mb-5" />
+
+                {/* Author Section */}
+                <div className="flex items-center gap-4">
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute -inset-1 bg-gradient-to-br from-purple-500/50 to-blue-500/50 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-purple-400/50 transition-colors duration-300">
+                      <img
+                        src={testimonial.imgPath}
+                        alt={testimonial.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Author Info */}
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-white text-base truncate group-hover:text-purple-300 transition-colors duration-300">
+                      {testimonial.name}
+                    </h4>
+                    <p className="text-sm text-purple-300/70 truncate">
+                      {testimonial.mentions}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="testimonial-shine" />
+                {/* Shimmer Effect on Hover */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-x-full group-hover:translate-x-full pointer-events-none" style={{ transitionDuration: '1s' }} />
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-16">
+          <p className="text-white-50 text-lg mb-6">
+            Want to work together?
+          </p>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30"
+          >
+            Let's Connect
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </a>
         </div>
       </div>
     </section>
