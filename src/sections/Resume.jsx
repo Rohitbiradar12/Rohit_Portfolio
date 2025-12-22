@@ -215,7 +215,7 @@ const Resume = () => {
         });
 
         const link = document.createElement("a");
-        link.href = "/resume/Rohit_Resume_2024.pdf";
+        link.href = "/resume/Rohit_Resume.pdf";
         link.download = "Rohit_Biradar_Resume.pdf";
         document.body.appendChild(link);
         link.click();
