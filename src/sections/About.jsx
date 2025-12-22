@@ -154,7 +154,7 @@ const About = () => {
                             </p>
 
                             <div className="about-content-item flex flex-wrap gap-3 mb-8">
-                                {["Spring Boot", "kafka", "Redis", "PostgreSQL", "Java", "Docker", "Jenkins", "AWS", "Kubernetes"].map((skill) => (
+                                {["Spring Boot", "kafka", "Redis", "Python", "PostgreSQL", "Java", "Docker", "Jenkins", "AWS", "Kubernetes"].map((skill) => (
                                     <span key={skill} className="skill-pill">
                                         {skill}
                                     </span>
