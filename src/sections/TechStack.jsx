@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, memo } from "react";
+import { useRef, useState, useCallback, memo } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,117 +7,10 @@ import { techStackImgs } from "../constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SkillTooltip = memo(({ skill, isVisible }) => {
-  const tooltipRef = useRef(null);
-  const progressRef = useRef(null);
-  const percentageRef = useRef(null);
-
-  useEffect(() => {
-    if (isVisible && tooltipRef.current) {
-      gsap.fromTo(tooltipRef.current,
-        {
-          opacity: 0,
-          y: 20,
-          scale: 0.92,
-          rotateX: -15,
-          filter: 'blur(10px)'
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotateX: 0,
-          filter: 'blur(0px)',
-          duration: 0.3,
-          ease: "back.out(1.8)"
-        }
-      );
-
-      if (progressRef.current) {
-        gsap.fromTo(progressRef.current,
-          { width: "0%" },
-          {
-            width: `${skill.proficiency}%`,
-            duration: 1.2,
-            delay: 0.1,
-            ease: "expo.out"
-          }
-        );
-      }
-
-      if (percentageRef.current) {
-        gsap.fromTo(percentageRef.current,
-          { innerText: 0 },
-          {
-            innerText: skill.proficiency,
-            duration: 1.2,
-            delay: 0.1,
-            ease: "power2.out",
-            snap: { innerText: 1 },
-            onUpdate: function () {
-              if (percentageRef.current) {
-                percentageRef.current.textContent = Math.round(this.targets()[0].innerText) + '%';
-              }
-            }
-          }
-        );
-      }
-    }
-  }, [isVisible, skill.proficiency]);
-
-  if (!isVisible) return null;
-
-  return (
-    <div
-      ref={tooltipRef}
-      className="premium-tooltip"
-      role="tooltip"
-      aria-label={`${skill.name} proficiency details`}
-    >
-      <div className="tooltip-header">
-        <h3 className="tooltip-title">{skill.name}</h3>
-        <span className="tooltip-category-badge">{skill.category}</span>
-      </div>
-      <div className="tooltip-section">
-        <div className="tooltip-row">
-          <span className="tooltip-label">PROFICIENCY</span>
-          <span ref={percentageRef} className="tooltip-percentage">0%</span>
-        </div>
-
-        <div className="progress-bar-container">
-          <div
-            ref={progressRef}
-            className="progress-bar-fill"
-            style={{
-              width: `${skill.proficiency}%`,
-              '--tech-color': skill.color
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="tooltip-divider" />
-
-      <div className="tooltip-stats-grid">
-        <div className="tooltip-stat">
-          <span className="tooltip-label">EXPERIENCE</span>
-          <span className="tooltip-value">{skill.experience}</span>
-        </div>
-
-        <div className="tooltip-stat">
-          <span className="tooltip-label">PROJECTS</span>
-          <span className="tooltip-value">{skill.projects}+</span>
-        </div>
-      </div>
-    </div>
-  );
-});
-
-SkillTooltip.displayName = 'SkillTooltip';
-
-const SkillCard = memo(({ skill, isHovered, onHoverStart, onHoverEnd }) => {
+const SkillCard = memo(({ skill }) => {
   const cardRef = useRef(null);
   const contentRef = useRef(null);
+
   const handleMouseMove = useCallback((e) => {
     if (!cardRef.current || !contentRef.current) return;
 
@@ -161,9 +54,7 @@ const SkillCard = memo(({ skill, isHovered, onHoverStart, onHoverEnd }) => {
       duration: 0.4,
       ease: 'back.out(2)'
     });
-
-    onHoverStart(skill);
-  }, [skill, onHoverStart]);
+  }, []);
 
   const handleMouseLeave = useCallback(() => {
     if (!cardRef.current || !contentRef.current) return;
@@ -189,14 +80,12 @@ const SkillCard = memo(({ skill, isHovered, onHoverStart, onHoverEnd }) => {
       duration: 0.4,
       ease: 'power2.out'
     });
-
-    onHoverEnd();
-  }, [onHoverEnd]);
+  }, []);
 
   return (
     <div
       ref={cardRef}
-      className={`skill-card ${isHovered ? 'is-hovered' : ''}`}
+      className="skill-card"
       style={{ "--skill-color": skill.color }}
       data-id={skill.id}
       onMouseMove={handleMouseMove}
@@ -234,8 +123,6 @@ const SkillCard = memo(({ skill, isHovered, onHoverStart, onHoverEnd }) => {
         <h3 className="skill-name">{skill.name}</h3>
         <span className="skill-badge">{skill.category}</span>
       </div>
-
-      <SkillTooltip skill={skill} isVisible={isHovered} />
     </div>
   );
 });
@@ -245,33 +132,16 @@ SkillCard.displayName = 'SkillCard';
 const TechStack = () => {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
-  const hoverTimeoutRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [isAnimating, setIsAnimating] = useState(false);
   const [displayedSkills, setDisplayedSkills] = useState(techStackImgs);
-  const [hoveredSkillId, setHoveredSkillId] = useState(null);
 
   const categories = ["All", ...new Set(techStackImgs.map(tech => tech.category))];
-
-  const handleHoverStart = useCallback((skill) => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-
-    hoverTimeoutRef.current = setTimeout(() => {
-      setHoveredSkillId(skill.id);
-    }, 300);
-  }, []);
-
-  const handleHoverEnd = useCallback(() => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    setHoveredSkillId(null);
-  }, []);
 
   const handleCategoryChange = useCallback((category) => {
     if (isAnimating || category === activeCategory) return;
 
     setIsAnimating(true);
-    setHoveredSkillId(null);
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
 
     const grid = gridRef.current;
     const currentCards = grid?.querySelectorAll('.skill-card') || [];
@@ -381,10 +251,6 @@ const TechStack = () => {
     });
   }, []);
 
-  useEffect(() => {
-    return () => { if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current); };
-  }, []);
-
   return (
     <section id="skills" ref={sectionRef} className="skills-section">
       <div className="skills-bg">
@@ -439,9 +305,6 @@ const TechStack = () => {
             <SkillCard
               key={skill.id}
               skill={skill}
-              isHovered={hoveredSkillId === skill.id}
-              onHoverStart={handleHoverStart}
-              onHoverEnd={handleHoverEnd}
             />
           ))}
         </div>
