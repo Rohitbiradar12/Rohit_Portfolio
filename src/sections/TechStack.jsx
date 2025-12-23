@@ -20,65 +20,101 @@ const SkillCard = memo(({ skill }) => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = ((y - centerY) / centerY) * 8;
-    const rotateY = ((x - centerX) / centerX) * 8;
+    // Smoother 3D tilt with reduced sensitivity
+    const rotateX = ((y - centerY) / centerY) * 6;
+    const rotateY = ((x - centerX) / centerX) * 6;
 
+    // Premium spotlight effect
     const spotlight = cardRef.current.querySelector('.skill-spotlight');
     if (spotlight) {
-      spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(139, 92, 246, 0.15), transparent 50%)`;
+      spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(139, 92, 246, 0.12), rgba(255, 255, 255, 0.04) 40%, transparent 65%)`;
       spotlight.style.opacity = '1';
     }
 
     gsap.to(contentRef.current, {
       rotateX: -rotateX,
       rotateY: rotateY,
-      duration: 0.4,
-      ease: "power2.out",
+      duration: 0.6,
+      ease: "expo.out",
+      overwrite: "auto"
     });
   }, []);
 
   const handleMouseEnter = useCallback(() => {
     if (!cardRef.current) return;
 
+    // Smooth card lift
     gsap.to(cardRef.current.querySelector('.skill-card-content'), {
-      y: -12,
-      scale: 1.02,
-      duration: 0.5,
-      ease: "power3.out",
+      y: -14,
+      scale: 1.03,
+      duration: 0.6,
+      ease: "expo.out",
+      overwrite: "auto"
     });
 
+    // Animate ambient glow
+    const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
+    if (ambientGlow) {
+      gsap.to(ambientGlow, {
+        opacity: 0.3,
+        scale: 1.2,
+        duration: 0.7,
+        ease: "power2.out"
+      });
+    }
+
+    // Enhanced icon animation
     gsap.to(cardRef.current.querySelector('.skill-icon'), {
-      scale: 1.15,
-      rotate: 5,
-      filter: 'brightness(1.2)',
-      duration: 0.4,
-      ease: 'back.out(2)'
+      scale: 1.18,
+      y: -4,
+      filter: 'brightness(1.2) drop-shadow(0 8px 20px var(--skill-color))',
+      duration: 0.5,
+      ease: "expo.out"
     });
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     if (!cardRef.current || !contentRef.current) return;
 
+    // Fade spotlight smoothly
     const spotlight = cardRef.current.querySelector('.skill-spotlight');
     if (spotlight) {
-      spotlight.style.opacity = '0';
+      gsap.to(spotlight, {
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out"
+      });
     }
 
+    // Smooth settle back
     gsap.to(contentRef.current, {
       rotateX: 0,
       rotateY: 0,
       y: 0,
       scale: 1,
-      duration: 0.5,
-      ease: "power3.out",
+      duration: 0.7,
+      ease: "expo.out",
+      overwrite: "auto"
     });
 
+    // Reset ambient glow
+    const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
+    if (ambientGlow) {
+      gsap.to(ambientGlow, {
+        opacity: 0,
+        scale: 1,
+        duration: 0.6,
+        ease: "power2.out"
+      });
+    }
+
+    // Reset icon smoothly
     gsap.to(cardRef.current.querySelector('.skill-icon'), {
       scale: 1,
-      rotate: 0,
-      filter: 'brightness(1)',
-      duration: 0.4,
-      ease: 'power2.out'
+      y: 0,
+      filter: 'brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+      duration: 0.5,
+      ease: "power2.out"
     });
   }, []);
 
