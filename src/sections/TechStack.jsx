@@ -349,7 +349,7 @@ const TechStack = () => {
           {[
             { value: 27, label: "Technologies", icon: "🚀" },
             { value: 5, label: "Categories", icon: "📦" },
-            { value: 3, label: "Years Experience", icon: "⭐" },
+            { value: 2, label: "Years Experience", icon: "⭐" },
           ].map((stat, index) => (
             <div key={index} className="stat-card">
               <div className="stat-icon">{stat.icon}</div>
