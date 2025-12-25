@@ -215,7 +215,7 @@ const expLogos = [
 const testimonials = [
   {
     name: "Madhavi Balachandra",
-    mentions: "Senior Software Engineer",
+    mentions: "Senior Software Developer",
     review:
       "It's my pleasure to acknowledge that you were one of the team members who showed a strong interest in learning Java and other technologies. You picked up the skills quickly, gained a solid understanding of the project, and in a short span of time, began contributing to a major loan management project. Keep learning and continue doing great work!",
     imgPath: "/images/manager.png",

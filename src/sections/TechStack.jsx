@@ -168,69 +168,6 @@ SkillCard.displayName = 'SkillCard';
 const TechStack = () => {
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [displayedSkills, setDisplayedSkills] = useState(techStackImgs);
-
-  const categories = ["All", ...new Set(techStackImgs.map(tech => tech.category))];
-
-  const handleCategoryChange = useCallback((category) => {
-    if (isAnimating || category === activeCategory) return;
-
-    setIsAnimating(true);
-
-    const grid = gridRef.current;
-    const currentCards = grid?.querySelectorAll('.skill-card') || [];
-
-    if (grid) grid.style.minHeight = `${grid.offsetHeight}px`;
-
-    gsap.set(currentCards, { force3D: true });
-
-    gsap.to(currentCards, {
-      opacity: 0,
-      y: -20,
-      scale: 0.92,
-      duration: 0.35,
-      stagger: { each: 0.02, from: "center" },
-      ease: "power2.in",
-      onComplete: () => {
-        const newSkills = category === "All"
-          ? techStackImgs
-          : techStackImgs.filter(tech => tech.category === category);
-
-        setActiveCategory(category);
-        setDisplayedSkills(newSkills);
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            const newCards = grid?.querySelectorAll('.skill-card') || [];
-
-            if (newCards.length === 0) {
-              setIsAnimating(false);
-              if (grid) grid.style.minHeight = '';
-              return;
-            }
-
-            gsap.set(newCards, { opacity: 0, y: 30, scale: 0.9, force3D: true });
-
-            gsap.to(newCards, {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.5,
-              stagger: { each: 0.03, from: "start" },
-              ease: "power3.out",
-              onComplete: () => {
-                setIsAnimating(false);
-                if (grid) grid.style.minHeight = '';
-                gsap.set(newCards, { clearProps: "force3D" });
-              }
-            });
-          });
-        });
-      }
-    });
-  }, [isAnimating, activeCategory]);
 
   useGSAP(() => {
     gsap.fromTo(".skills-header > *",
@@ -241,19 +178,12 @@ const TechStack = () => {
       }
     );
 
-    gsap.fromTo(".category-filter",
-      { scale: 0.8, opacity: 0 },
-      {
-        scale: 1, opacity: 1, duration: 0.5, stagger: 0.06, ease: "back.out(1.7)",
-        scrollTrigger: { trigger: ".category-filters", start: "top 80%" }
-      }
-    );
-
     gsap.fromTo(".skill-card",
       { y: 50, opacity: 0, scale: 0.9 },
       {
         y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: { each: 0.04, from: "start" },
         ease: "power3.out",
+        immediateRender: false,
         scrollTrigger: { trigger: ".skills-grid", start: "top 85%" }
       }
     );
@@ -321,23 +251,8 @@ const TechStack = () => {
           </p>
         </div>
 
-        <div className="category-filters">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => handleCategoryChange(category)}
-              disabled={isAnimating}
-              className={`category-filter ${activeCategory === category ? 'active' : ''} ${isAnimating ? 'disabled' : ''}`}
-            >
-              <span className="filter-bg" />
-              <span className="filter-text">{category}</span>
-              {activeCategory === category && <span className="filter-glow" />}
-            </button>
-          ))}
-        </div>
-
-        <div ref={gridRef} className={`skills-grid ${isAnimating ? 'is-animating' : ''}`}>
-          {displayedSkills.map((skill) => (
+        <div ref={gridRef} className="skills-grid">
+          {techStackImgs.map((skill) => (
             <SkillCard
               key={skill.id}
               skill={skill}

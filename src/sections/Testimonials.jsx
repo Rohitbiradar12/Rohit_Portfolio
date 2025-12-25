@@ -11,7 +11,6 @@ const Testimonials = () => {
   const sectionRef = useRef(null);
 
   useGSAP(() => {
-    // Cards entrance animation
     gsap.fromTo(
       ".testimonial-card",
       {
@@ -33,7 +32,6 @@ const Testimonials = () => {
       }
     );
 
-    // Quote marks animation
     gsap.fromTo(
       ".quote-icon",
       { scale: 0, rotation: -180 },
@@ -51,7 +49,6 @@ const Testimonials = () => {
       }
     );
 
-    // Stars animation
     gsap.fromTo(
       ".testimonial-star",
       { scale: 0, opacity: 0 },
@@ -76,34 +73,28 @@ const Testimonials = () => {
       ref={sectionRef}
       className="relative overflow-hidden py-20 md:py-32"
     >
-      {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/5 to-transparent pointer-events-none" />
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
-        {/* Header */}
         <TitleHeader
           title="What People Say About Me"
           sub="⭐ Words from Colleagues"
         />
 
-        {/* Testimonials Grid */}
         <div className="testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
               className="testimonial-card group relative"
             >
-              {/* Card Glow on Hover */}
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-purple-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-purple-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              {/* Main Card */}
               <div className="relative h-full bg-gradient-to-br from-white/[0.08] via-white/[0.05] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 hover:border-purple-500/40 transition-all duration-500 flex flex-col">
 
-                {/* Top Row: Quote Icon + Stars */}
                 <div className="flex items-center justify-between mb-5">
-                  {/* Quote Icon */}
+                  
                   <div className="quote-icon relative">
                     <div className="absolute inset-0 bg-purple-500/30 blur-md rounded-lg" />
                     <div className="relative w-10 h-10 bg-gradient-to-br from-purple-500/40 to-purple-600/30 rounded-lg border border-purple-500/40 flex items-center justify-center">
@@ -117,7 +108,6 @@ const Testimonials = () => {
                     </div>
                   </div>
 
-                  {/* Stars */}
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, i) => (
                       <svg
@@ -132,17 +122,11 @@ const Testimonials = () => {
                   </div>
                 </div>
 
-                {/* Review Text */}
                 <p className="text-white-50 text-base leading-relaxed flex-grow mb-6 group-hover:text-white/90 transition-colors duration-300">
                   "{testimonial.review}"
                 </p>
-
-                {/* Divider */}
                 <div className="h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent mb-5" />
-
-                {/* Author Section */}
                 <div className="flex items-center gap-4">
-                  {/* Avatar */}
                   <div className="relative flex-shrink-0">
                     <div className="absolute -inset-1 bg-gradient-to-br from-purple-500/50 to-blue-500/50 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-purple-400/50 transition-colors duration-300">
@@ -154,7 +138,6 @@ const Testimonials = () => {
                     </div>
                   </div>
 
-                  {/* Author Info */}
                   <div className="min-w-0">
                     <h4 className="font-semibold text-white text-base truncate group-hover:text-purple-300 transition-colors duration-300">
                       {testimonial.name}
@@ -165,14 +148,12 @@ const Testimonials = () => {
                   </div>
                 </div>
 
-                {/* Shimmer Effect on Hover */}
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 -translate-x-full group-hover:translate-x-full pointer-events-none" style={{ transitionDuration: '1s' }} />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Bottom CTA */}
         <div className="text-center mt-16">
           <p className="text-white-50 text-lg mb-6">
             Want to work together?

@@ -4567,3 +4567,407 @@ section:last-of-type::after {
 .skills-grid.is-animating {
   pointer-events: none;
 }
+
+
+
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.success-modal {
+  position: relative;
+  background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(20, 20, 30, 0.98) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 24px;
+  padding: 48px 56px;
+  max-width: 420px;
+  width: 90%;
+  overflow: hidden;
+  box-shadow:
+    0 0 80px rgba(139, 92, 246, 0.3),
+    0 0 120px rgba(59, 130, 246, 0.2),
+    0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: modalEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.success-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+
+.confetti-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-particle {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+  opacity: 0;
+}
+
+.success-checkmark-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 24px;
+}
+
+.success-circle-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+  animation: pulseBg 2s ease-in-out infinite;
+}
+
+.success-circle-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, #8B5CF6, #3B82F6) border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ringRotate 3s linear infinite;
+}
+
+.success-checkmark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.success-checkmark-circle {
+  stroke: url(#gradient);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: circleStroke 0.6s 0.2s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  stroke: rgba(139, 92, 246, 0.3);
+}
+
+.success-checkmark-check {
+  stroke: #8B5CF6;
+  stroke-width: 3;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: checkStroke 0.4s 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff 0%, #d4d4d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+  animation: textFadeUp 0.5s 0.4s ease-out both;
+}
+
+.success-message {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  animation: textFadeUp 0.5s 0.5s ease-out both;
+}
+
+.success-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.success-sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #8B5CF6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-60px);
+  animation: sparkle 1.5s var(--delay) ease-out infinite;
+  box-shadow: 0 0 10px #8B5CF6, 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+.success-close-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: buttonFadeUp 0.5s 0.7s ease-out both;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.success-close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
+}
+
+.success-close-btn:active {
+  transform: translateY(0);
+}
+
+.success-close-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.success-close-btn:hover svg {
+  transform: translateX(4px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(400px) rotate(720deg) scale(0.5);
+  }
+}
+
+@keyframes circleStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes checkStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulseBg {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes ringRotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-60px) scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-70px) scale(1);
+  }
+}
+
+@keyframes textFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes buttonFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .confetti-particle,
+  .success-sparkle,
+  .success-circle-ring {
+    animation: none !important;
+  }
+
+  .success-checkmark-circle,
+  .success-checkmark-check {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+}
+
+/* Error Animation Styles */
+.error-modal {
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow:
+    0 0 80px rgba(239, 68, 68, 0.3),
+    0 0 120px rgba(249, 115, 22, 0.2),
+    0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: modalEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), shake 0.5s 0.3s ease-out;
+}
+
+.error-circle-bg {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2));
+}
+
+.error-circle-ring {
+  background: linear-gradient(135deg, #EF4444, #F97316) border-box;
+}
+
+.error-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.error-icon-circle {
+  stroke: rgba(239, 68, 68, 0.3);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: circleStroke 0.6s 0.2s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.error-icon-x {
+  stroke: #EF4444;
+  stroke-width: 3;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: xStroke 0.4s 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.error-title {
+  background: linear-gradient(135deg, #EF4444 0%, #F97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.error-close-btn {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+.error-close-btn:hover {
+  box-shadow: 0 12px 32px rgba(239, 68, 68, 0.5);
+}
+
+@keyframes xStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-8px);
+  }
+
+  40% {
+    transform: translateX(8px);
+  }
+
+  60% {
+    transform: translateX(-6px);
+  }
+
+  80% {
+    transform: translateX(6px);
+  }
+}
