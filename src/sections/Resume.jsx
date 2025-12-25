@@ -199,7 +199,7 @@ const Resume = () => {
         });
 
         setTimeout(() => {
-            window.open("/images/resume-preview.png", "_blank", "noopener,noreferrer");
+            window.open("/resume/Rohit_Resume.pdf", "_blank", "noopener,noreferrer");
         }, 200);
     };
 
@@ -308,7 +308,7 @@ const Resume = () => {
                                     <div className="resume-preview-overlay" />
                                     <div className="resume-preview-frame" />
                                     <img
-                                        src="/images/resume-preview.png"
+                                        src="/images/resume_preview.jpg"
                                         alt="Resume Preview"
                                         className="resume-preview-img"
                                         onError={(e) => {
