@@ -386,7 +386,7 @@ const Resume = () => {
                                             <line x1="12" y1="15" x2="12" y2="3" />
                                         </svg>
                                         <span className="resume-btn-text">
-                                            {downloadSuccess ? "Downloaded!" : "Download PDF"}
+                                            {downloadSuccess ? "Downloaded! ✓" : "Download PDF"}
                                         </span>
                                     </button>
                                 </div>
@@ -415,14 +415,6 @@ const Resume = () => {
                     </a>
                 </div>
             </div>
-
-            {downloadSuccess && (
-                <div className="resume-toast">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-            )}
         </section>
     );
 };
