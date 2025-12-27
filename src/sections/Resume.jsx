@@ -386,7 +386,7 @@ const Resume = () => {
                                             <line x1="12" y1="15" x2="12" y2="3" />
                                         </svg>
                                         <span className="resume-btn-text">
-                                            {downloadSuccess ? "Downloaded! ✓" : "Download PDF"}
+                                            {downloadSuccess ? "Downloaded!" : "Download PDF"}
                                         </span>
                                     </button>
                                 </div>
