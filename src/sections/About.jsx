@@ -11,7 +11,7 @@ const socialLinks = [
     { name: "linkedin", url: "https://www.linkedin.com/in/biradar-rohit/", icon: FaLinkedinIn },
     { name: "github", url: "https://github.com/Rohitbiradar12/", icon: FaGithub },
     { name: "twitter", url: "https://x.com/iamRohit1567", icon: FaXTwitter },
-    { name: "leetcode", url: "https://leetcode.com/rohit_394", icon: SiLeetcode },
+    { name: "leetcode", url: "https://leetcode.com/u/Rohit_Biradar/", icon: SiLeetcode },
 ];
 
 const About = () => {
