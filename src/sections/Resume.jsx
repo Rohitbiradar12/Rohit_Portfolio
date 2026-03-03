@@ -252,17 +252,10 @@ const Resume = () => {
 
             <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
                 <div className="resume-header flex flex-col items-center gap-5 mb-16">
-                    <div className="hero-badge">
-                        <span className="hero-badge-shine" />
-                        <p>📄 View my complete professional journey</p>
-                    </div>
                     <h1 className="font-semibold md:text-6xl text-4xl text-center">
                         My Professional{" "}
                         <span className="text-purple-accent gradient-text">Resume</span>
                     </h1>
-                    <p className="text-white-50 text-center max-w-2xl text-lg">
-                        A comprehensive overview of my experience, skills, and achievements
-                    </p>
                 </div>
 
                 <div className="resume-stats flex flex-wrap justify-center gap-4 md:gap-6 mb-16">

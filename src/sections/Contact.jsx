@@ -158,10 +158,7 @@ const Contact = () => {
       {showError && <ErrorAnimation onClose={() => setShowError(false)} />}
 
       <div className="w-full h-full md:px-10 px-5">
-        <TitleHeader
-          title="Get in Touch – Let's Connect"
-          sub="💬 Have questions or ideas? Let's talk! 🚀"
-        />
+        <TitleHeader title={<>Get in Touch – Let's <span className="text-purple-accent gradient-text">Connect</span></>} />
         <div className="grid-12-cols mt-16">
           <div className="xl:col-span-5">
             <div className="flex-center card-border rounded-xl p-10">

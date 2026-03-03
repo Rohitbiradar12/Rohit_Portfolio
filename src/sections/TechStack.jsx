@@ -20,11 +20,9 @@ const SkillCard = memo(({ skill }) => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Smoother 3D tilt with reduced sensitivity
     const rotateX = ((y - centerY) / centerY) * 6;
     const rotateY = ((x - centerX) / centerX) * 6;
 
-    // Premium spotlight effect
     const spotlight = cardRef.current.querySelector('.skill-spotlight');
     if (spotlight) {
       spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(139, 92, 246, 0.12), rgba(255, 255, 255, 0.04) 40%, transparent 65%)`;
@@ -43,7 +41,6 @@ const SkillCard = memo(({ skill }) => {
   const handleMouseEnter = useCallback(() => {
     if (!cardRef.current) return;
 
-    // Smooth card lift
     gsap.to(cardRef.current.querySelector('.skill-card-content'), {
       y: -14,
       scale: 1.03,
@@ -52,7 +49,6 @@ const SkillCard = memo(({ skill }) => {
       overwrite: "auto"
     });
 
-    // Animate ambient glow
     const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
     if (ambientGlow) {
       gsap.to(ambientGlow, {
@@ -63,7 +59,6 @@ const SkillCard = memo(({ skill }) => {
       });
     }
 
-    // Enhanced icon animation
     gsap.to(cardRef.current.querySelector('.skill-icon'), {
       scale: 1.18,
       y: -4,
@@ -76,7 +71,6 @@ const SkillCard = memo(({ skill }) => {
   const handleMouseLeave = useCallback(() => {
     if (!cardRef.current || !contentRef.current) return;
 
-    // Fade spotlight smoothly
     const spotlight = cardRef.current.querySelector('.skill-spotlight');
     if (spotlight) {
       gsap.to(spotlight, {
@@ -86,7 +80,6 @@ const SkillCard = memo(({ skill }) => {
       });
     }
 
-    // Smooth settle back
     gsap.to(contentRef.current, {
       rotateX: 0,
       rotateY: 0,
@@ -97,7 +90,6 @@ const SkillCard = memo(({ skill }) => {
       overwrite: "auto"
     });
 
-    // Reset ambient glow
     const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
     if (ambientGlow) {
       gsap.to(ambientGlow, {
@@ -108,7 +100,6 @@ const SkillCard = memo(({ skill }) => {
       });
     }
 
-    // Reset icon smoothly
     gsap.to(cardRef.current.querySelector('.skill-icon'), {
       scale: 1,
       y: 0,
@@ -218,7 +209,7 @@ const TechStack = () => {
   }, []);
 
   return (
-    <section id="skills" ref={sectionRef} className="skills-section">
+    <section id="skills" ref={sectionRef} className="skills-section md:mt-24 mt-12">
       <div className="skills-bg">
         <div className="skills-gradient" />
         <div className="skills-orb orb-1" />
@@ -239,16 +230,9 @@ const TechStack = () => {
 
       <div className="skills-container">
         <div className="skills-header">
-          <div className="skills-badge">
-            <span className="badge-icon">⚡</span>
-            <span>Technologies & Tools</span>
-          </div>
           <h2 className="skills-title">
             My Tech <span className="gradient-text">Arsenal</span>
           </h2>
-          <p className="skills-subtitle">
-            A comprehensive toolkit of modern technologies I use to build exceptional digital experiences
-          </p>
         </div>
 
         <div ref={gridRef} className="skills-grid">

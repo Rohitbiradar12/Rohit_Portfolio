@@ -15,12 +15,12 @@ const NavBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  
+
   const handleLinkClick = () => {
     setMobileMenuOpen(false);
   };
 
-  
+
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -40,7 +40,7 @@ const NavBar = () => {
             Rohit Biradar
           </a>
 
-          
+
           <nav className="desktop">
             <ul>
               {navLinks.map(({ link, name }) => (
@@ -54,14 +54,14 @@ const NavBar = () => {
             </ul>
           </nav>
 
-          
+
           <a href="#contact" className="contact-btn group hidden md:flex">
             <div className="inner">
               <span>Contact me</span>
             </div>
           </a>
 
-          
+
           <button
             className="mobile-menu-btn md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -83,7 +83,7 @@ const NavBar = () => {
 
       <aside className={`mobile-sidebar ${mobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-sidebar-content">
-          
+
           <div className="mobile-sidebar-header">
             <span className="mobile-sidebar-logo">Menu</span>
             <button
@@ -98,7 +98,7 @@ const NavBar = () => {
             </button>
           </div>
 
-          
+
           <nav className="mobile-sidebar-nav">
             <ul>
               {navLinks.map(({ link, name }, index) => (
@@ -123,7 +123,7 @@ const NavBar = () => {
             </ul>
           </nav>
 
-          
+
           <div className="mobile-sidebar-footer">
             <a
               href="#contact"

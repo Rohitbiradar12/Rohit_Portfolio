@@ -157,7 +157,7 @@ const expCards = [
     review: "Rohit brought creativity and technical expertise to the team, significantly improving our backend and frontend performance. His work has been invaluable in delivering faster experiences.",
     imgPath: "/images/exp1.png",
     logoPath: "/images/torry-harris.png",
-    title: " Software Developer",
+    title: " Software Engineer",
     date: "March 2024 - August 2025",
     responsibilities: [
       "Engineered Spring Boot microservices for loan onboarding, eligibility, disbursement, repayment, and early closure using Oracle/PostgreSQL with both SOAP and REST APIs, aligned to financial rules and validations.",
@@ -171,7 +171,7 @@ const expCards = [
     review: "Rohit contributions to LMS's applications have been outstanding. He approaches challenges with a problem-solving mindset.",
     imgPath: "/images/exp1.png",
     logoPath: "/images/torry-harris.png",
-    title: "Software Developer Intern",
+    title: "Software Engineer Intern",
     date: "September 2023 - March 2024",
     responsibilities: [
       "Collaborated on backend development of a cloud-based LMS using Spring Boot microservices with a focus on secure authentication and authorization via JWT.",

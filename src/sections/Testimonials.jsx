@@ -78,10 +78,7 @@ const Testimonials = () => {
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
-        <TitleHeader
-          title="What People Say About Me"
-          sub="⭐ Words from Colleagues"
-        />
+        <TitleHeader title={<>What People Say <span className="text-purple-accent gradient-text">About Me</span></>} />
 
         <div className="testimonials-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           {testimonials.map((testimonial, index) => (
@@ -89,12 +86,12 @@ const Testimonials = () => {
               key={index}
               className="testimonial-card group relative"
             >
-                <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-purple-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/30 via-blue-500/20 to-purple-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               <div className="relative h-full bg-gradient-to-br from-white/[0.08] via-white/[0.05] to-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 hover:border-purple-500/40 transition-all duration-500 flex flex-col">
 
                 <div className="flex items-center justify-between mb-5">
-                  
+
                   <div className="quote-icon relative">
                     <div className="absolute inset-0 bg-purple-500/30 blur-md rounded-lg" />
                     <div className="relative w-10 h-10 bg-gradient-to-br from-purple-500/40 to-purple-600/30 rounded-lg border border-purple-500/40 flex items-center justify-center">

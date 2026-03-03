@@ -66,7 +66,7 @@ const Achievements = () => {
         <section
             id="achievements"
             ref={sectionRef}
-            className="relative min-h-screen flex-center section-padding overflow-hidden"
+            className="relative min-h-screen flex-center section-padding md:mt-50 mt-24 overflow-hidden"
         >
             <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent via-transparent to-transparent pointer-events-none z-20" />
 
@@ -77,15 +77,9 @@ const Achievements = () => {
 
             <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-10">
                 <div className="text-center mb-16">
-                    <div className="hero-badge mx-auto mb-6">
-                        <p>🎯 Recognition & Milestones</p>
-                    </div>
                     <h2 className="font-semibold md:text-5xl text-3xl mb-4">
                         Achievements & <span className="text-purple-accent">Certifications</span>
                     </h2>
-                    <p className="text-white-50 text-lg max-w-2xl mx-auto">
-                        Milestones and recognitions that reflect my commitment to excellence
-                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
