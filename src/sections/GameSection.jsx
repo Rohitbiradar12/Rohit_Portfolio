@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import TitleHeader from "../components/TitleHeader";
 
 const W = 480, H = 700;
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
 const HORIZON = 160, FLOOR_Y = H - 50;
 const ROAD_W = 360, LANE_W = ROAD_W / 3;
 const CAM = 200, SPAWN_Z = 1600;
@@ -42,34 +43,37 @@ const GameSection = () => {
             gridOff: 0, speed: 4.5, dist: 0, score: 0,
             frame: 0, over: false, started: false,
             lastObs: -60, lastCol: -30, shakeX: 0, shakeY: 0, shakeDecay: 0,
-            // Stars with twinkling
-            stars: Array.from({ length: 80 }, () => ({
+            stars: Array.from({ length: IS_MOBILE ? 35 : 80 }, () => ({
                 x: Math.random() * W, y: Math.random() * (HORIZON + 30),
                 sz: Math.random() * 2 + 0.3, a: Math.random() * 0.6 + 0.1,
                 twinkleSpeed: Math.random() * 0.03 + 0.01,
                 phase: Math.random() * Math.PI * 2,
             })),
-            // Detailed city skyline — two layers for parallax
-            buildingsFar: Array.from({ length: 25 }, (_, i) => ({
-                x: i * (W / 25) - 5 + Math.random() * 8,
-                w: 10 + Math.random() * 18,
-                h: 20 + Math.random() * 45,
-                hasAntenna: Math.random() > 0.6,
-                antennaH: 8 + Math.random() * 15,
-                windowColor: Math.random() > 0.5 ? "rgba(139,92,246," : "rgba(59,130,246,",
-            })),
-            buildingsNear: Array.from({ length: 16 }, (_, i) => ({
-                x: i * (W / 16) - 8 + Math.random() * 12,
-                w: 18 + Math.random() * 30,
-                h: 35 + Math.random() * 75,
-                hasAntenna: Math.random() > 0.5,
-                antennaH: 10 + Math.random() * 20,
-                windowColor: Math.random() > 0.5 ? "rgba(167,139,250," : "rgba(96,165,250,",
-                neonSign: Math.random() > 0.7,
-                neonColor: ["#f472b6", "#a78bfa", "#60a5fa", "#34d399"][Math.floor(Math.random() * 4)],
-            })),
-            // Floating code characters in sky
-            codeParticles: Array.from({ length: 25 }, () => ({
+            buildingsFar: Array.from({ length: IS_MOBILE ? 12 : 25 }, (_, i) => {
+                const count = IS_MOBILE ? 12 : 25;
+                return {
+                    x: i * (W / count) - 5 + Math.random() * 8,
+                    w: 10 + Math.random() * 18,
+                    h: 20 + Math.random() * 45,
+                    hasAntenna: Math.random() > 0.6,
+                    antennaH: 8 + Math.random() * 15,
+                    windowColor: Math.random() > 0.5 ? "rgba(139,92,246," : "rgba(59,130,246,",
+                };
+            }),
+            buildingsNear: Array.from({ length: IS_MOBILE ? 8 : 16 }, (_, i) => {
+                const count = IS_MOBILE ? 8 : 16;
+                return {
+                    x: i * (W / count) - 8 + Math.random() * 12,
+                    w: 18 + Math.random() * 30,
+                    h: 35 + Math.random() * 75,
+                    hasAntenna: Math.random() > 0.5,
+                    antennaH: 10 + Math.random() * 20,
+                    windowColor: Math.random() > 0.5 ? "rgba(167,139,250," : "rgba(96,165,250,",
+                    neonSign: !IS_MOBILE && Math.random() > 0.7,
+                    neonColor: ["#f472b6", "#a78bfa", "#60a5fa", "#34d399"][Math.floor(Math.random() * 4)],
+                };
+            }),
+            codeParticles: Array.from({ length: IS_MOBILE ? 0 : 25 }, () => ({
                 x: Math.random() * W,
                 y: Math.random() * HORIZON * 0.8,
                 char: CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)],
@@ -77,13 +81,11 @@ const GameSection = () => {
                 speed: Math.random() * 0.3 + 0.1,
                 sz: Math.random() * 8 + 6,
             })),
-            // Aurora / horizon glow
             auroraPhase: 0,
-            // Road side structures
-            sideStructures: Array.from({ length: 12 }, (_, i) => ({
+            sideStructures: Array.from({ length: IS_MOBILE ? 6 : 12 }, (_, i) => ({
                 z: i * 130 + Math.random() * 60,
                 side: Math.random() > 0.5 ? -1 : 1,
-                type: Math.floor(Math.random() * 3), // 0=pole, 1=barrier, 2=sign
+                type: Math.floor(Math.random() * 3),
                 h: 30 + Math.random() * 40,
             })),
         };
@@ -136,7 +138,6 @@ const GameSection = () => {
         touchRef.current = null;
     };
 
-    // Pause when off-screen
     useEffect(() => {
         const el = sectionRef.current;
         if (!el) return;
@@ -156,7 +157,6 @@ const GameSection = () => {
             if (!g) { afRef.current = requestAnimationFrame(render); return; }
             if (!visibleRef.current) { afRef.current = requestAnimationFrame(render); return; }
 
-            // ── UPDATE ──
             if (g.started && !g.over) {
                 g.frame++;
                 g.dist += g.speed;
@@ -164,7 +164,6 @@ const GameSection = () => {
                 g.gridOff = (g.gridOff + g.speed) % 80;
                 g.auroraPhase += 0.008;
 
-                // Spawn obstacles
                 if (g.frame - g.lastObs > Math.max(30, 75 - g.dist * 0.003)) {
                     const l1 = Math.floor(Math.random() * 3);
                     g.obs.push({ lane: l1, z: SPAWN_Z, type: Math.floor(Math.random() * 3) });
@@ -179,7 +178,6 @@ const GameSection = () => {
                     g.lastCol = g.frame;
                 }
 
-                // Speed lines at high speed
                 if (g.speed > 6 && g.frame % 3 === 0) {
                     g.speedLines.push({
                         x: Math.random() * W, y: HORIZON + Math.random() * (H - HORIZON),
@@ -194,13 +192,10 @@ const GameSection = () => {
                 g.obs = g.obs.filter(o => o.z > -120);
                 g.cols = g.cols.filter(c => c.z > -120);
 
-                // Side structures scroll
                 g.sideStructures.forEach(s => {
                     s.z -= g.speed * 3.8;
                     if (s.z < -100) { s.z = SPAWN_Z + Math.random() * 200; s.side = Math.random() > 0.5 ? -1 : 1; }
                 });
-
-                // Collision
                 g.obs.forEach(o => {
                     if (o.z < 22 && o.z > -12 && o.lane === g.tLane && !o.hit) {
                         g.over = true; o.hit = true;
@@ -224,7 +219,6 @@ const GameSection = () => {
                     }
                 });
 
-                // Collect
                 g.cols = g.cols.filter(c => {
                     if (c.z < 22 && c.z > -12 && c.lane === g.tLane) {
                         g.score += 100; setScore(g.score);
@@ -241,10 +235,9 @@ const GameSection = () => {
                     return true;
                 });
 
-                // Player trail (exhaust from rear)
                 const px = W / 2 + g.laneX;
-                if (g.frame % 2 === 0) {
-                    for (let i = 0; i < 3; i++) {
+                if (g.frame % (IS_MOBILE ? 4 : 2) === 0) {
+                    for (let i = 0; i < (IS_MOBILE ? 1 : 3); i++) {
                         g.parts.push({
                             x: px + (Math.random() - 0.5) * 16, y: FLOOR_Y + 28 + Math.random() * 6,
                             vx: (Math.random() - 0.5) * 1, vy: Math.random() * 1.5 + 0.5,
@@ -253,7 +246,6 @@ const GameSection = () => {
                         });
                     }
                 }
-                // Exhaust smoke
                 if (g.frame % 4 === 0) {
                     g.parts.push({
                         x: px + (Math.random() - 0.5) * 6, y: FLOOR_Y + 32,
@@ -263,10 +255,8 @@ const GameSection = () => {
                 }
             }
 
-            // Smooth lane lerp
             g.laneX += (LANE_OFF[g.tLane] - g.laneX) * 0.14;
 
-            // Screen shake
             if (g.shakeDecay > 0) {
                 g.shakeX = (Math.random() - 0.5) * g.shakeDecay * 0.8;
                 g.shakeY = (Math.random() - 0.5) * g.shakeDecay * 0.5;
@@ -274,21 +264,17 @@ const GameSection = () => {
                 if (g.shakeDecay < 0.5) g.shakeDecay = 0;
             }
 
-            // Update particles
             g.parts = g.parts.filter(p => p.a > 0);
             g.parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.a -= 0.016; });
 
-            // Floating code particles
             g.codeParticles.forEach(cp => {
                 cp.x -= cp.speed;
                 if (cp.x < -20) { cp.x = W + 20; cp.y = Math.random() * HORIZON * 0.8; }
             });
 
-            // ── DRAW ──
             ctx.save();
             ctx.translate(g.shakeX, g.shakeY);
 
-            // Sky gradient
             const sky = ctx.createLinearGradient(0, 0, 0, HORIZON + 50);
             sky.addColorStop(0, "#020208");
             sky.addColorStop(0.3, "#06061a");
@@ -296,7 +282,6 @@ const GameSection = () => {
             sky.addColorStop(1, "#14143a");
             ctx.fillStyle = sky; ctx.fillRect(0, 0, W, HORIZON + 50);
 
-            // Aurora / horizon glow
             const aPhase = g.auroraPhase || 0;
             for (let i = 0; i < 3; i++) {
                 const ax = W / 2 + Math.sin(aPhase + i * 2) * 120;
@@ -308,7 +293,6 @@ const GameSection = () => {
                 ctx.fillStyle = ag; ctx.fillRect(0, 0, W, HORIZON + 30);
             }
 
-            // Twinkling stars
             g.stars.forEach(st => {
                 const twinkle = Math.sin((g.frame || 0) * st.twinkleSpeed + st.phase);
                 const alpha = st.a + twinkle * 0.2;
@@ -316,8 +300,7 @@ const GameSection = () => {
                     ctx.globalAlpha = alpha;
                     ctx.fillStyle = "#fff";
                     ctx.beginPath(); ctx.arc(st.x, st.y, st.sz, 0, Math.PI * 2); ctx.fill();
-                    // Star cross flare for bright stars
-                    if (st.sz > 1.2) {
+                    if (!IS_MOBILE && st.sz > 1.2) {
                         ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.3})`;
                         ctx.lineWidth = 0.5;
                         ctx.beginPath(); ctx.moveTo(st.x - st.sz * 2, st.y); ctx.lineTo(st.x + st.sz * 2, st.y); ctx.stroke();
@@ -327,7 +310,6 @@ const GameSection = () => {
             });
             ctx.globalAlpha = 1;
 
-            // Floating code characters
             g.codeParticles.forEach(cp => {
                 ctx.globalAlpha = cp.a;
                 ctx.fillStyle = "#a78bfa";
@@ -336,7 +318,6 @@ const GameSection = () => {
             });
             ctx.globalAlpha = 1;
 
-            // Far city silhouette
             g.buildingsFar.forEach(b => {
                 const by = HORIZON + 5;
                 ctx.fillStyle = "rgba(15,10,30,0.95)";
@@ -345,13 +326,11 @@ const GameSection = () => {
                     ctx.strokeStyle = "rgba(100,80,160,0.4)";
                     ctx.lineWidth = 1;
                     ctx.beginPath(); ctx.moveTo(b.x + b.w / 2, by - b.h); ctx.lineTo(b.x + b.w / 2, by - b.h - b.antennaH); ctx.stroke();
-                    // Blinking light
                     if (Math.sin((g.frame || 0) * 0.05 + b.x) > 0.3) {
                         ctx.fillStyle = "#ef4444";
                         ctx.beginPath(); ctx.arc(b.x + b.w / 2, by - b.h - b.antennaH, 1.5, 0, Math.PI * 2); ctx.fill();
                     }
                 }
-                // Windows
                 for (let wy = by - b.h + 4; wy < by; wy += 6) {
                     for (let wx = b.x + 2; wx < b.x + b.w - 2; wx += 5) {
                         const wAlpha = 0.08 + Math.sin((g.frame || 0) * 0.01 + wx + wy) * 0.05;
@@ -361,12 +340,10 @@ const GameSection = () => {
                 }
             });
 
-            // Near city silhouette
             g.buildingsNear.forEach(b => {
                 const by = HORIZON + 12;
                 ctx.fillStyle = "rgba(10,8,22,0.97)";
                 ctx.fillRect(b.x, by - b.h, b.w, b.h + 15);
-                // Roof edge highlight
                 ctx.fillStyle = "rgba(139,92,246,0.1)";
                 ctx.fillRect(b.x, by - b.h, b.w, 2);
                 if (b.hasAntenna) {
@@ -375,19 +352,17 @@ const GameSection = () => {
                     ctx.beginPath(); ctx.moveTo(b.x + b.w / 2, by - b.h); ctx.lineTo(b.x + b.w / 2, by - b.h - b.antennaH); ctx.stroke();
                     if (Math.sin((g.frame || 0) * 0.04 + b.x) > 0) {
                         ctx.fillStyle = "#ef4444";
-                        ctx.shadowColor = "#ef4444"; ctx.shadowBlur = 6;
+                        if (!IS_MOBILE) { ctx.shadowColor = "#ef4444"; ctx.shadowBlur = 6; }
                         ctx.beginPath(); ctx.arc(b.x + b.w / 2, by - b.h - b.antennaH, 2, 0, Math.PI * 2); ctx.fill();
                         ctx.shadowBlur = 0;
                     }
                 }
-                // Neon sign
                 if (b.neonSign) {
                     ctx.fillStyle = b.neonColor;
-                    ctx.shadowColor = b.neonColor; ctx.shadowBlur = 8;
+                    if (!IS_MOBILE) { ctx.shadowColor = b.neonColor; ctx.shadowBlur = 8; }
                     ctx.fillRect(b.x + 3, by - b.h * 0.4, b.w - 6, 4);
                     ctx.shadowBlur = 0;
                 }
-                // Windows
                 for (let wy = by - b.h + 5; wy < by; wy += 8) {
                     for (let wx = b.x + 3; wx < b.x + b.w - 3; wx += 6) {
                         const wAlpha = 0.1 + Math.sin((g.frame || 0) * 0.008 + wx * 0.5 + wy * 0.3) * 0.08;
@@ -397,12 +372,9 @@ const GameSection = () => {
                 }
             });
 
-            // Ground
             const gnd = ctx.createLinearGradient(0, HORIZON + 10, 0, H);
             gnd.addColorStop(0, "#08081a"); gnd.addColorStop(0.3, "#0a0a1e"); gnd.addColorStop(1, "#060614");
             ctx.fillStyle = gnd; ctx.fillRect(0, HORIZON + 10, W, H - HORIZON);
-
-            // Grid floor — horizontal lines with glow
             for (let z = g.gridOff; z < SPAWN_Z; z += 80) {
                 const p = proj(z);
                 const hw = (ROAD_W * 2) * p.s;
@@ -412,7 +384,6 @@ const GameSection = () => {
                 ctx.beginPath(); ctx.moveTo(W / 2 - hw, p.y); ctx.lineTo(W / 2 + hw, p.y); ctx.stroke();
             }
 
-            // Vertical grid lines
             for (let i = -8; i <= 8; i++) {
                 const bx = W / 2 + i * (LANE_W * 0.7);
                 ctx.strokeStyle = `rgba(59,130,246,${Math.abs(i) <= 2 ? 0.05 : 0.03})`;
@@ -420,7 +391,6 @@ const GameSection = () => {
                 ctx.beginPath(); ctx.moveTo(W / 2, HORIZON); ctx.lineTo(bx, H); ctx.stroke();
             }
 
-            // Road surface — darker trapezoid
             ctx.beginPath();
             const roadTopHW = ROAD_W * 0.02;
             ctx.moveTo(W / 2 - roadTopHW, HORIZON);
@@ -431,7 +401,6 @@ const GameSection = () => {
             ctx.fillStyle = "rgba(8,8,20,0.6)";
             ctx.fill();
 
-            // Road edge glow lines
             for (let side = -1; side <= 1; side += 2) {
                 const bx = W / 2 + side * (ROAD_W / 2 + 5);
                 const grad = ctx.createLinearGradient(0, HORIZON, 0, H);
@@ -443,7 +412,6 @@ const GameSection = () => {
                 ctx.beginPath(); ctx.moveTo(W / 2, HORIZON); ctx.lineTo(bx, H); ctx.stroke();
             }
 
-            // Lane dashes
             for (let side = -1; side <= 1; side += 2) {
                 for (let z = g.gridOff; z < SPAWN_Z; z += 80) {
                     const p1 = proj(z);
@@ -456,24 +424,20 @@ const GameSection = () => {
                 }
             }
 
-            // Side road structures (poles, barriers)
             g.sideStructures.forEach(ss => {
                 if (ss.z < 0 || ss.z > SPAWN_Z) return;
                 const p = proj(ss.z);
                 const sx = p.x(ss.side * (ROAD_W / 2 + 30));
                 const h = ss.h * p.s;
-                // Pole
                 ctx.strokeStyle = `rgba(100,80,160,${0.3 * p.s})`;
                 ctx.lineWidth = Math.max(1, 3 * p.s);
                 ctx.beginPath(); ctx.moveTo(sx, p.y); ctx.lineTo(sx, p.y - h); ctx.stroke();
-                // Light at top
                 ctx.fillStyle = `rgba(139,92,246,${0.4 * p.s})`;
-                ctx.shadowColor = "#8b5cf6"; ctx.shadowBlur = 8 * p.s;
+                if (!IS_MOBILE) { ctx.shadowColor = "#8b5cf6"; ctx.shadowBlur = 8 * p.s; }
                 ctx.beginPath(); ctx.arc(sx, p.y - h, 3 * p.s, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
 
-            // Sort & draw objects (far → near)
             const drawables = [
                 ...g.obs.map(o => ({ ...o, kind: "obs" })),
                 ...g.cols.map(c => ({ ...c, kind: "col" })),
@@ -491,7 +455,7 @@ const GameSection = () => {
                     const colors = [["#ef4444", "#dc2626", "#991b1b"], ["#f97316", "#ea580c", "#9a3412"], ["#ec4899", "#db2777", "#9d174d"]];
                     const oc = colors[d.type] || colors[0];
                     ctx.save();
-                    ctx.shadowColor = oc[0]; ctx.shadowBlur = 15 * p.s;
+                    if (!IS_MOBILE) { ctx.shadowColor = oc[0]; ctx.shadowBlur = 15 * p.s; }
                     ctx.fillStyle = oc[0];
                     ctx.beginPath();
                     ctx.moveTo(cx - sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 1.9);
