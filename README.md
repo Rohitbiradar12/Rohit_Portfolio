@@ -111,9 +111,8 @@ npm run preview
 **Rohit Biradar** - Software Developer
 
 - 🔗 [LinkedIn](https://www.linkedin.com/in/biradar-rohit/)
-- 💻 [GitHub](https://github.com/Rohitbiradar12/)
 - 🐦 [X/Twitter](https://x.com/iamRohit1567)
-- 🧩 [LeetCode](https://leetcode.com/rohit_394)
+- 🧩 [LeetCode](https://leetcode.com/Rohit_biradar)
 - 📧 Email: biradarrohit155@gmail.com
 
 ---
