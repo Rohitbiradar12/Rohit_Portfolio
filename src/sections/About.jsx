@@ -133,7 +133,7 @@ const About = () => {
                                 About Me
                             </h2>
                             <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
-                                Hi, I'm <span className="text-highlight">Rohit</span>, a Software Developer Engineer with hands-on experience in building
+                                Hi, I'm <span className="text-highlight">Rohit</span>, a Software Development Engineer with hands-on experience in building
                                 <span className="text-highlight"> scalable microservices</span>, optimizing backend systems, and improving enterprise efficiency.
                                 At <span className="text-highlight">Torry Harris Integration Solutions</span>, I worked on a Loan Management System across African markets,
                                 contributing to the development of 15+ microservices that reduced loan processing time by 35% and improved data reliability.
