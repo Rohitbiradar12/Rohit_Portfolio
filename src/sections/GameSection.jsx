@@ -121,6 +121,11 @@ const GameSection = () => {
 
     useEffect(() => {
         const fn = (e) => {
+            // Skip game controls when user is typing in a form field
+            const t = e.target;
+            const tag = t && t.tagName ? t.tagName.toLowerCase() : "";
+            if (tag === "input" || tag === "textarea" || tag === "select" || (t && t.isContentEditable)) return;
+
             if (e.code === "ArrowLeft" || e.code === "KeyA") { e.preventDefault(); moveLeft(); }
             else if (e.code === "ArrowRight" || e.code === "KeyD") { e.preventDefault(); moveRight(); }
             else if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); handleAction(); }

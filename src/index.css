@@ -7319,3 +7319,862 @@ a.ach-card.ach-card-link {
 .rs-cta:hover .rs-cta-arrow {
   transform: translateX(4px);
 }
+
+/* ============================================
+   TESTIMONIALS — Minimalist Endorsements
+============================================ */
+.tm-section {
+  position: relative;
+}
+
+/* Stats ribbon */
+.tm-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.75rem auto 4rem;
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .tm-stats-bar {
+    gap: 1rem;
+    margin: 2rem auto 5rem;
+    font-size: 0.82rem;
+  }
+}
+
+.tm-stats-dot {
+  color: rgba(255, 255, 255, 0.22);
+  font-weight: 400;
+}
+
+/* Grid */
+.tm-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .tm-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tm-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card */
+.tm-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.tm-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.012);
+}
+
+/* Cursor-following spotlight */
+.tm-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.06),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tm-card:hover .tm-spotlight {
+  opacity: 1;
+}
+
+.tm-card-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.65rem 1.5rem 1.4rem;
+}
+
+@media (min-width: 768px) {
+  .tm-card-inner {
+    padding: 1.95rem 1.85rem 1.65rem;
+  }
+}
+
+/* Quote glyph */
+.tm-quote-mark {
+  color: rgba(255, 255, 255, 0.22);
+  margin-bottom: 1.1rem;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+.tm-card:hover .tm-quote-mark {
+  color: rgba(167, 139, 250, 0.55);
+}
+
+/* Quote text */
+.tm-quote {
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.76);
+  letter-spacing: 0.003em;
+  margin-bottom: 1.4rem;
+}
+
+@media (min-width: 768px) {
+  .tm-quote {
+    font-size: 0.96rem;
+    line-height: 1.7;
+  }
+}
+
+.tm-card:hover .tm-quote {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Divider */
+.tm-divider {
+  width: 28px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.18);
+  margin-bottom: 1.25rem;
+}
+
+/* Author block */
+.tm-author {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.tm-avatar-wrap {
+  flex-shrink: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  overflow: hidden;
+  transition: border-color 0.4s ease;
+}
+
+.tm-card:hover .tm-avatar-wrap {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.tm-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.88) brightness(0.95);
+  transition: filter 0.45s ease;
+}
+
+.tm-card:hover .tm-avatar {
+  filter: saturate(1) brightness(1);
+}
+
+.tm-author-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.tm-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: rgba(255, 255, 255, 0.94);
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.tm-card:hover .tm-name {
+  color: rgba(255, 255, 255, 1);
+}
+
+.tm-role {
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+@media (min-width: 768px) {
+  .tm-role {
+    font-size: 0.68rem;
+  }
+}
+
+.tm-company {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.62);
+  transition: color 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .tm-company {
+    font-size: 0.82rem;
+  }
+}
+
+.tm-card:hover .tm-company {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* ============================================
+   CONTACT — Minimalist Form
+============================================ */
+.ct-section {
+  position: relative;
+}
+
+/* Stats ribbon */
+.ct-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.75rem auto 4rem;
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .ct-stats-bar {
+    gap: 1rem;
+    margin: 2rem auto 5rem;
+    font-size: 0.82rem;
+  }
+}
+
+.ct-stats-dot {
+  color: rgba(255, 255, 255, 0.22);
+  font-weight: 400;
+}
+
+/* Two-column layout */
+.ct-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  .ct-grid {
+    grid-template-columns: 5fr 7fr;
+    gap: 2.5rem;
+    align-items: stretch;
+  }
+}
+
+/* Form container */
+.ct-form-wrap {
+  position: relative;
+  background: rgba(255, 255, 255, 0.018);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.75rem 1.5rem;
+  transition: border-color 0.4s ease;
+}
+
+@media (min-width: 768px) {
+  .ct-form-wrap {
+    padding: 2.25rem 2rem;
+  }
+}
+
+.ct-form-wrap:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.ct-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .ct-form { gap: 1.75rem; }
+}
+
+.ct-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ct-label {
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (min-width: 768px) {
+  .ct-label { font-size: 0.7rem; }
+}
+
+.ct-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  letter-spacing: 0.003em;
+  color: rgba(255, 255, 255, 0.95);
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  outline: none;
+}
+
+@media (min-width: 768px) {
+  .ct-input {
+    padding: 0.95rem 1.1rem;
+    font-size: 0.95rem;
+  }
+}
+
+.ct-input::placeholder {
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.003em;
+}
+
+.ct-input:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.022);
+}
+
+.ct-input:focus {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(255, 255, 255, 0.028);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.08);
+}
+
+.ct-textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: 1.55;
+}
+
+/* Submit button — pill with cursor spotlight */
+.ct-submit {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  padding: 0.95rem 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  .ct-submit {
+    padding: 1.05rem 1.65rem;
+    font-size: 0.95rem;
+  }
+}
+
+.ct-submit:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.ct-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ct-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.ct-submit-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    220px circle at 50% 50%,
+    rgba(167, 139, 250, 0.15),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.ct-submit:hover:not(:disabled) .ct-submit-spotlight {
+  opacity: 1;
+}
+
+.ct-submit-label {
+  position: relative;
+  z-index: 1;
+}
+
+.ct-submit-arrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-submit:hover:not(:disabled) .ct-submit-arrow {
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateX(3px);
+}
+
+/* 3D scene container */
+.ct-scene-wrap {
+  position: relative;
+  min-height: 22rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.4s ease;
+}
+
+@media (min-width: 1024px) {
+  .ct-scene-wrap { min-height: 0; }
+}
+
+.ct-scene-wrap:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.ct-scene {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  background: #cd7c2e;
+  cursor: grab;
+}
+
+.ct-scene:active {
+  cursor: grabbing;
+}
+
+/* Contact modal — minimalist success / error */
+.ct-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.ct-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  animation: ct-fade-in 0.3s ease forwards;
+}
+
+@keyframes ct-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ct-modal {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 22rem;
+  padding: 2rem 1.75rem 1.65rem;
+  background: rgba(18, 18, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  text-align: center;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  box-shadow:
+    0 30px 80px -20px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  animation: ct-modal-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes ct-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ct-modal-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.35rem;
+}
+
+.ct-modal-icon {
+  width: 60px;
+  height: 60px;
+}
+
+/* Success — green stroke draw */
+.ct-modal-success .ct-modal-ring {
+  stroke: #10b981;
+  stroke-width: 2;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: ct-stroke-draw 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4));
+}
+
+.ct-modal-success .ct-modal-check {
+  stroke: #10b981;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 38;
+  stroke-dashoffset: 38;
+  animation: ct-stroke-draw 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
+}
+
+/* Error — red stroke draw */
+.ct-modal-error .ct-modal-ring {
+  stroke: #ef4444;
+  stroke-width: 2;
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: ct-stroke-draw 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.4));
+}
+
+.ct-modal-error .ct-modal-x {
+  stroke: #ef4444;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 26;
+  stroke-dashoffset: 26;
+}
+
+.ct-modal-error .ct-modal-x-1 {
+  animation: ct-stroke-draw 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
+}
+
+.ct-modal-error .ct-modal-x-2 {
+  animation: ct-stroke-draw 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;
+}
+
+@keyframes ct-stroke-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.ct-modal-label {
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  opacity: 0;
+  animation: ct-text-rise 0.5s ease 0.9s forwards;
+}
+
+.ct-modal-success .ct-modal-label {
+  color: #10b981;
+}
+
+.ct-modal-error .ct-modal-label {
+  color: #ef4444;
+}
+
+.ct-modal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.98);
+  margin-bottom: 0.65rem;
+  opacity: 0;
+  animation: ct-text-rise 0.5s ease 1.0s forwards;
+}
+
+@media (min-width: 768px) {
+  .ct-modal-title { font-size: 1.32rem; }
+}
+
+.ct-modal-text {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.005em;
+  margin-bottom: 1.65rem;
+  opacity: 0;
+  animation: ct-text-rise 0.5s ease 1.1s forwards;
+}
+
+@keyframes ct-text-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ct-modal-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem 1.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+  animation: ct-text-rise 0.5s ease 1.2s forwards;
+}
+
+.ct-modal-btn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.ct-modal-btn:active {
+  transform: translateY(0);
+}
+
+.ct-modal-btn svg {
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-modal-btn:hover svg {
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateX(3px);
+}
+
+/* ============================================
+   HERO CTA — "See My Work"
+============================================ */
+.hero-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 1rem 1.75rem;
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: border-color 0.35s ease, background-color 0.35s ease,
+    color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  .hero-cta {
+    padding: 1.1rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+.hero-cta:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.hero-cta:active {
+  transform: translateY(0);
+}
+
+.hero-cta-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    240px circle at 50% 50%,
+    rgba(167, 139, 250, 0.18),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.hero-cta:hover .hero-cta-spotlight {
+  opacity: 1;
+}
+
+.hero-cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-cta-arrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-cta:hover .hero-cta-arrow {
+  color: #ffffff;
+  transform: translateY(3px);
+}
+
+/* ============================================
+   NAVBAR CTA — "Contact me" pill
+============================================ */
+.nav-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-cta:hover {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-cta:active {
+  transform: translateY(0);
+}
+
+.nav-cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-cta-arrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-cta:hover .nav-cta-arrow {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+/* Mobile sidebar variant — bigger, full-width */
+.nav-cta-mobile {
+  width: 100%;
+  justify-content: center;
+  padding: 0.95rem 1.4rem;
+  font-size: 0.95rem;
+  gap: 0.65rem;
+}
+
+.nav-cta-mobile .nav-cta-arrow {
+  width: 15px;
+  height: 15px;
+}

@@ -157,11 +157,9 @@ const Experience = () => {
                       </div>
 
                       <div className="flex-1">
-                        <h1 className="font-bold text-2xl md:text-3xl xl:text-4xl mb-4 relative inline-block">
-                          <span className="bg-gradient-to-r from-white via-white to-purple-200 bg-clip-text text-transparent hover:from-purple-300 hover:via-white hover:to-blue-300 transition-all duration-700">
-                            {card.title}
-                          </span>
-                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-full transition-all duration-700" />
+                        <h1 className="font-semibold text-2xl md:text-3xl xl:text-4xl mb-4 text-white relative inline-block">
+                          {card.title}
+                          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 group-hover:w-full transition-all duration-700" />
                         </h1>
 
                         <div className="flex items-center gap-3 mb-6">

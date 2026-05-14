@@ -6,62 +6,53 @@ import ContactExperience from "../components/models/contact/ContactExperience";
 
 const SuccessAnimation = ({ onClose }) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 5000);
+    const timer = setTimeout(() => onClose(), 5000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
   return (
-    <div className="success-overlay">
-      <div className="success-backdrop" onClick={onClose} />
-      <div className="success-modal">
-        <div className="confetti-container">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="confetti-particle"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 0.5}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-                backgroundColor: ['#8B5CF6', '#3B82F6', '#14B8A6', '#F59E0B', '#EF4444', '#EC4899'][Math.floor(Math.random() * 6)],
-              }}
+    <div className="ct-modal-overlay">
+      <div className="ct-modal-backdrop" onClick={onClose} />
+      <div className="ct-modal ct-modal-success" role="dialog" aria-live="polite">
+        <div className="ct-modal-icon-wrap">
+          <svg className="ct-modal-icon" viewBox="0 0 52 52" aria-hidden="true">
+            <circle className="ct-modal-ring" cx="26" cy="26" r="24" fill="none" />
+            <path
+              className="ct-modal-check"
+              fill="none"
+              d="M14.5 27 L22 34.5 L38 18.5"
             />
-          ))}
+          </svg>
         </div>
 
-        <div className="success-content">
-          <div className="success-checkmark-container">
-            <div className="success-circle-bg" />
-            <div className="success-circle-ring" />
-            <svg className="success-checkmark" viewBox="0 0 52 52">
-              <circle className="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
-              <path className="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-            </svg>
-          </div>
+        <p className="ct-modal-label">Success · Message Sent</p>
+        <h3 className="ct-modal-title">I'll get back to you soon.</h3>
+        <p className="ct-modal-text">
+          Thanks for reaching out. You'll hear from me at the email you
+          provided.
+        </p>
 
-          <h3 className="success-title">Message Sent!</h3>
-          <p className="success-message">
-            Thank you for reaching out! I'll get back to you soon.
-          </p>
-
-          <div className="success-sparkles">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="success-sparkle" style={{
-                '--delay': `${i * 0.1}s`,
-                '--angle': `${i * 60}deg`
-              }} />
-            ))}
-          </div>
-
-          <button className="success-close-btn" onClick={onClose}>
-            <span>Continue</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+        <button
+          type="button"
+          className="ct-modal-btn"
+          onClick={onClose}
+          aria-label="Continue"
+        >
+          <span>Continue</span>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -69,39 +60,59 @@ const SuccessAnimation = ({ onClose }) => {
 
 const ErrorAnimation = ({ onClose }) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 6000);
+    const timer = setTimeout(() => onClose(), 6000);
     return () => clearTimeout(timer);
   }, [onClose]);
 
   return (
-    <div className="success-overlay">
-      <div className="success-backdrop" onClick={onClose} />
-      <div className="success-modal error-modal">
-        <div className="success-content">
-          <div className="success-checkmark-container error-icon-container">
-            <div className="success-circle-bg error-circle-bg" />
-            <div className="success-circle-ring error-circle-ring" />
-            <svg className="error-icon" viewBox="0 0 52 52">
-              <circle className="error-icon-circle" cx="26" cy="26" r="25" fill="none" />
-              <path className="error-icon-x" fill="none" d="M16 16 L36 36 M36 16 L16 36" />
-            </svg>
-          </div>
-
-          <h3 className="success-title error-title">Oops! Something went wrong</h3>
-          <p className="success-message">
-            Failed to send your message. Please try again or contact me directly.
-          </p>
-
-          <button className="success-close-btn error-close-btn" onClick={onClose}>
-            <span>Try Again</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 4v6h6M23 20v-6h-6" />
-              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
-            </svg>
-          </button>
+    <div className="ct-modal-overlay">
+      <div className="ct-modal-backdrop" onClick={onClose} />
+      <div className="ct-modal ct-modal-error" role="alertdialog" aria-live="assertive">
+        <div className="ct-modal-icon-wrap">
+          <svg className="ct-modal-icon" viewBox="0 0 52 52" aria-hidden="true">
+            <circle className="ct-modal-ring" cx="26" cy="26" r="24" fill="none" />
+            <path
+              className="ct-modal-x ct-modal-x-1"
+              fill="none"
+              d="M17 17 L35 35"
+            />
+            <path
+              className="ct-modal-x ct-modal-x-2"
+              fill="none"
+              d="M35 17 L17 35"
+            />
+          </svg>
         </div>
+
+        <p className="ct-modal-label">Error · Delivery Failed</p>
+        <h3 className="ct-modal-title">Couldn't send your message.</h3>
+        <p className="ct-modal-text">
+          Something went wrong on our end. Try again, or email me directly at
+          biradar.roh@northeastern.edu.
+        </p>
+
+        <button
+          type="button"
+          className="ct-modal-btn"
+          onClick={onClose}
+          aria-label="Try again"
+        >
+          <span>Try Again</span>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M1 4v6h6" />
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10" />
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -153,75 +164,113 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="flex-center section-padding">
+    <section id="contact" className="ct-section relative md:mt-24 mt-12">
       {showSuccess && <SuccessAnimation onClose={() => setShowSuccess(false)} />}
       {showError && <ErrorAnimation onClose={() => setShowError(false)} />}
 
-      <div className="w-full h-full md:px-10 px-5">
-        <TitleHeader title={<>Get in Touch – Let's <span className="text-purple-accent gradient-text">Connect</span></>} />
-        <div className="grid-12-cols mt-16">
-          <div className="xl:col-span-5">
-            <div className="flex-center card-border rounded-xl p-10">
-              <form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                className="w-full flex flex-col gap-7"
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-10 py-20 md:py-28">
+        <TitleHeader
+          title={
+            <>
+              Get in Touch — Let's{" "}
+              <span className="text-purple-accent gradient-text">Connect</span>
+            </>
+          }
+        />
+
+        <div className="ct-stats-bar">
+          <span>Boston, MA</span>
+          <span className="ct-stats-dot">·</span>
+          <span>Open to Opportunities</span>
+          <span className="ct-stats-dot">·</span>
+          <span>Replies within 24h</span>
+        </div>
+
+        <div className="ct-grid">
+          <div className="ct-form-wrap">
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="ct-form"
+            >
+              <div className="ct-field">
+                <label htmlFor="name" className="ct-label">
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="What's your good name?"
+                  required
+                  className="ct-input"
+                />
+              </div>
+
+              <div className="ct-field">
+                <label htmlFor="email" className="ct-label">
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="What's your email address?"
+                  required
+                  className="ct-input"
+                />
+              </div>
+
+              <div className="ct-field">
+                <label htmlFor="message" className="ct-label">
+                  Your Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="How can I help you?"
+                  rows="5"
+                  required
+                  className="ct-input ct-textarea"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="ct-submit"
+                aria-label="Send message"
               >
-                <div>
-                  <label htmlFor="name">Your name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="What's your good name?"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email">Your Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="What's your email address?"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message">Your Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder="How can I help you?"
-                    rows="5"
-                    required
-                  />
-                </div>
-
-                <button type="submit" disabled={loading}>
-                  <div className={`cta-button group ${loading ? 'opacity-70' : ''}`}>
-                    <div className="bg-circle" />
-                    <p className="text">
-                      {loading ? "Sending..." : "Send Message"}
-                    </p>
-                    <div className="arrow-wrapper">
-                      <img src="/images/arrow-down.svg" alt="arrow" />
-                    </div>
-                  </div>
-                </button>
-              </form>
-            </div>
+                <span className="ct-submit-spotlight" />
+                <span className="ct-submit-label">
+                  {loading ? "Sending..." : "Send Message"}
+                </span>
+                <svg
+                  className="ct-submit-arrow"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </form>
           </div>
-          <div className="xl:col-span-7 min-h-96">
-            <div className="bg-[#cd7c2e] w-full h-full hover:cursor-grab rounded-3xl overflow-hidden">
+
+          <div className="ct-scene-wrap">
+            <div className="ct-scene">
               <ContactExperience />
             </div>
           </div>
