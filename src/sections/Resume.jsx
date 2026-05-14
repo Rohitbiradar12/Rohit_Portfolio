@@ -168,7 +168,7 @@ const Resume = () => {
                 />
 
                 <div className="rs-stats-bar">
-                    <span>Updated Dec 2025</span>
+                    <span>Updated April 2026</span>
                     <span className="rs-stats-dot">·</span>
                     <span>PDF</span>
                     <span className="rs-stats-dot">·</span>
