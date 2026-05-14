@@ -1,144 +1,262 @@
-import { useRef } from "react";
-import { gsap } from "gsap";
+import { useRef, useState, useEffect, useCallback } from "react";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
+import TitleHeader from "../components/TitleHeader";
 import { projects } from "../constants";
-import PinCard from "../components/PinCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const PROJECT_META = {
+    1: {
+        tag: "EdTech Platform",
+        palette: "violet",
+        metrics: [
+            { value: "AI", label: "Powered" },
+            { value: "3D", label: "Canvas" },
+        ],
+    },
+    2: {
+        tag: "Full-Stack",
+        palette: "teal",
+        metrics: [
+            { value: "Real-Time", label: "Sync" },
+            { value: "Multi", label: "Workspace" },
+        ],
+    },
+    3: {
+        tag: "FinTech",
+        palette: "amber",
+        metrics: [
+            { value: "Split", label: "Expenses" },
+            { value: "EMI", label: "Calculator" },
+        ],
+    },
+    4: {
+        tag: "Banking System",
+        palette: "blue",
+        metrics: [
+            { value: "Secure", label: "Auth" },
+            { value: "RBAC", label: "Roles" },
+        ],
+    },
+};
+
+const ArrowIcon = ({ direction = "right" }) => (
+    <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ transform: direction === "left" ? "rotate(180deg)" : "none" }}
+        aria-hidden="true"
+    >
+        <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+);
+
+const ProjectCard = ({ project }) => {
+    const meta = PROJECT_META[project.id] || {
+        palette: "violet",
+        tag: "Project",
+        metrics: [],
+    };
+
+    return (
+        <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`pj-card pj-${meta.palette}`}
+            aria-label={`View ${project.title}`}
+        >
+            <div className="pj-card-media">
+                <img
+                    src={project.img}
+                    alt={project.title}
+                    className="pj-card-image"
+                    loading="lazy"
+                    onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                    }}
+                />
+                <div className="pj-card-media-fade" />
+
+                <div className="pj-card-top">
+                    <span className="pj-tag">{meta.tag}</span>
+                    <div className="pj-techs">
+                        {project.iconLists.slice(0, 3).map((icon, i) => (
+                            <div
+                                key={i}
+                                className="pj-tech-tile"
+                                style={{ "--tile-delay": `${i * 0.4}s` }}
+                            >
+                                <img
+                                    src={icon}
+                                    alt=""
+                                    className="pj-tech-icon"
+                                    loading="lazy"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="pj-card-body">
+                <h3 className="pj-card-title">{project.title}</h3>
+                <p className="pj-card-desc">{project.des}</p>
+
+                {meta.metrics && meta.metrics.length > 0 && (
+                    <div className="pj-metrics">
+                        {meta.metrics.map((m, i) => (
+                            <div key={i} className="pj-metric">
+                                <div className="pj-metric-value">{m.value}</div>
+                                <div className="pj-metric-label">{m.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div className="pj-card-border" />
+        </a>
+    );
+};
+
 const Projects = () => {
     const sectionRef = useRef(null);
+    const trackRef = useRef(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const scrollByCard = useCallback((direction) => {
+        const track = trackRef.current;
+        if (!track) return;
+        const card = track.querySelector(".pj-card");
+        if (!card) return;
+        const gap = parseInt(window.getComputedStyle(track).gap) || 0;
+        const cardWidth = card.offsetWidth + gap;
+        track.scrollBy({ left: direction * cardWidth, behavior: "smooth" });
+    }, []);
+
+    useEffect(() => {
+        const track = trackRef.current;
+        if (!track) return;
+
+        const updateIndex = () => {
+            const cards = track.querySelectorAll(".pj-card");
+            const trackRect = track.getBoundingClientRect();
+            let closest = 0;
+            let minDist = Infinity;
+            cards.forEach((card, i) => {
+                const dist = Math.abs(
+                    card.getBoundingClientRect().left - trackRect.left
+                );
+                if (dist < minDist) {
+                    minDist = dist;
+                    closest = i;
+                }
+            });
+            setCurrentIndex(closest);
+        };
+
+        track.addEventListener("scroll", updateIndex, { passive: true });
+        updateIndex();
+        return () => track.removeEventListener("scroll", updateIndex);
+    }, []);
 
     useGSAP(() => {
         gsap.fromTo(
-            ".project-card-item",
-            { y: 100, opacity: 0 },
+            ".pj-subtitle, .pj-controls-row",
+            { y: 18, opacity: 0 },
             {
                 y: 0,
                 opacity: 1,
-                duration: 1,
-                stagger: 0.2,
+                duration: 0.9,
+                stagger: 0.12,
                 ease: "power3.out",
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top 80%",
-                },
+                scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
             }
         );
 
-        gsap.utils.toArray(".project-particle").forEach((particle, i) => {
-            gsap.to(particle, {
-                y: "random(-30, 30)",
-                x: "random(-20, 20)",
-                duration: "random(3, 5)",
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-                delay: i * 0.2,
-            });
-        });
+        gsap.fromTo(
+            ".pj-card",
+            { y: 36, opacity: 0, scale: 0.96 },
+            {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 0.95,
+                stagger: 0.12,
+                ease: "power3.out",
+                scrollTrigger: { trigger: ".pj-track", start: "top 85%" },
+            }
+        );
     }, []);
 
     return (
         <section
             id="projects"
             ref={sectionRef}
-            className="projects-section relative py-20 md:py-32 overflow-hidden"
+            className="pj-section relative md:mt-24 mt-12"
         >
-            <div className="projects-particles">
-                {[...Array(8)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="project-particle"
-                        style={{
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                        }}
-                    />
-                ))}
-            </div>
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-10 py-20 md:py-28">
+                <TitleHeader
+                    title={
+                        <>
+                            My Latest{" "}
+                            <span className="text-purple-accent gradient-text">
+                                Projects
+                            </span>
+                        </>
+                    }
+                />
 
-            <div className="projects-orb projects-orb-1" />
-            <div className="projects-orb projects-orb-2" />
+                <p className="pj-subtitle">
+                    Full-stack systems, cloud-native backends, and developer
+                    tooling — built to solve real problems.
+                </p>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-                        A small selection of{" "}
-                        <span className="text-purple-accent">recent projects</span>
-                    </h2>
+                <div className="pj-controls-row">
+                    <div className="pj-nav">
+                        <button
+                            type="button"
+                            onClick={() => scrollByCard(-1)}
+                            className="pj-nav-btn"
+                            disabled={currentIndex === 0}
+                            aria-label="Previous project"
+                        >
+                            <ArrowIcon direction="left" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => scrollByCard(1)}
+                            className="pj-nav-btn"
+                            disabled={currentIndex === projects.length - 1}
+                            aria-label="Next project"
+                        >
+                            <ArrowIcon direction="right" />
+                        </button>
+                    </div>
+                    <div className="pj-counter">
+                        <span className="pj-counter-current">
+                            {String(currentIndex + 1).padStart(2, "0")}
+                        </span>
+                        <span className="pj-counter-sep">/</span>
+                        <span className="pj-counter-total">
+                            {String(projects.length).padStart(2, "0")}
+                        </span>
+                    </div>
                 </div>
 
-                <div className="projects-grid">
+                <div ref={trackRef} className="pj-track">
                     {projects.map((project) => (
-                        <div key={project.id} className="project-card-item">
-                            <PinCard
-                                title={project.title}
-                                link={project.link}
-                                className="h-full"
-                            >
-                                <div className="project-card-inner">
-                                    <div className="project-card-image">
-                                        <div className="project-card-image-bg" />
-                                        <img
-                                            src={project.img}
-                                            alt={project.title}
-                                            className="project-card-img"
-                                        />
-                                    </div>
-
-                                    <div className="project-card-content">
-                                        <h3 className="project-card-title">
-                                            {project.title}
-                                        </h3>
-                                        <p className="project-card-description">
-                                            {project.des}
-                                        </p>
-
-                                        <div className="project-card-footer">
-                                            <div className="project-tech-icons">
-                                                {project.iconLists.map((icon, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="project-tech-icon"
-                                                        style={{
-                                                            transform: `translateX(-${index * 8}px)`,
-                                                            zIndex: project.iconLists.length - index,
-                                                        }}
-                                                    >
-                                                        <img src={icon} alt="tech" />
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            <a
-                                                href={project.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="project-cta"
-                                            >
-                                                <span>Check Live Site</span>
-                                                <svg
-                                                    className="w-4 h-4"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                                    />
-                                                </svg>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </PinCard>
-                        </div>
+                        <ProjectCard key={project.id} project={project} />
                     ))}
                 </div>
             </div>

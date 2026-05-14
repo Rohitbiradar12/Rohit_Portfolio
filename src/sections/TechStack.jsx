@@ -1,260 +1,154 @@
-import { useRef, useState, useCallback, memo } from "react";
+import { useRef, useCallback, memo } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import TitleHeader from "../components/TitleHeader";
 import { techStackImgs } from "../constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SkillCard = memo(({ skill }) => {
-  const cardRef = useRef(null);
-  const contentRef = useRef(null);
+const CATEGORY_ORDER = ["Frontend", "Backend", "Database", "DevOps"];
 
-  const handleMouseMove = useCallback((e) => {
-    if (!cardRef.current || !contentRef.current) return;
+const groupByCategory = (list) => {
+  const map = new Map();
+  CATEGORY_ORDER.forEach((c) => map.set(c, []));
+  list.forEach((t) => {
+    if (!map.has(t.category)) map.set(t.category, []);
+    map.get(t.category).push(t);
+  });
+  return Array.from(map.entries()).filter(([, arr]) => arr.length > 0);
+};
 
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * 6;
-    const rotateY = ((x - centerX) / centerX) * 6;
-
-    const spotlight = cardRef.current.querySelector('.skill-spotlight');
-    if (spotlight) {
-      spotlight.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(139, 92, 246, 0.12), rgba(255, 255, 255, 0.04) 40%, transparent 65%)`;
-      spotlight.style.opacity = '1';
-    }
-
-    gsap.to(contentRef.current, {
-      rotateX: -rotateX,
-      rotateY: rotateY,
-      duration: 0.6,
-      ease: "expo.out",
-      overwrite: "auto"
-    });
-  }, []);
-
-  const handleMouseEnter = useCallback(() => {
-    if (!cardRef.current) return;
-
-    gsap.to(cardRef.current.querySelector('.skill-card-content'), {
-      y: -14,
-      scale: 1.03,
-      duration: 0.6,
-      ease: "expo.out",
-      overwrite: "auto"
-    });
-
-    const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
-    if (ambientGlow) {
-      gsap.to(ambientGlow, {
-        opacity: 0.3,
-        scale: 1.2,
-        duration: 0.7,
-        ease: "power2.out"
-      });
-    }
-
-    gsap.to(cardRef.current.querySelector('.skill-icon'), {
-      scale: 1.18,
-      y: -4,
-      filter: 'brightness(1.2) drop-shadow(0 8px 20px var(--skill-color))',
-      duration: 0.5,
-      ease: "expo.out"
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!cardRef.current || !contentRef.current) return;
-
-    const spotlight = cardRef.current.querySelector('.skill-spotlight');
-    if (spotlight) {
-      gsap.to(spotlight, {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-    }
-
-    gsap.to(contentRef.current, {
-      rotateX: 0,
-      rotateY: 0,
-      y: 0,
-      scale: 1,
-      duration: 0.7,
-      ease: "expo.out",
-      overwrite: "auto"
-    });
-
-    const ambientGlow = cardRef.current.querySelector('.skill-ambient-glow');
-    if (ambientGlow) {
-      gsap.to(ambientGlow, {
-        opacity: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: "power2.out"
-      });
-    }
-
-    gsap.to(cardRef.current.querySelector('.skill-icon'), {
-      scale: 1,
-      y: 0,
-      filter: 'brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
-      duration: 0.5,
-      ease: "power2.out"
-    });
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className="skill-card"
-      style={{ "--skill-color": skill.color }}
-      data-id={skill.id}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="skill-ambient-glow" />
-      <div className="skill-border-glow" />
-      <div className="skill-card-glow" />
-      <div className="skill-spotlight" />
-
-      <div ref={contentRef} className="skill-card-content">
-        <div className="skill-shimmer" />
-
-        <div className="skill-icon-wrapper">
-          <div className="skill-icon-bg" />
-          <div className="skill-icon-ring" />
-          <img
-            src={skill.imgPath}
-            alt={skill.name}
-            className="skill-icon"
-            loading="lazy"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              if (e.target.nextElementSibling) {
-                e.target.nextElementSibling.style.display = 'flex';
-              }
-            }}
-          />
-          <div className="skill-icon-fallback">
-            {skill.name.charAt(0)}
-          </div>
-        </div>
-
-        <h3 className="skill-name">{skill.name}</h3>
-        <span className="skill-badge">{skill.category}</span>
+const TechChip = memo(({ tech }) => (
+  <div className="ts-chip">
+    <div className="ts-chip-spotlight" />
+    <div className="ts-chip-accent" />
+    <div className="ts-chip-inner">
+      <div className="ts-chip-icon-wrap">
+        <img
+          src={tech.imgPath}
+          alt={tech.name}
+          className="ts-chip-icon"
+          loading="lazy"
+        />
       </div>
+      <div className="ts-chip-name">{tech.name}</div>
+      <div className="ts-chip-meta">{tech.experience}</div>
     </div>
-  );
-});
-
-SkillCard.displayName = 'SkillCard';
+  </div>
+));
+TechChip.displayName = "TechChip";
 
 const TechStack = () => {
   const sectionRef = useRef(null);
-  const gridRef = useRef(null);
+  const grouped = groupByCategory(techStackImgs);
+
+  const handleGridMouseMove = useCallback((e) => {
+    const chip = e.target.closest(".ts-chip");
+    if (!chip) return;
+    const rect = chip.getBoundingClientRect();
+    chip.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+    chip.style.setProperty("--my", `${e.clientY - rect.top}px`);
+  }, []);
 
   useGSAP(() => {
-    gsap.fromTo(".skills-header > *",
-      { y: 40, opacity: 0 },
+    gsap.fromTo(
+      ".ts-stats-bar",
+      { y: 14, opacity: 0 },
       {
-        y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 75%" }
-      }
-    );
-
-    gsap.fromTo(".skill-card",
-      { y: 50, opacity: 0, scale: 0.9 },
-      {
-        y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: { each: 0.04, from: "start" },
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
         ease: "power3.out",
-        immediateRender: false,
-        scrollTrigger: { trigger: ".skills-grid", start: "top 85%" }
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
       }
     );
 
-    gsap.utils.toArray(".skill-icon").forEach((icon, i) => {
-      gsap.to(icon, {
-        y: -5, duration: 2.5 + (i * 0.1), ease: "sine.inOut",
-        yoyo: true, repeat: -1, delay: i * 0.08
-      });
-    });
+    gsap.utils.toArray(".ts-group").forEach((group) => {
+      gsap.fromTo(
+        group.querySelector(".ts-group-rule"),
+        { scaleX: 0, transformOrigin: "left center" },
+        {
+          scaleX: 1,
+          duration: 1.1,
+          ease: "expo.out",
+          scrollTrigger: { trigger: group, start: "top 85%" },
+        }
+      );
 
-    ScrollTrigger.create({
-      trigger: ".skills-stats",
-      start: "top 85%",
-      once: true,
-      onEnter: () => {
-        gsap.fromTo(".stat-card",
-          { y: 40, opacity: 0, scale: 0.9 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: "back.out(1.3)" }
-        );
+      gsap.fromTo(
+        [
+          group.querySelector(".ts-group-title"),
+          group.querySelector(".ts-group-count"),
+        ],
+        { y: 12, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: group, start: "top 85%" },
+        }
+      );
 
-        document.querySelectorAll('.stat-number').forEach((el) => {
-          const target = parseInt(el.dataset.value);
-          gsap.fromTo(el, { innerText: 0 }, {
-            innerText: target, duration: 2, ease: "power2.out",
-            snap: { innerText: 1 },
-            onUpdate: function () { el.textContent = Math.round(this.targets()[0].innerText) + "+"; }
-          });
-        });
-      }
+      gsap.fromTo(
+        group.querySelectorAll(".ts-chip"),
+        { y: 14, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.035,
+          ease: "power2.out",
+          scrollTrigger: { trigger: group, start: "top 85%" },
+        }
+      );
     });
   }, []);
 
   return (
-    <section id="skills" ref={sectionRef} className="skills-section md:mt-24 mt-12">
-      <div className="skills-bg">
-        <div className="skills-gradient" />
-        <div className="skills-orb orb-1" />
-        <div className="skills-orb orb-2" />
-        <div className="skills-orb orb-3" />
-        <div className="skills-grid-pattern" />
-        <div className="skills-particles">
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="particle" style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${6 + Math.random() * 6}s`,
-            }} />
-          ))}
-        </div>
-      </div>
+    <section
+      id="skills"
+      ref={sectionRef}
+      className="ts-section relative md:mt-24 mt-12"
+    >
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-10 py-20 md:py-32">
+        <TitleHeader
+          title={
+            <>
+              My Tech{" "}
+              <span className="text-purple-accent gradient-text">Arsenal</span>
+            </>
+          }
+        />
 
-      <div className="skills-container">
-        <div className="skills-header">
-          <h2 className="skills-title">
-            My Tech <span className="gradient-text">Arsenal</span>
-          </h2>
+        <div className="ts-stats-bar">
+          <span>{techStackImgs.length} Technologies</span>
+          <span className="ts-stats-dot">·</span>
+          <span>{String(grouped.length).padStart(2, "0")} Disciplines</span>
+          <span className="ts-stats-dot">·</span>
+          <span>02+ Years in Production</span>
         </div>
 
-        <div ref={gridRef} className="skills-grid">
-          {techStackImgs.map((skill) => (
-            <SkillCard
-              key={skill.id}
-              skill={skill}
-            />
-          ))}
-        </div>
-
-        <div className="skills-stats">
-          {[
-            { value: 27, label: "Technologies", icon: "🚀" },
-            { value: 5, label: "Categories", icon: "📦" },
-            { value: 2, label: "Years Experience", icon: "⭐" },
-          ].map((stat, index) => (
-            <div key={index} className="stat-card">
-              <div className="stat-icon">{stat.icon}</div>
-              <div className="stat-content">
-                <div className="stat-number" data-value={stat.value}>0+</div>
-                <div className="stat-label">{stat.label}</div>
+        <div className="ts-stack">
+          {grouped.map(([cat, items]) => (
+            <div key={cat} className="ts-group">
+              <div className="ts-group-head">
+                <h3 className="ts-group-title">{cat}</h3>
+                <span className="ts-group-rule" />
+                <span className="ts-group-count">
+                  {String(items.length).padStart(2, "0")}
+                </span>
+              </div>
+              <div
+                className="ts-group-grid"
+                onMouseMove={handleGridMouseMove}
+              >
+                {items.map((tech) => (
+                  <TechChip key={tech.id} tech={tech} />
+                ))}
               </div>
             </div>
           ))}

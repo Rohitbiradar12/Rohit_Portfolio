@@ -5,25 +5,37 @@ import { useGSAP } from "@gsap/react";
 import { FaLinkedinIn, FaGithub, FaXTwitter } from "react-icons/fa6";
 import { SiLeetcode } from "react-icons/si";
 
+import TitleHeader from "../components/TitleHeader";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const socialLinks = [
-    { name: "linkedin", url: "https://www.linkedin.com/in/biradar-rohit/", icon: FaLinkedinIn },
-    { name: "github", url: "https://github.com/Rohitbiradar12/", icon: FaGithub },
-    { name: "twitter", url: "https://x.com/iamRohit1567", icon: FaXTwitter },
-    { name: "leetcode", url: "https://leetcode.com/u/Rohit_Biradar/", icon: SiLeetcode },
+    { name: "GitHub", url: "https://github.com/Rohitbiradar12/", icon: FaGithub },
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/biradar-rohit/", icon: FaLinkedinIn },
+    { name: "X", url: "https://x.com/iamRohit1567", icon: FaXTwitter },
+    { name: "LeetCode", url: "https://leetcode.com/u/Rohit_Biradar/", icon: SiLeetcode },
+];
+
+const coreStack = [
+    "Spring Boot", "Kafka", "Redis", "Python", "PostgreSQL",
+    "Java", "Docker", "Jenkins", "AWS", "Kubernetes",
 ];
 
 const About = () => {
     const sectionRef = useRef(null);
-    const imageRef = useRef(null);
-    const contentRef = useRef(null);
+    const photoRef = useRef(null);
 
+    const handleChipMouseMove = useCallback((e) => {
+        const chip = e.target.closest(".ab-tag, .ab-social");
+        if (!chip) return;
+        const rect = chip.getBoundingClientRect();
+        chip.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+        chip.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    }, []);
 
     useGSAP(() => {
-
-        gsap.to(imageRef.current, {
-            yPercent: -15,
+        gsap.to(photoRef.current, {
+            yPercent: -10,
             ease: "none",
             scrollTrigger: {
                 trigger: sectionRef.current,
@@ -34,66 +46,59 @@ const About = () => {
         });
 
         gsap.fromTo(
-            ".about-content-item",
-            { y: 50, opacity: 0 },
+            ".ab-stats-bar",
+            { y: 14, opacity: 0 },
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
-                stagger: 0.15,
+                duration: 0.9,
                 ease: "power3.out",
-                scrollTrigger: {
-                    trigger: contentRef.current,
-                    start: "top bottom-=100",
-                },
+                scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
             }
         );
 
-        gsap.fromTo(
-            ".social-icon-3d",
-            { scale: 0, opacity: 0 },
-            {
-                scale: 1,
-                opacity: 1,
-                duration: 0.5,
-                stagger: 0.1,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: ".social-icons-container",
-                    start: "top bottom-=50",
-                },
-            }
-        );
-    }, []);
+        gsap.utils.toArray(".ab-group").forEach((group) => {
+            gsap.fromTo(
+                group.querySelector(".ab-group-rule"),
+                { scaleX: 0, transformOrigin: "left center" },
+                {
+                    scaleX: 1,
+                    duration: 1.1,
+                    ease: "expo.out",
+                    scrollTrigger: { trigger: group, start: "top 85%" },
+                }
+            );
 
-    const handleMouseMove = useCallback((e) => {
-        const card = imageRef.current;
-        if (!card) return;
+            gsap.fromTo(
+                [
+                    group.querySelector(".ab-group-title"),
+                    group.querySelector(".ab-group-count"),
+                ],
+                { y: 12, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    stagger: 0.1,
+                    ease: "power3.out",
+                    scrollTrigger: { trigger: group, start: "top 85%" },
+                }
+            );
 
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
-
-        gsap.to(card, {
-            rotateX: rotateX,
-            rotateY: rotateY,
-            duration: 0.3,
-            ease: "power2.out",
-            transformPerspective: 1000,
-        });
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        gsap.to(imageRef.current, {
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.5,
-            ease: "power2.out",
+            gsap.fromTo(
+                group.querySelectorAll(
+                    ".ab-bio p, .ab-tag, .ab-social, .ab-photo-wrap"
+                ),
+                { y: 14, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.6,
+                    stagger: 0.04,
+                    ease: "power2.out",
+                    scrollTrigger: { trigger: group, start: "top 85%" },
+                }
+            );
         });
     }, []);
 
@@ -101,83 +106,142 @@ const About = () => {
         <section
             id="about"
             ref={sectionRef}
-            className="about-section relative min-h-screen overflow-hidden py-20 md:py-32"
+            className="ab-section relative md:mt-8 mt-4"
         >
+            <div className="relative z-10 w-full max-w-6xl mx-auto px-5 md:px-10 pt-10 md:pt-16 pb-20 md:pb-32">
+                <TitleHeader
+                    title={
+                        <>
+                            About{" "}
+                            <span className="text-purple-accent gradient-text">Me</span>
+                        </>
+                    }
+                />
 
+                <div className="ab-stats-bar">
+                    <span>Based in Boston</span>
+                    <span className="ab-stats-dot">·</span>
+                    <span>MS CS @ Northeastern</span>
+                    <span className="ab-stats-dot">·</span>
+                    <span>02+ Years Building</span>
+                </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-10">
-                <div className="flex flex-col xl:flex-row gap-10 xl:gap-20 items-center">
-                    <div className="w-full xl:w-[40%] flex justify-center">
-                        <div
-                            ref={imageRef}
-                            onMouseMove={handleMouseMove}
-                            onMouseLeave={handleMouseLeave}
-                            className="about-image-wrapper relative"
-                        >
-                            <div className="about-gradient-border" />
+                <div className="ab-stack">
+                    {/* PROFILE */}
+                    <div className="ab-group">
+                        <div className="ab-group-head">
+                            <h3 className="ab-group-title">Profile</h3>
+                            <span className="ab-group-rule" />
+                        </div>
 
-                            <div className="about-image-container">
+                        <div className="ab-profile">
+                            <div ref={photoRef} className="ab-photo-wrap">
                                 <img
                                     src="/images/rohit-photo.png"
-                                    alt="Rohit - Software Developer"
-                                    className="w-full h-full object-cover"
+                                    alt="Rohit Biradar"
+                                    className="ab-photo"
                                 />
                             </div>
 
-                            <div className="about-image-shadow" />
+                            <div className="ab-bio">
+                                <p>
+                                    Hi, I'm <span className="text-highlight">Rohit</span>, a
+                                    Software Development Engineer with hands-on experience
+                                    in building{" "}
+                                    <span className="text-highlight">scalable microservices</span>,
+                                    optimizing backend systems, and improving enterprise
+                                    efficiency. At{" "}
+                                    <span className="text-highlight">
+                                        Torry Harris Integration Solutions
+                                    </span>
+                                    , I worked on a Loan Management System across African
+                                    markets, contributing to the development of 15+
+                                    microservices that reduced loan processing time by 35%
+                                    and improved data reliability.
+                                </p>
+                                <p>
+                                    My expertise includes{" "}
+                                    <span className="text-highlight">Spring Boot</span>,{" "}
+                                    <span className="text-highlight">PostgreSQL</span>,{" "}
+                                    <span className="text-highlight">Kafka</span>,{" "}
+                                    <span className="text-highlight">Redis</span>, and
+                                    automation pipelines — driving system performance and
+                                    achieving 99.99% transaction success rates.
+                                </p>
+                                <p>
+                                    With a Computer Science degree from{" "}
+                                    <span className="text-highlight">REVA University</span>,
+                                    I thrive on solving complex problems and delivering
+                                    impactful solutions. Starting September 2025, I'll be
+                                    pursuing my{" "}
+                                    <span className="text-highlight">
+                                        MS in Computer Science
+                                    </span>{" "}
+                                    at{" "}
+                                    <span className="text-highlight">
+                                        Northeastern University
+                                    </span>{" "}
+                                    (Khoury College), focusing on cloud computing and
+                                    scalable system design.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div ref={contentRef} className="w-full xl:w-[60%]">
-                        <div className="about-glass-container">
-                            <h2 className="about-content-item gradient-text text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                                About Me
-                            </h2>
-                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
-                                Hi, I'm <span className="text-highlight">Rohit</span>, a Software Development Engineer with hands-on experience in building
-                                <span className="text-highlight"> scalable microservices</span>, optimizing backend systems, and improving enterprise efficiency.
-                                At <span className="text-highlight">Torry Harris Integration Solutions</span>, I worked on a Loan Management System across African markets,
-                                contributing to the development of 15+ microservices that reduced loan processing time by 35% and improved data reliability.
-                            </p>
 
+                    {/* CORE STACK */}
+                    <div className="ab-group">
+                        <div className="ab-group-head">
+                            <h3 className="ab-group-title">Core Stack</h3>
+                            <span className="ab-group-rule" />
+                        </div>
 
-                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-6">
-                                My expertise includes <span className="text-highlight">Spring Boot</span>, <span className="text-highlight">PostgreSQL</span>,
-                                <span className="text-highlight"> Kafka</span>, <span className="text-highlight">Redis</span>, and automation pipelines —
-                                driving system performance and achieving 99.99% transaction success rates.
-                            </p>
+                        <div className="ab-tags" onMouseMove={handleChipMouseMove}>
+                            {coreStack.map((skill) => (
+                                <div key={skill} className="ab-tag">
+                                    <div className="ab-tag-spotlight" />
+                                    <span className="ab-tag-name">{skill}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-                            <p className="about-content-item text-white-50 text-lg md:text-xl leading-relaxed mb-8">
-                                With a Computer Science degree from <span className="text-highlight">REVA University</span>, I thrive on solving complex problems
-                                and delivering impactful solutions. Starting September 2025, I'll be pursuing my
-                                <span className="text-highlight"> MS in Computer Science</span> at <span className="text-highlight">Northeastern University</span> (Khoury College),
-                                focusing on cloud computing and scalable system design.
-                            </p>
+                    {/* CONNECT */}
+                    <div className="ab-group">
+                        <div className="ab-group-head">
+                            <h3 className="ab-group-title">Connect</h3>
+                            <span className="ab-group-rule" />
+                        </div>
 
-                            <div className="about-content-item flex flex-wrap gap-3 mb-8">
-                                {["Spring Boot", "kafka", "Redis", "Python", "PostgreSQL", "Java", "Docker", "Jenkins", "AWS", "Kubernetes"].map((skill) => (
-                                    <span key={skill} className="skill-pill">
-                                        {skill}
-                                    </span>
-                                ))}
-                            </div>
-
-                            <div className="about-content-item social-icons-container flex gap-4">
-                                {socialLinks.map((social) => (
-                                    <a
-                                        key={social.name}
-                                        href={social.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="group w-12 h-12 bg-white/5 hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/50 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/20"
-                                        aria-label={`Visit my ${social.name} profile`}
+                        <div className="ab-socials" onMouseMove={handleChipMouseMove}>
+                            {socialLinks.map((social) => (
+                                <a
+                                    key={social.name}
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="ab-social"
+                                    aria-label={`Visit my ${social.name} profile`}
+                                >
+                                    <div className="ab-social-spotlight" />
+                                    <social.icon size={15} className="ab-social-icon" />
+                                    <span className="ab-social-name">{social.name}</span>
+                                    <svg
+                                        className="ab-social-arrow"
+                                        width="11"
+                                        height="11"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        aria-hidden="true"
                                     >
-                                        <social.icon
-                                            size={22}
-                                            className="text-white/70 group-hover:text-purple-300 transition-colors duration-300"
-                                        />
-                                    </a>
-                                ))}
-                            </div>
+                                        <path d="M7 17L17 7" />
+                                        <path d="M8 7h9v9" />
+                                    </svg>
+                                </a>
+                            ))}
                         </div>
                     </div>
                 </div>
