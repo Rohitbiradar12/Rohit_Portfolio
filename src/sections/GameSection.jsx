@@ -13,12 +13,12 @@ const proj = (z) => {
 };
 
 const COLS = [
-    { label: "⚛", color: "#61DAFB", name: "React" },
-    { label: "JS", color: "#F7DF1E", name: "JS" },
-    { label: "🐍", color: "#3776AB", name: "Python" },
-    { label: "⚡", color: "#fbbf24", name: "Bolt" },
-    { label: "☕", color: "#ED8B00", name: "Java" },
-    { label: "🟢", color: "#339933", name: "Node" },
+    { label: "RE", color: "#61DAFB", textColor: "#0a1525", name: "React" },
+    { label: "JS", color: "#F7DF1E", textColor: "#1a1500", name: "JavaScript" },
+    { label: "TS", color: "#3178C6", textColor: "#ffffff", name: "TypeScript" },
+    { label: "PY", color: "#3776AB", textColor: "#ffffff", name: "Python" },
+    { label: "JA", color: "#ED8B00", textColor: "#ffffff", name: "Java" },
+    { label: "ND", color: "#339933", textColor: "#ffffff", name: "Node" },
 ];
 
 const CODE_CHARS = "{}()[];=>/<>const let var function return if else for while import export class async await".split("");
@@ -450,70 +450,159 @@ const GameSection = () => {
                 const sz = 30 * p.s;
 
                 if (d.kind === "obs") {
-                    const labels = ["400", "401", "403", "404", "500", "502", "503", "BUG", "NULL", "NaN"];
+                    // Warning triangle — universally readable "DANGER"
+                    const labels = ["404", "500", "BUG", "NULL", "NaN", "ERR", "403", "501"];
                     const label = labels[Math.abs(Math.floor(d.z + d.lane * 100)) % labels.length];
-                    const colors = [["#ef4444", "#dc2626", "#991b1b"], ["#f97316", "#ea580c", "#9a3412"], ["#ec4899", "#db2777", "#9d174d"]];
-                    const oc = colors[d.type] || colors[0];
+
+                    // Pulsing danger beacon (frame-driven)
+                    const pulse = Math.sin(g.frame * 0.14 + d.z * 0.008) * 0.5 + 0.5;
+
+                    const triH = sz * 2.1;
+                    const triW = sz * 2.0;
+                    const tx = cx;
+                    const tyBase = p.y - sz * 0.6;
+
                     ctx.save();
-                    if (!IS_MOBILE) { ctx.shadowColor = oc[0]; ctx.shadowBlur = 15 * p.s; }
-                    ctx.fillStyle = oc[0];
-                    ctx.beginPath();
-                    ctx.moveTo(cx - sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 1.9);
-                    ctx.lineTo(cx + sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 0.7);
-                    ctx.closePath(); ctx.fill();
-                    ctx.fillStyle = oc[1];
-                    ctx.beginPath();
-                    ctx.moveTo(cx - sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 0.7);
-                    ctx.lineTo(cx, p.y + sz * 0.2); ctx.lineTo(cx - sz, p.y - sz * 0.4);
-                    ctx.closePath(); ctx.fill();
-                    ctx.fillStyle = oc[2];
-                    ctx.beginPath();
-                    ctx.moveTo(cx + sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 0.7);
-                    ctx.lineTo(cx, p.y + sz * 0.2); ctx.lineTo(cx + sz, p.y - sz * 0.4);
-                    ctx.closePath(); ctx.fill();
-                    ctx.strokeStyle = `rgba(255,255,255,${0.2 * p.s})`;
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(cx - sz, p.y - sz * 1.3); ctx.lineTo(cx, p.y - sz * 1.9); ctx.lineTo(cx + sz, p.y - sz * 1.3);
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = "rgba(255,255,255,0.9)";
-                    ctx.font = `bold ${Math.max(7, sz * 0.5)}px 'Courier New',monospace`;
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText(label, cx, p.y - sz * 0.75);
-                    if (p.s > 0.15) {
-                        for (let gl = 0; gl < 2; gl++) {
-                            const gy = p.y - sz * (0.5 + Math.random() * 0.8);
-                            ctx.fillStyle = `rgba(255,255,255,${0.06 * p.s})`;
-                            ctx.fillRect(cx - sz, gy, sz * 2, 1);
-                        }
+
+                    // Outer red danger halo
+                    if (!IS_MOBILE) {
+                        ctx.shadowColor = "#ef4444";
+                        ctx.shadowBlur = (14 + pulse * 16) * p.s;
                     }
-                    ctx.fillStyle = `rgba(${d.type === 0 ? '239,68,68' : d.type === 1 ? '249,115,22' : '236,72,153'},${0.12 * p.s})`;
-                    const sw = sz * 1.8;
-                    ctx.beginPath(); ctx.ellipse(cx, p.y + sz * 0.2, sw, sz * 0.25, 0, 0, Math.PI * 2); ctx.fill();
+
+                    // Triangle path helper (pointed up, rounded corners via simple offset)
+                    const triPath = (inset = 0) => {
+                        ctx.beginPath();
+                        ctx.moveTo(tx, tyBase - triH + inset * 1.6);
+                        ctx.lineTo(tx - triW / 2 + inset, tyBase - inset * 0.4);
+                        ctx.lineTo(tx + triW / 2 - inset, tyBase - inset * 0.4);
+                        ctx.closePath();
+                    };
+
+                    // Black warning-sign border
+                    ctx.fillStyle = "#0a0a0a";
+                    triPath();
+                    ctx.fill();
+
+                    ctx.shadowBlur = 0;
+
+                    // Bright yellow warning fill (with subtle vertical gradient)
+                    const fill = ctx.createLinearGradient(tx, tyBase - triH, tx, tyBase);
+                    fill.addColorStop(0, "#fde047");
+                    fill.addColorStop(0.6, "#fbbf24");
+                    fill.addColorStop(1, "#f59e0b");
+                    ctx.fillStyle = fill;
+                    triPath(3.5 * p.s);
+                    ctx.fill();
+
+                    // Pulsing red inner accent ring (the active "danger" cue)
+                    ctx.strokeStyle = `rgba(239, 68, 68, ${0.45 + pulse * 0.45})`;
+                    ctx.lineWidth = 1.6 * p.s;
+                    triPath(7 * p.s);
+                    ctx.stroke();
+
+                    // Top-edge highlight (industrial finish)
+                    if (p.s > 0.15) {
+                        ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+                        ctx.lineWidth = 1 * p.s;
+                        ctx.beginPath();
+                        const topY = tyBase - triH + 6 * p.s;
+                        ctx.moveTo(tx - 5 * p.s, topY);
+                        ctx.lineTo(tx + 5 * p.s, topY);
+                        ctx.stroke();
+                    }
+
+                    // Centered black bold error label
+                    ctx.fillStyle = "#0a0a0a";
+                    ctx.font = `900 ${Math.max(8, sz * 0.5)}px ui-monospace, "SF Mono", Menlo, Consolas, monospace`;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(label, tx, tyBase - triH * 0.42);
+
+                    // Ground shadow — red-tinted, pulses with the beacon
+                    ctx.fillStyle = `rgba(239, 68, 68, ${0.18 + pulse * 0.15})`;
+                    ctx.beginPath();
+                    ctx.ellipse(cx, p.y + sz * 0.15, sz * 1.4, sz * 0.28, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
                     ctx.restore();
                 } else {
                     const sym = COLS[d.ci];
                     const rot = d.rot || 0;
+                    const cyy = p.y - sz;
+                    const r = sz * 1.15;
+
                     ctx.save();
-                    ctx.shadowColor = sym.color; ctx.shadowBlur = 20 * p.s;
-                    ctx.strokeStyle = sym.color + "66";
-                    ctx.lineWidth = 1.5 * p.s;
-                    ctx.beginPath(); ctx.arc(cx, p.y - sz, sz * 1.1, 0, Math.PI * 2); ctx.stroke();
-                    ctx.strokeStyle = sym.color;
-                    ctx.lineWidth = 2 * p.s;
-                    ctx.beginPath(); ctx.arc(cx, p.y - sz, sz * 1.1, rot, rot + Math.PI * 0.8); ctx.stroke();
-                    const ig = ctx.createRadialGradient(cx, p.y - sz, 0, cx, p.y - sz, sz * 0.85);
-                    ig.addColorStop(0, sym.color + "44"); ig.addColorStop(0.6, sym.color + "18"); ig.addColorStop(1, "transparent");
-                    ctx.fillStyle = ig;
-                    ctx.beginPath(); ctx.arc(cx, p.y - sz, sz * 0.85, 0, Math.PI * 2); ctx.fill();
+
+                    // Outer glow halo
+                    if (!IS_MOBILE) {
+                        ctx.shadowColor = sym.color;
+                        ctx.shadowBlur = 18 * p.s;
+                    }
+
+                    // Hex path (slowly rotating)
+                    const hexPath = (radius) => {
+                        ctx.beginPath();
+                        for (let i = 0; i < 6; i++) {
+                            const a = (Math.PI / 3) * i - Math.PI / 2 + rot * 0.35;
+                            const px2 = cx + radius * Math.cos(a);
+                            const py2 = cyy + radius * Math.sin(a);
+                            if (i === 0) ctx.moveTo(px2, py2);
+                            else ctx.lineTo(px2, py2);
+                        }
+                        ctx.closePath();
+                    };
+
+                    // Filled hexagon with off-axis radial highlight
+                    const fill = ctx.createRadialGradient(
+                        cx - r * 0.35, cyy - r * 0.35, 0,
+                        cx, cyy, r * 1.25
+                    );
+                    fill.addColorStop(0, sym.color);
+                    fill.addColorStop(1, sym.color + "bb");
+                    ctx.fillStyle = fill;
+                    hexPath(r);
+                    ctx.fill();
+
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = sym.color;
-                    ctx.font = `bold ${Math.max(8, sz * 0.7)}px sans-serif`;
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.fillText(sym.label, cx, p.y - sz);
-                    ctx.fillStyle = sym.color + "15";
-                    ctx.beginPath(); ctx.ellipse(cx, p.y + sz * 0.15, sz * 0.9, sz * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+
+                    // Inner hairline border
+                    ctx.strokeStyle = "rgba(255,255,255,0.28)";
+                    ctx.lineWidth = 1.1 * p.s;
+                    hexPath(r * 0.82);
+                    ctx.stroke();
+
+                    // Top-edge bright highlight (gives 3D feel)
+                    if (p.s > 0.18) {
+                        ctx.strokeStyle = "rgba(255,255,255,0.55)";
+                        ctx.lineWidth = 1.3 * p.s;
+                        ctx.beginPath();
+                        const ha1 = -Math.PI / 2 - Math.PI / 6 + rot * 0.35;
+                        const ha2 = -Math.PI / 2 + Math.PI / 6 + rot * 0.35;
+                        ctx.moveTo(cx + r * Math.cos(ha1), cyy + r * Math.sin(ha1));
+                        ctx.lineTo(cx + r * Math.cos(ha2), cyy + r * Math.sin(ha2));
+                        ctx.stroke();
+                    }
+
+                    // Outer thin contour
+                    ctx.strokeStyle = sym.color;
+                    ctx.lineWidth = 1.4 * p.s;
+                    hexPath(r);
+                    ctx.stroke();
+
+                    // Label — upright, monospace, weighted for clarity
+                    ctx.fillStyle = sym.textColor || "rgba(255,255,255,0.98)";
+                    ctx.font = `700 ${Math.max(8, sz * 0.62)}px ui-monospace, "SF Mono", Menlo, Consolas, monospace`;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(sym.label, cx, cyy + sz * 0.04);
+
+                    // Ground shadow ellipse
+                    ctx.fillStyle = sym.color + "22";
+                    ctx.beginPath();
+                    ctx.ellipse(cx, p.y + sz * 0.2, sz * 0.85, sz * 0.2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
                     ctx.restore();
                 }
             });
@@ -658,67 +747,127 @@ const GameSection = () => {
 
             if (g.started) {
                 ctx.save();
-                ctx.font = 'bold 20px "Mona Sans",sans-serif';
-                ctx.fillStyle = "rgba(255,255,255,0.85)"; ctx.textAlign = "left";
-                ctx.fillText(`Score: ${g.score + Math.floor(g.dist / 10)}`, 18, 34);
-                ctx.textAlign = "right";
-                ctx.font = '600 14px "Mona Sans",sans-serif';
+
+                // Score — tracked uppercase label + tabular number
+                ctx.textAlign = "left";
+                ctx.font = '600 9px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+                ctx.letterSpacing = "2px";
                 ctx.fillStyle = "rgba(255,255,255,0.45)";
-                ctx.fillText(`${g.speed.toFixed(1)}x`, W - 18, 34);
-                const barW = 60, barX = W - 18 - barW, barY = 40;
-                ctx.fillStyle = "rgba(255,255,255,0.06)";
-                ctx.fillRect(barX, barY, barW, 4);
+                ctx.fillText("SCORE", 20, 24);
+                ctx.letterSpacing = "0px";
+                ctx.font = '600 22px "Mona Sans", sans-serif';
+                ctx.fillStyle = "rgba(255,255,255,0.95)";
+                ctx.fillText(`${g.score + Math.floor(g.dist / 10)}`, 20, 46);
+
+                // Speed bar — right aligned
+                ctx.textAlign = "right";
+                ctx.font = '600 9px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+                ctx.letterSpacing = "2px";
+                ctx.fillStyle = "rgba(255,255,255,0.45)";
+                ctx.fillText("SPEED", W - 20, 24);
+                ctx.letterSpacing = "0px";
+                ctx.font = '600 16px "Mona Sans", sans-serif';
+                ctx.fillStyle = "rgba(255,255,255,0.85)";
+                ctx.fillText(`${g.speed.toFixed(1)}x`, W - 20, 44);
+
+                const barW = 68, barX = W - 20 - barW, barY = 52;
+                ctx.fillStyle = "rgba(255,255,255,0.08)";
+                ctx.fillRect(barX, barY, barW, 3);
                 const fill = Math.min(1, (g.speed - 4.5) / 10);
                 const barGrad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
-                barGrad.addColorStop(0, "#8b5cf6"); barGrad.addColorStop(1, "#ef4444");
+                barGrad.addColorStop(0, "#a78bfa");
+                barGrad.addColorStop(1, "#ef4444");
                 ctx.fillStyle = barGrad;
-                ctx.fillRect(barX, barY, barW * fill, 4);
+                ctx.fillRect(barX, barY, barW * fill, 3);
                 ctx.restore();
             }
 
             if (!g.started && !g.over) {
                 ctx.save();
-                ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fillRect(0, 0, W, H);
+                // Backdrop gradient (darker at edges)
+                const bgGrad = ctx.createRadialGradient(W / 2, H / 2, 80, W / 2, H / 2, H * 0.65);
+                bgGrad.addColorStop(0, "rgba(0,0,0,0.3)");
+                bgGrad.addColorStop(1, "rgba(0,0,0,0.55)");
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, W, H);
+
                 ctx.textAlign = "center";
-                ctx.font = 'bold 40px "Mona Sans",sans-serif';
-                const tg2 = ctx.createLinearGradient(W / 2 - 120, 0, W / 2 + 120, 0);
-                tg2.addColorStop(0, "#c4b5fd"); tg2.addColorStop(0.5, "#a78bfa"); tg2.addColorStop(1, "#60a5fa");
+
+                // Title with refined gradient + softer halo
+                ctx.font = '700 44px "Mona Sans", sans-serif';
+                const tg2 = ctx.createLinearGradient(W / 2 - 150, 0, W / 2 + 150, 0);
+                tg2.addColorStop(0, "#e9d5ff");
+                tg2.addColorStop(0.5, "#a78bfa");
+                tg2.addColorStop(1, "#60a5fa");
                 ctx.fillStyle = tg2;
-                ctx.shadowColor = "#8b5cf6"; ctx.shadowBlur = 30;
-                ctx.fillText("Code Runner", W / 2, H / 2 - 55);
+                ctx.shadowColor = "rgba(167, 139, 250, 0.55)";
+                ctx.shadowBlur = 24;
+                ctx.fillText("Code Runner", W / 2, H / 2 - 60);
                 ctx.shadowBlur = 0;
-                ctx.font = '14px "Mona Sans",sans-serif';
-                ctx.fillStyle = "rgba(255,255,255,0.45)";
-                ctx.fillText("← → Arrow keys · Swipe on mobile", W / 2, H / 2 + 5);
-                ctx.font = '16px "Mona Sans",sans-serif';
-                ctx.fillStyle = "rgba(255,255,255,0.55)";
-                ctx.fillText("Click or press Space to start", W / 2, H / 2 + 40);
+
+                // Hairline accent under title
+                ctx.fillStyle = "rgba(167, 139, 250, 0.45)";
+                ctx.fillRect(W / 2 - 32, H / 2 - 32, 64, 1);
+
+                // Tracked monospace subtitle
+                ctx.font = '500 11px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+                ctx.letterSpacing = "2px";
+                ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                ctx.fillText("← →  ARROW KEYS  ·  SWIPE ON MOBILE", W / 2, H / 2);
+                ctx.letterSpacing = "0px";
+
+                // CTA
+                ctx.font = '600 15px "Mona Sans", sans-serif';
+                ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+                ctx.fillText("Click or press Space to start", W / 2, H / 2 + 38);
+
+                // Bouncing chevron
                 const ab = Math.sin(Date.now() * 0.004) * 6;
-                ctx.fillStyle = "rgba(167,139,250,0.4)";
-                ctx.font = "22px sans-serif";
-                ctx.fillText("▼", W / 2, H / 2 + 75 + ab);
+                ctx.fillStyle = "rgba(167, 139, 250, 0.55)";
+                ctx.font = "20px sans-serif";
+                ctx.fillText("▼", W / 2, H / 2 + 78 + ab);
                 ctx.restore();
             }
 
             if (g.over) {
                 ctx.save();
-                const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.2, W / 2, H / 2, H * 0.7);
-                vig.addColorStop(0, "rgba(0,0,0,0.3)"); vig.addColorStop(1, "rgba(0,0,0,0.7)");
-                ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+                const vig = ctx.createRadialGradient(W / 2, H / 2, H * 0.18, W / 2, H / 2, H * 0.7);
+                vig.addColorStop(0, "rgba(0,0,0,0.35)");
+                vig.addColorStop(1, "rgba(0,0,0,0.78)");
+                ctx.fillStyle = vig;
+                ctx.fillRect(0, 0, W, H);
+
                 ctx.textAlign = "center";
-                ctx.font = 'bold 38px "Mona Sans",sans-serif';
-                ctx.fillStyle = "#f87171"; ctx.shadowColor = "#ef4444"; ctx.shadowBlur = 25;
-                ctx.fillText("Game Over", W / 2, H / 2 - 60);
+
+                // "Game Over" headline
+                ctx.font = '700 36px "Mona Sans", sans-serif';
+                ctx.fillStyle = "#f87171";
+                ctx.shadowColor = "rgba(239, 68, 68, 0.6)";
+                ctx.shadowBlur = 22;
+                ctx.fillText("Game Over", W / 2, H / 2 - 62);
                 ctx.shadowBlur = 0;
-                ctx.font = 'bold 58px "Mona Sans",sans-serif';
-                ctx.fillStyle = "#fff";
-                ctx.fillText(g.score + Math.floor(g.dist / 10), W / 2, H / 2 + 10);
-                ctx.font = '14px "Mona Sans",sans-serif';
-                ctx.fillStyle = "rgba(255,255,255,0.35)";
-                ctx.fillText("points", W / 2, H / 2 + 35);
-                ctx.font = '15px "Mona Sans",sans-serif';
-                ctx.fillStyle = "rgba(255,255,255,0.5)";
-                ctx.fillText("Tap to play again", W / 2, H / 2 + 85);
+
+                // Hairline accent
+                ctx.fillStyle = "rgba(248, 113, 113, 0.45)";
+                ctx.fillRect(W / 2 - 28, H / 2 - 36, 56, 1);
+
+                // Score value — refined display weight, tabular
+                ctx.font = '300 64px "Mona Sans", sans-serif';
+                ctx.fillStyle = "#ffffff";
+                ctx.fillText(g.score + Math.floor(g.dist / 10), W / 2, H / 2 + 14);
+
+                // "POINTS" label in monospace tracked uppercase
+                ctx.font = '600 10px ui-monospace, "SF Mono", Menlo, Consolas, monospace';
+                ctx.letterSpacing = "2.5px";
+                ctx.fillStyle = "rgba(255,255,255,0.42)";
+                ctx.fillText("POINTS", W / 2, H / 2 + 42);
+                ctx.letterSpacing = "0px";
+
+                // CTA
+                ctx.font = '600 14px "Mona Sans", sans-serif';
+                ctx.fillStyle = "rgba(255,255,255,0.6)";
+                ctx.fillText("Tap to play again", W / 2, H / 2 + 88);
+
                 ctx.restore();
             }
 
@@ -731,28 +880,119 @@ const GameSection = () => {
     }, [init]);
 
     return (
-        <section id="game" ref={sectionRef} className="cr-section relative overflow-hidden">
-            <div className="cr-orb cr-orb1" />
-            <div className="cr-orb cr-orb2" />
-            <div className="relative z-10 w-full max-w-6xl mx-auto px-5 md:px-10 py-20 md:py-32">
-                <TitleHeader title={<>Code <span className="text-purple-accent gradient-text">Runner</span></>} />
-                <p className="text-center text-white-50 mt-4 mb-6 md:text-lg max-w-xl mx-auto">
-                    Dodge bugs and collect tech icons in a neon cyberpunk city!
+        <section
+            id="game"
+            ref={sectionRef}
+            className="cr-section relative md:mt-24 mt-12"
+        >
+            <div className="relative z-10 w-full max-w-5xl mx-auto px-5 md:px-10 py-20 md:py-28">
+                <TitleHeader
+                    title={
+                        <>
+                            Code{" "}
+                            <span className="text-purple-accent gradient-text">
+                                Runner
+                            </span>
+                        </>
+                    }
+                />
+
+                <p className="cr-subtitle">
+                    An arcade-style runner — dodge bugs, collect tech icons,
+                    climb the personal leaderboard.
                 </p>
+
                 <div className="cr-stats">
-                    <div className="cr-stat"><span className="cr-stat-l">Score</span><span className="cr-stat-v">{score + dist}</span></div>
-                    <div className="cr-stat cr-stat-hi"><span className="cr-stat-l">Best</span><span className="cr-stat-v">🏆 {hi}</span></div>
+                    <div className="cr-stat">
+                        <span className="cr-stat-v">{score + dist}</span>
+                        <span className="cr-stat-l">Score</span>
+                    </div>
+                    <div className="cr-stat cr-stat-hi">
+                        <span className="cr-stat-v">{hi}</span>
+                        <span className="cr-stat-l">Best</span>
+                    </div>
                 </div>
-                <div className="cr-canvas-wrap" onClick={handleAction} onTouchStart={onTS} onTouchEnd={onTE}>
-                    <canvas ref={canvasRef} width={W} height={H} className="cr-canvas" />
+
+                <div
+                    className="cr-canvas-wrap"
+                    onClick={handleAction}
+                    onTouchStart={onTS}
+                    onTouchEnd={onTE}
+                >
+                    <canvas
+                        ref={canvasRef}
+                        width={W}
+                        height={H}
+                        className="cr-canvas"
+                    />
                 </div>
+
                 <div className="cr-mobile-btns">
-                    <button className="cr-mbtn" onClick={moveLeft} aria-label="Move left">←</button>
-                    <button className="cr-mbtn cr-mbtn-go" onClick={handleAction} aria-label="Start">▶</button>
-                    <button className="cr-mbtn" onClick={moveRight} aria-label="Move right">→</button>
+                    <button
+                        type="button"
+                        className="cr-mbtn"
+                        onClick={moveLeft}
+                        aria-label="Move left"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        className="cr-mbtn cr-mbtn-go"
+                        onClick={handleAction}
+                        aria-label="Start"
+                    >
+                        <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path d="M8 5v14l11-7L8 5z" />
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        className="cr-mbtn"
+                        onClick={moveRight}
+                        aria-label="Move right"
+                    >
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
-                <p className="text-center text-white-50/40 mt-4 text-sm cr-desktop-hint">
-                    <kbd className="cr-kbd">←</kbd> <kbd className="cr-kbd">→</kbd> to dodge &nbsp;·&nbsp; <kbd className="cr-kbd">Space</kbd> to start
+
+                <p className="cr-hint">
+                    <kbd className="cr-kbd">←</kbd>
+                    <kbd className="cr-kbd">→</kbd>
+                    <span>Dodge</span>
+                    <span className="cr-hint-sep">·</span>
+                    <kbd className="cr-kbd">Space</kbd>
+                    <span>Start</span>
                 </p>
             </div>
         </section>
