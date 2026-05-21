@@ -36,7 +36,7 @@ const Hero = () => {
                       >
                         <img
                           src={word.imgPath}
-                          alt="person"
+                          alt={word.text}
                           className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white-50"
                         />
                         <span>{word.text}</span>
@@ -45,14 +45,18 @@ const Hero = () => {
                   </span>
                 </span>
               </h1>
-              <h1>into Real Projects</h1>
-              <h1>that Deliver Results</h1>
+              <h1>into Production-Grade</h1>
+              <h1>Systems that Ship.</h1>
             </div>
 
-            <p className="text-white-50 md:text-xl relative z-10 pointer-events-none">
-              Hi, I'm Rohit, a software developer based in Boston with a passion for
-              code.
-            </p>
+            <div className="relative z-10 pointer-events-none max-w-2xl flex flex-col gap-3 md:gap-4">
+              <p className="text-white-50 md:text-xl">
+                Backend engineer. Production mindset. Real impact.
+              </p>
+              <p className="font-mono text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/40">
+                Loan platforms · African markets · Production scale
+              </p>
+            </div>
 
             <Button text="Scroll Down" href="about" />
           </div>

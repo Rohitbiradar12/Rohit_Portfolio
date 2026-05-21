@@ -62,7 +62,6 @@ section:last-of-type::after {
   display: none;
 }
 
-/* Remove top gradient from Contact section to prevent blur */
 #contact::before {
   display: none;
 }
@@ -2947,11 +2946,7 @@ section:last-of-type::after {
   }
 }
 
-/* ============================================
-   PREMIUM MOBILE SIDEBAR STYLES
-   ============================================ */
 
-/* Mobile Menu Button */
 .mobile-menu-btn {
   display: none;
   align-items: center;
@@ -2977,7 +2972,6 @@ section:last-of-type::after {
   }
 }
 
-/* Hamburger Icon */
 .hamburger {
   display: flex;
   flex-direction: column;
@@ -3008,7 +3002,6 @@ section:last-of-type::after {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Mobile Overlay */
 .mobile-overlay {
   position: fixed;
   inset: 0;
@@ -3025,7 +3018,7 @@ section:last-of-type::after {
   visibility: visible;
 }
 
-/* Mobile Sidebar */
+
 .mobile-sidebar {
   position: fixed;
   top: 0;
@@ -3052,7 +3045,7 @@ section:last-of-type::after {
   padding: 1.5rem;
 }
 
-/* Sidebar Header */
+
 .mobile-sidebar-header {
   display: flex;
   align-items: center;
@@ -3091,7 +3084,7 @@ section:last-of-type::after {
   color: #a78bfa;
 }
 
-/* Sidebar Navigation */
+
 .mobile-sidebar-nav {
   flex: 1;
 }
@@ -3161,7 +3154,7 @@ section:last-of-type::after {
   transform: translateX(0);
 }
 
-/* Sidebar Footer */
+
 .mobile-sidebar-footer {
   margin-top: auto;
   padding-top: 1.5rem;
@@ -3199,7 +3192,7 @@ section:last-of-type::after {
   color: #71717a;
 }
 
-/* Hide desktop nav elements on mobile */
+
 @media (max-width: 768px) {
   .navbar .desktop {
     display: none;
@@ -3210,16 +3203,14 @@ section:last-of-type::after {
   }
 }
 
-/* ============================================
-   PREMIUM EXPERIENCE SECTION STYLES
-   ============================================ */
+
 
 .experience-section {
   position: relative;
   background: transparent;
 }
 
-/* Background Effects */
+
 .experience-bg-gradient {
   position: absolute;
   inset: 0;
@@ -3268,7 +3259,7 @@ section:last-of-type::after {
   pointer-events: none;
 }
 
-/* Timeline */
+
 .experience-timeline {
   position: relative;
   padding-left: 40px;
@@ -3318,7 +3309,7 @@ section:last-of-type::after {
   border-radius: 4px;
 }
 
-/* Timeline Node */
+
 .experience-card-row {
   position: relative;
 }
@@ -3397,7 +3388,7 @@ section:last-of-type::after {
   }
 }
 
-/* Experience Card */
+
 .experience-card {
   position: relative;
   background: rgba(255, 255, 255, 0.02);
@@ -3467,7 +3458,7 @@ section:last-of-type::after {
   }
 }
 
-/* Image Section */
+
 .experience-image-section {
   position: relative;
   flex-shrink: 0;
@@ -3565,7 +3556,7 @@ section:last-of-type::after {
   }
 }
 
-/* Content Section */
+
 .experience-content-section {
   flex: 1;
   display: flex;
@@ -3634,7 +3625,6 @@ section:last-of-type::after {
   color: #8B5CF6;
 }
 
-/* Quote Section */
 .experience-quote {
   position: relative;
   padding: 16px 20px;
@@ -3657,7 +3647,7 @@ section:last-of-type::after {
   font-size: 0.95rem;
 }
 
-/* Responsibilities */
+
 .experience-responsibilities {
   display: flex;
   flex-direction: column;
@@ -3704,7 +3694,7 @@ section:last-of-type::after {
   margin-top: 8px;
 }
 
-/* Shine Effect */
+
 .experience-shine {
   position: absolute;
   top: 0;
@@ -3729,7 +3719,6 @@ section:last-of-type::after {
   }
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .experience-timeline {
     padding-left: 30px;
@@ -4883,7 +4872,7 @@ section:last-of-type::after {
   }
 }
 
-/* Error Animation Styles */
+
 .error-modal {
   border-color: rgba(239, 68, 68, 0.3);
   box-shadow:
@@ -4972,14 +4961,12 @@ section:last-of-type::after {
   }
 }
 
-/* ============================================
-   CODE RUNNER — Premium Minimalist
-============================================ */
+
 .cr-section {
   position: relative;
 }
 
-/* Subtitle */
+
 .cr-subtitle {
   max-width: 32rem;
   margin: 1rem auto 0;
@@ -4993,7 +4980,7 @@ section:last-of-type::after {
   .cr-subtitle { font-size: 0.95rem; }
 }
 
-/* Stats tiles */
+
 .cr-stats {
   display: flex;
   justify-content: center;
@@ -5055,7 +5042,7 @@ section:last-of-type::after {
   color: #fbbf24;
 }
 
-/* Canvas frame */
+
 .cr-canvas-wrap {
   position: relative;
   display: flex;
@@ -5091,7 +5078,7 @@ section:last-of-type::after {
   .cr-canvas-wrap { border-radius: 12px; }
 }
 
-/* Mobile control row */
+
 .cr-mobile-btns {
   display: none;
   justify-content: center;
@@ -5140,7 +5127,7 @@ section:last-of-type::after {
   .cr-mobile-btns { display: flex; }
 }
 
-/* Desktop hint — monospace */
+
 .cr-hint {
   display: flex;
   flex-wrap: wrap;
@@ -5759,14 +5746,12 @@ a.ach-card.ach-card-link {
   opacity: 0.55;
 }
 
-/* ============================================
-   TECH ARSENAL — Minimalist Developer Index
-============================================ */
+
 .ts-section {
   position: relative;
 }
 
-/* Stats bar — single monospace ribbon */
+
 .ts-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -5796,7 +5781,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Stack of category groups */
+
 .ts-stack {
   display: flex;
   flex-direction: column;
@@ -5876,7 +5861,7 @@ a.ach-card.ach-card-link {
   .ts-group-grid { grid-template-columns: repeat(7, 1fr); }
 }
 
-/* Chip — hairline minimalist */
+
 .ts-chip {
   position: relative;
   isolation: isolate;
@@ -5892,7 +5877,7 @@ a.ach-card.ach-card-link {
   background: rgba(255, 255, 255, 0.012);
 }
 
-/* Cursor-following spotlight */
+
 .ts-chip-spotlight {
   position: absolute;
   inset: 0;
@@ -5912,7 +5897,7 @@ a.ach-card.ach-card-link {
   opacity: 1;
 }
 
-/* Bottom accent line that draws in */
+
 .ts-chip-accent {
   position: absolute;
   bottom: 0;
@@ -5995,14 +5980,12 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* ============================================
-   ABOUT — Minimalist Profile Index
-============================================ */
+
 .ab-section {
   position: relative;
 }
 
-/* Stats bar — single monospace ribbon */
+
 .ab-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -6032,7 +6015,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Stack of section groups */
+
 .ab-stack {
   display: flex;
   flex-direction: column;
@@ -6090,7 +6073,7 @@ a.ach-card.ach-card-link {
   flex-shrink: 0;
 }
 
-/* Profile — photo + bio */
+
 .ab-profile {
   display: flex;
   flex-direction: column;
@@ -6167,7 +6150,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Skill tags */
+
 .ab-tags {
   display: flex;
   flex-wrap: wrap;
@@ -6220,7 +6203,7 @@ a.ach-card.ach-card-link {
   z-index: 1;
 }
 
-/* Social links */
+
 .ab-socials {
   display: flex;
   flex-wrap: wrap;
@@ -6299,14 +6282,12 @@ a.ach-card.ach-card-link {
   transform: translate(2px, -2px);
 }
 
-/* ============================================
-   PROJECTS — Premium Carousel
-============================================ */
+
 .pj-section {
   position: relative;
 }
 
-/* Subtitle (sits centered below TitleHeader) */
+
 .pj-subtitle {
   max-width: 32rem;
   margin: 1rem auto 0;
@@ -6320,7 +6301,7 @@ a.ach-card.ach-card-link {
   .pj-subtitle { font-size: 0.95rem; }
 }
 
-/* Controls row — nav + counter, right-aligned, above the track */
+
 .pj-controls-row {
   display: flex;
   align-items: center;
@@ -6392,7 +6373,7 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.3);
 }
 
-/* Track — horizontal scroll with snap */
+
 .pj-track {
   display: flex;
   gap: 1.25rem;
@@ -6410,7 +6391,7 @@ a.ach-card.ach-card-link {
   .pj-track { gap: 1.5rem; }
 }
 
-/* Card */
+
 .pj-card {
   position: relative;
   isolation: isolate;
@@ -6442,7 +6423,7 @@ a.ach-card.ach-card-link {
   transform: translateY(-8px);
 }
 
-/* Color palettes — base gradient (covers content area) */
+
 .pj-violet {
   --pj-c1: #1f1242;
   --pj-c2: #3d2380;
@@ -6479,7 +6460,7 @@ a.ach-card.ach-card-link {
 }
 .pj-blue:hover { box-shadow: 0 30px 70px -16px rgba(79, 115, 184, 0.7); }
 
-/* Media area — confined to top of card */
+
 .pj-card-media {
   position: relative;
   flex-shrink: 0;
@@ -6503,7 +6484,7 @@ a.ach-card.ach-card-link {
   filter: saturate(1.05) brightness(0.95);
 }
 
-/* Fade from image down to card body color */
+
 .pj-card-media-fade {
   position: absolute;
   inset: 0;
@@ -6517,7 +6498,7 @@ a.ach-card.ach-card-link {
   );
 }
 
-/* Top overlay row (tag + tech tiles) */
+
 .pj-card-top {
   position: absolute;
   top: 0;
@@ -6537,7 +6518,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Body — sits below media on the colored bg */
+
 .pj-card-body {
   flex: 1;
   display: flex;
@@ -6553,7 +6534,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Border ring on top of everything */
+
 .pj-card-border {
   position: absolute;
   inset: 0;
@@ -6620,7 +6601,7 @@ a.ach-card.ach-card-link {
   object-fit: contain;
 }
 
-/* Content area */
+
 .pj-card-title {
   font-size: 1.3rem;
   font-weight: 700;
@@ -6645,7 +6626,7 @@ a.ach-card.ach-card-link {
   overflow: hidden;
 }
 
-/* Metric tiles */
+
 .pj-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -6687,14 +6668,12 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.55);
 }
 
-/* ============================================
-   EXPERIENCE — Timeline + Expandable Cards
-============================================ */
+
 .ex-section {
   position: relative;
 }
 
-/* Stats ribbon */
+
 .ex-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -6724,7 +6703,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Timeline container */
+
 .ex-timeline-wrap {
   position: relative;
   padding-left: 2rem;
@@ -6749,7 +6728,7 @@ a.ach-card.ach-card-link {
   margin-bottom: 0;
 }
 
-/* Timeline marker (dot + connecting line) */
+
 .ex-marker {
   position: absolute;
   left: -2rem;
@@ -6800,7 +6779,7 @@ a.ach-card.ach-card-link {
   margin-top: 0.35rem;
 }
 
-/* Card */
+
 .ex-card {
   position: relative;
   overflow: hidden;
@@ -6834,7 +6813,7 @@ a.ach-card.ach-card-link {
   opacity: 1;
 }
 
-/* Toggle (clickable header) */
+
 .ex-toggle {
   width: 100%;
   text-align: left;
@@ -6863,7 +6842,7 @@ a.ach-card.ach-card-link {
   gap: 1rem;
 }
 
-/* Date pill */
+
 .ex-date-pill {
   display: inline-flex;
   align-items: center;
@@ -6883,7 +6862,7 @@ a.ach-card.ach-card-link {
   flex-shrink: 0;
 }
 
-/* Chevron */
+
 .ex-chevron {
   color: rgba(255, 255, 255, 0.4);
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
@@ -6900,7 +6879,7 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Title */
+
 .ex-title {
   font-size: 1.15rem;
   font-weight: 700;
@@ -6913,7 +6892,7 @@ a.ach-card.ach-card-link {
   .ex-title { font-size: 1.4rem; }
 }
 
-/* Meta row (company + location) */
+
 .ex-meta {
   display: flex;
   flex-wrap: wrap;
@@ -6942,7 +6921,7 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.25);
 }
 
-/* Expandable body (grid-rows animation) */
+
 .ex-body {
   display: grid;
   grid-template-rows: 0fr;
@@ -6964,7 +6943,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Responsibility list */
+
 .ex-resp-list {
   list-style: none;
   padding: 0;
@@ -7009,7 +6988,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Tech tags */
+
 .ex-tech-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.07);
@@ -7041,14 +7020,12 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 1);
 }
 
-/* ============================================
-   RESUME — Minimalist Document Showcase
-============================================ */
+
 .rs-section {
   position: relative;
 }
 
-/* Stats ribbon */
+
 .rs-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -7078,7 +7055,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Preview area */
+
 .rs-preview-wrap {
   display: flex;
   justify-content: center;
@@ -7162,7 +7139,7 @@ a.ach-card.ach-card-link {
   text-transform: uppercase;
 }
 
-/* Actions row */
+
 .rs-actions {
   display: flex;
   flex-direction: column;
@@ -7183,7 +7160,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Buttons */
+
 .rs-btn {
   position: relative;
   isolation: isolate;
@@ -7283,7 +7260,7 @@ a.ach-card.ach-card-link {
   transform: translateX(3px);
 }
 
-/* CTA link below buttons */
+
 .rs-cta {
   display: flex;
   align-items: center;
@@ -7320,14 +7297,12 @@ a.ach-card.ach-card-link {
   transform: translateX(4px);
 }
 
-/* ============================================
-   TESTIMONIALS — Minimalist Endorsements
-============================================ */
+
 .tm-section {
   position: relative;
 }
 
-/* Stats ribbon */
+
 .tm-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -7357,7 +7332,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Grid */
+
 .tm-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -7377,7 +7352,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Card */
+
 .tm-card {
   position: relative;
   isolation: isolate;
@@ -7393,7 +7368,7 @@ a.ach-card.ach-card-link {
   background: rgba(255, 255, 255, 0.012);
 }
 
-/* Cursor-following spotlight */
+
 .tm-spotlight {
   position: absolute;
   inset: 0;
@@ -7428,7 +7403,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Quote glyph */
+
 .tm-quote-mark {
   color: rgba(255, 255, 255, 0.22);
   margin-bottom: 1.1rem;
@@ -7439,7 +7414,7 @@ a.ach-card.ach-card-link {
   color: rgba(167, 139, 250, 0.55);
 }
 
-/* Quote text */
+
 .tm-quote {
   flex: 1;
   font-size: 0.92rem;
@@ -7460,7 +7435,7 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.88);
 }
 
-/* Divider */
+
 .tm-divider {
   width: 28px;
   height: 1px;
@@ -7468,7 +7443,7 @@ a.ach-card.ach-card-link {
   margin-bottom: 1.25rem;
 }
 
-/* Author block */
+
 .tm-author {
   display: flex;
   align-items: center;
@@ -7556,14 +7531,12 @@ a.ach-card.ach-card-link {
   color: rgba(255, 255, 255, 0.82);
 }
 
-/* ============================================
-   CONTACT — Minimalist Form
-============================================ */
+
 .ct-section {
   position: relative;
 }
 
-/* Stats ribbon */
+
 .ct-stats-bar {
   display: flex;
   flex-wrap: wrap;
@@ -7593,7 +7566,7 @@ a.ach-card.ach-card-link {
   font-weight: 400;
 }
 
-/* Two-column layout */
+
 .ct-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -7608,7 +7581,7 @@ a.ach-card.ach-card-link {
   }
 }
 
-/* Form container */
+
 .ct-form-wrap {
   position: relative;
   background: rgba(255, 255, 255, 0.018);
@@ -7702,7 +7675,6 @@ a.ach-card.ach-card-link {
   line-height: 1.55;
 }
 
-/* Submit button — pill with cursor spotlight */
 .ct-submit {
   position: relative;
   isolation: isolate;
@@ -7785,7 +7757,6 @@ a.ach-card.ach-card-link {
   transform: translateX(3px);
 }
 
-/* 3D scene container */
 .ct-scene-wrap {
   position: relative;
   min-height: 22rem;
@@ -7815,7 +7786,6 @@ a.ach-card.ach-card-link {
   cursor: grabbing;
 }
 
-/* Contact modal — minimalist success / error */
 .ct-modal-overlay {
   position: fixed;
   inset: 0;
@@ -7880,7 +7850,6 @@ a.ach-card.ach-card-link {
   height: 60px;
 }
 
-/* Success — green stroke draw */
 .ct-modal-success .ct-modal-ring {
   stroke: #10b981;
   stroke-width: 2;
@@ -7900,7 +7869,6 @@ a.ach-card.ach-card-link {
   animation: ct-stroke-draw 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
 }
 
-/* Error — red stroke draw */
 .ct-modal-error .ct-modal-ring {
   stroke: #ef4444;
   stroke-width: 2;
@@ -8031,9 +7999,7 @@ a.ach-card.ach-card-link {
   transform: translateX(3px);
 }
 
-/* ============================================
-   HERO CTA — "See My Work"
-============================================ */
+
 .hero-cta {
   position: relative;
   isolation: isolate;
@@ -8113,9 +8079,7 @@ a.ach-card.ach-card-link {
   transform: translateY(3px);
 }
 
-/* ============================================
-   NAVBAR CTA — "Contact me" pill
-============================================ */
+
 .nav-cta {
   position: relative;
   display: inline-flex;
@@ -8165,7 +8129,6 @@ a.ach-card.ach-card-link {
   transform: translateX(2px);
 }
 
-/* Mobile sidebar variant — bigger, full-width */
 .nav-cta-mobile {
   width: 100%;
   justify-content: center;
@@ -8177,4 +8140,21 @@ a.ach-card.ach-card-link {
 .nav-cta-mobile .nav-cta-arrow {
   width: 15px;
   height: 15px;
+}
+
+.ab-section,
+.pj-section,
+.ex-section,
+.ach-section,
+.ts-section,
+.rs-section,
+.tm-section,
+.ct-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+.cr-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
 }
