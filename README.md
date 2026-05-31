@@ -133,5 +133,5 @@ Email: biradarrohit155@gmail.com
 ---
 
 <div align="center">
-  <sub>Designed and developed by me</sub>
+  <sub>Always open to connecting, collaborating, and building cool things.</sub>
 </div>
