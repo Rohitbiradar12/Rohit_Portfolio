@@ -266,7 +266,7 @@ const projects = [
   },
   {
     id: 2,
-    title: "Real-Time Project Management System",
+    title: "Work-Nest",
     des: "Full-stack Jira Clone project built by using Next JS 14, React, TypeScript, Shadcn UI, Tailwind CSS, Hono, backblaze,resend,nodemailer and Appwrite.",
     img: "/images/worknest.png",
     iconLists: ["/images/logos/react.png", "/images/logos/node.png", "/images/logos/git.svg", "/images/logo2.png"],
@@ -282,11 +282,19 @@ const projects = [
   },
   {
     id: 4,
-    title: "Full-Stack Banking System",
-    des: "A full-stack banking application built with Spring MVC, featuring secure account management, fund transfers, transaction history, and role-based authentication.",
-    img: "/images/bank.png",
-    iconLists: ["/images/logos/java.webp", "/images/logos/html5.svg", "/images/logos/css3.svg", "/images/logos/spring.png"],
-    link: "https://github.com/Rohitbiradar12/Banking-System",
+    title: "CallPilot",
+    des: "Autonomous AI voice agent that finds providers, places real calls, and books appointments end-to-end. Built with ElevenLabs voice AI, Twilio telephony, FastAPI, and Groq LLM inference.",
+    img: "/images/call-pilot.png",
+    iconLists: ["/images/logos/react.png", "/images/logos/python.svg", "/images/logos/postgres.png"],
+    link: "https://call-pilot-pearl.vercel.app/",
+  },
+  {
+    id: 5,
+    title: "CogAgent Marketplace",
+    des: "Full-stack decentralized AI agent marketplace built on real Bitcoin block data. Autonomous agents earn, compete, collaborate, and transact using the COG token protocol.",
+    img: "/images/cogagent.png",
+    iconLists: ["/images/logos/react.png", "/images/logos/typescript.png", "/images/logos/python.svg"],
+    link: "https://cog-agent-marketplace.vercel.app/",
   },
 ];
 

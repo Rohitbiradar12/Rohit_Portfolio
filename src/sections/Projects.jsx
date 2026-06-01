@@ -34,11 +34,19 @@ const PROJECT_META = {
         ],
     },
     4: {
-        tag: "Banking System",
+        tag: "AI Voice Agent",
         palette: "blue",
         metrics: [
-            { value: "Secure", label: "Auth" },
-            { value: "RBAC", label: "Roles" },
+            { value: "Voice", label: "Real-time" },
+            { value: "Auto", label: "Booking" },
+        ],
+    },
+    5: {
+        tag: "Decentralized AI",
+        palette: "emerald",
+        metrics: [
+            { value: "On-Chain", label: "Bitcoin data" },
+            { value: "COG", label: "Token protocol" },
         ],
     },
 };

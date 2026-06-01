@@ -6460,6 +6460,15 @@ a.ach-card.ach-card-link {
 }
 .pj-blue:hover { box-shadow: 0 30px 70px -16px rgba(79, 115, 184, 0.7); }
 
+.pj-emerald {
+  --pj-c1: #0a2620;
+  --pj-c2: #1a5e4e;
+  --pj-c3: #3fae8c;
+  background: linear-gradient(165deg, #061a14 0%, #0a2620 45%, #1a5e4e 100%);
+  box-shadow: 0 20px 50px -20px rgba(63, 174, 140, 0.45);
+}
+.pj-emerald:hover { box-shadow: 0 30px 70px -16px rgba(63, 174, 140, 0.7); }
+
 
 .pj-card-media {
   position: relative;
