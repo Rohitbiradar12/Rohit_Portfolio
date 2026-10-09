@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import useGSAP from "../hooks/usePortfolioGSAP";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import TitleHeader from "../components/TitleHeader";
@@ -26,14 +26,35 @@ const ChevronIcon = () => (
 
 const ROLE_META = {
     0: {
+        company: "Amazon Web Services",
+        location: "Redmond, WA",
+        accent: "#FF9900",
+        badge: "Most Recent",
+        metrics: [
+            { value: "Bedrock", label: "Agentic tool-calling loop" },
+            { value: "ECS Fargate", label: "CDK pipeline deploy" },
+            { value: "MCP Server", label: "CLI as structured tool" },
+        ],
+        techs: [
+            "Amazon Bedrock",
+            "ECS Fargate",
+            "AWS CDK",
+            "CloudFront",
+            "DynamoDB",
+            "KMS",
+            "Python",
+            "MCP",
+        ],
+    },
+    1: {
         company: "Torry Harris Integration Solutions",
         location: "Bangalore, India",
         accent: "#a78bfa",
-        badge: "Most Recent",
+        logoBg: "#ffffff",
         metrics: [
-            { value: "10+", label: "Microservices shipped" },
-            { value: "35%", label: "Faster loan processing" },
-            { value: "98.99%", label: "Transaction success rate" },
+            { value: "Spring Boot", label: "Loan lifecycle services" },
+            { value: "Kafka + Redis", label: "Workflows and caching" },
+            { value: "SQL", label: "Oracle and PostgreSQL" },
         ],
         techs: [
             "Spring Boot",
@@ -45,10 +66,11 @@ const ROLE_META = {
             "REST",
         ],
     },
-    1: {
+    2: {
         company: "Torry Harris Integration Solutions",
         location: "Bangalore, India",
         accent: "#60a5fa",
+        logoBg: "#ffffff",
         techs: [
             "Spring Boot",
             "JWT",
@@ -58,10 +80,11 @@ const ROLE_META = {
             "Java",
         ],
     },
-    2: {
+    3: {
         company: "REVA Developer's Club",
         location: "REVA University, India",
         accent: "#34d399",
+        logoBg: "#ffffff",
         techs: [
             "REST APIs",
             "Database Design",
@@ -113,22 +136,20 @@ const PinIcon = () => (
     </svg>
 );
 
-const ExperienceRow = ({ card, index, isLast }) => {
+const ExperienceRow = ({ card, index, isLast, isOpen, onToggle }) => {
     const meta = ROLE_META[index] || {};
     const accent = meta.accent || "#a78bfa";
     const nextMeta = ROLE_META[index + 1];
     const nextAccent = nextMeta?.accent || accent;
-    const [isOpen, setIsOpen] = useState(index === 0);
 
-    const toggle = useCallback(() => setIsOpen((v) => !v), []);
     const handleKey = useCallback(
         (e) => {
             if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                toggle();
+                onToggle(index);
             }
         },
-        [toggle]
+        [onToggle, index]
     );
 
     return (
@@ -138,7 +159,10 @@ const ExperienceRow = ({ card, index, isLast }) => {
         >
             <div className="tl-rail">
                 <div className="tl-num">{String(index + 1).padStart(2, "0")}</div>
-                <div className="tl-logo">
+                <div
+                    className="tl-logo"
+                    style={meta.logoBg ? { background: meta.logoBg } : undefined}
+                >
                     <img
                         src={card.logoPath}
                         alt={meta.company || "company"}
@@ -155,7 +179,7 @@ const ExperienceRow = ({ card, index, isLast }) => {
 
                 <div
                     className="tl-card-head"
-                    onClick={toggle}
+                    onClick={() => onToggle(index)}
                     onKeyDown={handleKey}
                     role="button"
                     tabIndex={0}
@@ -230,6 +254,11 @@ const ExperienceRow = ({ card, index, isLast }) => {
 
 const Experience = () => {
     const sectionRef = useRef(null);
+    const [openIndex, setOpenIndex] = useState(0);
+
+    const handleToggle = useCallback((index) => {
+        setOpenIndex((prev) => (prev === index ? -1 : index));
+    }, []);
 
     const handleTimelineMouseMove = useCallback((e) => {
         const card = e.target.closest(".tl-card");
@@ -315,6 +344,8 @@ const Experience = () => {
                         {String(expCards.length).padStart(2, "0")} Roles
                     </span>
                     <span className="tl-stats-dot">·</span>
+                    <span>AWS · Agentic AI</span>
+                    <span className="tl-stats-dot">·</span>
                     <span>Microservices</span>
                     <span className="tl-stats-dot">·</span>
                     <span>Cloud-Native Backend</span>
@@ -330,6 +361,8 @@ const Experience = () => {
                             card={card}
                             index={i}
                             isLast={i === expCards.length - 1}
+                            isOpen={openIndex === i}
+                            onToggle={handleToggle}
                         />
                     ))}
                 </div>
