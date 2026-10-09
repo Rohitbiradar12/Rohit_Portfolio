@@ -68,6 +68,9 @@ const ArrowIcon = ({ direction = "right" }) => (
     </svg>
 );
 
+const openAI = (projectId) =>
+    window.dispatchEvent(new CustomEvent("ask-rohit:open", { detail: { mode: "chat", projectId: "project-" + projectId } }));
+
 const ProjectCard = ({ project }) => {
     const meta = PROJECT_META[project.id] || {
         palette: "violet",
@@ -133,6 +136,16 @@ const ProjectCard = ({ project }) => {
             </div>
 
             <div className="pj-card-border" />
+
+            <button
+                type="button"
+                className="pj-ask-btn"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); openAI(project.id); }}
+                aria-label={`Ask AI about ${project.title}`}
+                title="Ask AI about this project"
+            >
+                ✧
+            </button>
         </a>
     );
 };
