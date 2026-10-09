@@ -1,0 +1,501 @@
+.ct-modal-btn svg {
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ct-modal-btn:hover svg {
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateX(3px);
+}
+
+.hero-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 1rem 1.75rem;
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: border-color 0.35s ease, background-color 0.35s ease,
+    color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 768px) {
+  .hero-cta {
+    padding: 1.1rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+.hero-cta:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.hero-cta:active {
+  transform: translateY(0);
+}
+
+.hero-cta-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    240px circle at 50% 50%,
+    rgba(167, 139, 250, 0.18),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.hero-cta:hover .hero-cta-spotlight {
+  opacity: 1;
+}
+
+.hero-cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-cta-arrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-cta:hover .hero-cta-arrow {
+  color: #ffffff;
+  transform: translateY(3px);
+}
+
+.nav-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-cta:hover {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-cta:active {
+  transform: translateY(0);
+}
+
+.nav-cta-label {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-cta-arrow {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-cta:hover .nav-cta-arrow {
+  color: #ffffff;
+  transform: translateX(2px);
+}
+
+.nav-cta-mobile {
+  width: 100%;
+  justify-content: center;
+  padding: 0.95rem 1.4rem;
+  font-size: 0.95rem;
+  gap: 0.65rem;
+}
+
+.nav-cta-mobile .nav-cta-arrow {
+  width: 15px;
+  height: 15px;
+}
+
+.ab-section,
+.pj-section,
+.ex-section,
+.ach-section,
+.ts-section,
+.rs-section,
+.tm-section,
+.ct-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
+.cr-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
+}
+
+.tl-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.75rem auto 4rem;
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .tl-stats-bar {
+    gap: 1rem;
+    margin: 2rem auto 5rem;
+    font-size: 0.82rem;
+  }
+}
+
+.tl-stats-dot {
+  color: rgba(255, 255, 255, 0.22);
+  font-weight: 400;
+}
+
+.tl-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .tl-timeline {
+    gap: 2.5rem;
+  }
+}
+
+.tl-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .tl-row {
+    gap: 2rem;
+  }
+}
+
+.tl-rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 3.25rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .tl-rail {
+    width: 4rem;
+    gap: 1rem;
+  }
+}
+
+.tl-num {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1.5px solid var(--accent, #a78bfa);
+  border-radius: 50%;
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent, #a78bfa);
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--accent, #a78bfa) 45%, transparent);
+}
+
+@media (min-width: 768px) {
+  .tl-num {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.76rem;
+  }
+}
+
+.tl-logo {
+  width: 3.25rem;
+  height: 3.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+  .tl-logo {
+    width: 4rem;
+    height: 4rem;
+    padding: 0.6rem;
+  }
+}
+
+.tl-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.tl-line {
+  position: absolute;
+  top: calc(2rem + 0.85rem + 3.25rem + 0.85rem);
+  bottom: -2rem;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    var(--accent, #a78bfa) 0%,
+    var(--next-accent, #a78bfa) 100%
+  );
+  opacity: 0.35;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 768px) {
+  .tl-line {
+    top: calc(2.2rem + 1rem + 4rem + 1rem);
+    bottom: -2.5rem;
+  }
+}
+
+.tl-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.018);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.tl-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.028);
+}
+
+.tl-accent-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent, #a78bfa);
+  box-shadow: 0 0 16px -2px color-mix(in srgb, var(--accent, #a78bfa) 60%, transparent);
+}
+
+.tl-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 1.4rem 1.1rem 1.65rem;
+  min-height: 9rem;
+}
+
+@media (min-width: 768px) {
+  .tl-card-head {
+    padding: 1.65rem 1.75rem 1.25rem 2rem;
+    min-height: 10.5rem;
+  }
+}
+
+.tl-card-head-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.tl-company {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.98);
+}
+
+@media (min-width: 768px) {
+  .tl-company {
+    font-size: 1.4rem;
+  }
+}
+
+.tl-role {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: var(--accent, #a78bfa);
+}
+
+@media (min-width: 768px) {
+  .tl-role {
+    font-size: 1rem;
+  }
+}
+
+.tl-location {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (min-width: 768px) {
+  .tl-location {
+    font-size: 0.88rem;
+  }
+}
+
+.tl-location svg {
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.tl-date {
+  flex-shrink: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", "Roboto Mono",
+    Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  padding-top: 0.4rem;
+}
+
+@media (min-width: 768px) {
+  .tl-date {
+    font-size: 0.72rem;
+  }
+}
+
+.tl-bullets {
+  list-style: none;
+  padding: 0 1.4rem 1.25rem 1.65rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .tl-bullets {
+    padding: 0 1.75rem 1.5rem 2rem;
+    gap: 1rem;
+  }
+}
+
+.tl-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.tl-bullet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, #a78bfa);
+  flex-shrink: 0;
+  margin-top: 0.6rem;
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent, #a78bfa) 50%, transparent);
+}
+
+.tl-bullet-text {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.003em;
+}
+
+@media (min-width: 768px) {
+  .tl-bullet-text {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+}
+
+.tl-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 0 1.4rem;
+}
+
+@media (min-width: 768px) {
+  .tl-divider {
+    margin: 0 1.75rem 0 2rem;
+  }
+}
+
+.tl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.25rem 1.4rem 1.4rem 1.65rem;
+}
+
+@media (min-width: 768px) {
+  .tl-tags {
+    padding: 1.4rem 1.75rem 1.6rem 2rem;
+  }
+}
