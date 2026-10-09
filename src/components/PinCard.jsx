@@ -104,8 +104,9 @@ const PinCard = ({ children, title, link, className = "" }) => {
     }, [isHovered]);
 
     useEffect(() => {
-        if (cardRef.current) {
-            gsap.to(cardRef.current, {
+        const card = cardRef.current;
+        if (card && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            gsap.to(card, {
                 y: -5,
                 duration: 2.5,
                 ease: "power1.inOut",
@@ -115,9 +116,7 @@ const PinCard = ({ children, title, link, className = "" }) => {
         }
 
         return () => {
-            if (cardRef.current) {
-                gsap.killTweensOf(cardRef.current);
-            }
+            if (card) gsap.killTweensOf(card);
         };
     }, []); 
 
