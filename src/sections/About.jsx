@@ -1,7 +1,7 @@
 import { useRef, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import useGSAP from "../hooks/usePortfolioGSAP";
 import { FaLinkedinIn, FaGithub, FaXTwitter } from "react-icons/fa6";
 import { SiLeetcode } from "react-icons/si";
 
@@ -137,7 +137,7 @@ const About = () => {
                         <div className="ab-profile">
                             <div ref={photoRef} className="ab-photo-wrap">
                                 <img
-                                    src="/images/rohit-photo.png"
+                                    src="/images/rohit-photo.webp"
                                     alt="Rohit Biradar"
                                     className="ab-photo"
                                 />
@@ -155,9 +155,8 @@ const About = () => {
                                         Torry Harris Integration Solutions
                                     </span>
                                     , I worked on a Loan Management System across African
-                                    markets, contributing to the development of 15+
-                                    microservices that reduced loan processing time by 35%
-                                    and improved data reliability.
+                                    markets, contributing to microservices for loan
+                                    processing and data reliability.
                                 </p>
                                 <p>
                                     My expertise includes{" "}
@@ -165,15 +164,14 @@ const About = () => {
                                     <span className="text-highlight">PostgreSQL</span>,{" "}
                                     <span className="text-highlight">Kafka</span>,{" "}
                                     <span className="text-highlight">Redis</span>, and
-                                    automation pipelines — driving system performance and
-                                    achieving 99.99% transaction success rates.
+                                    automation pipelines for monitoring and reliable
+                                    backend workflows.
                                 </p>
                                 <p>
                                     With a Computer Science degree from{" "}
                                     <span className="text-highlight">REVA University</span>,
                                     I thrive on solving complex problems and delivering
-                                    impactful solutions. Starting September 2025, I'll be
-                                    pursuing my{" "}
+                                    impactful solutions. My education also includes studies toward an{" "}
                                     <span className="text-highlight">
                                         MS in Computer Science
                                     </span>{" "}
