@@ -1,11 +1,256 @@
-import { useRef, useCallback, memo } from "react";
+import { useRef, useCallback, memo, Suspense, useMemo, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import * as THREE from "three";
+import useGSAP from "../hooks/usePortfolioGSAP";
 
 import TitleHeader from "../components/TitleHeader";
+import SceneBoundary from "../components/SceneBoundary";
+import "../styles/achievements.css";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const G_COUNT    = 7200;
+const CORE_COUNT = 800;
+
+function GalaxyParticles({ scatterRef }) {
+    const groupRef   = useRef();
+    const galaxyRef  = useRef();
+    const galaxy2Ref = useRef();
+    const coreRef    = useRef();
+    const starsRef   = useRef();
+
+    // ── Circular disc texture (makes particles round, not square) ─────
+    const disc = useMemo(() => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 64; canvas.height = 64;
+        const ctx = canvas.getContext("2d");
+        const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        g.addColorStop(0,   "rgba(255,255,255,1)");
+        g.addColorStop(0.45,"rgba(255,255,255,0.85)");
+        g.addColorStop(1,   "rgba(255,255,255,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, 64, 64);
+        return new THREE.CanvasTexture(canvas);
+    }, []);
+
+    // ── All geometry data computed once ───────────────────────────────
+    const data = useMemo(() => {
+        // — Primary galaxy —
+        const gPos    = new Float32Array(G_COUNT * 3);
+        const gColors = new Float32Array(G_COUNT * 3);
+        const amber  = new THREE.Color("#fcd34d");
+        const gold   = new THREE.Color("#fde68a");
+        const rose   = new THREE.Color("#f472b6");
+        const magenta= new THREE.Color("#e879f9");
+        const purple = new THREE.Color("#a78bfa");
+        const indigo = new THREE.Color("#818cf8");
+        const cyan   = new THREE.Color("#22d3ee");
+        const palette = [amber, gold, rose, magenta, purple, indigo, cyan];
+
+        for (let i = 0; i < G_COUNT; i++) {
+            const arm         = i % 6;
+            const branchAngle = (arm / 6) * Math.PI * 2;
+            const radius      = Math.pow(Math.random(), 0.55) * 7.5;
+            const spin        = radius * 2.1;
+            const sc          = Math.pow(Math.random(), 3.0) * 0.55;
+            gPos[i*3]     = Math.cos(branchAngle + spin) * radius + (Math.random()-0.5) * sc * 1.6;
+            gPos[i*3+1]   = (Math.random()-0.5) * sc * 0.22;
+            gPos[i*3+2]   = Math.sin(branchAngle + spin) * radius + (Math.random()-0.5) * sc * 1.6;
+            const t   = radius / 7.5;
+            const seg = t * (palette.length - 1);
+            const lo  = Math.floor(seg);
+            const hi  = Math.min(lo + 1, palette.length - 1);
+            const c   = palette[lo].clone().lerp(palette[hi], seg - lo);
+            gColors[i*3] = c.r; gColors[i*3+1] = c.g; gColors[i*3+2] = c.b;
+        }
+
+        // Scatter target — fly outward from origin, big vertical spread
+        const gScatter = new Float32Array(G_COUNT * 3);
+        for (let i = 0; i < G_COUNT; i++) {
+            const ox = gPos[i*3], oy = gPos[i*3+1], oz = gPos[i*3+2];
+            const spread = 2.8 + Math.random() * 2.2;
+            gScatter[i*3]   = ox * spread + (Math.random()-0.5) * 4;
+            gScatter[i*3+1] = oy * spread + (Math.random()-0.5) * 14;
+            gScatter[i*3+2] = oz * spread + (Math.random()-0.5) * 4;
+        }
+        const gOrig = gPos.slice(); // pristine copy
+
+        // — Core —
+        const cPos = new Float32Array(CORE_COUNT * 3);
+        for (let i = 0; i < CORE_COUNT; i++) {
+            const r     = Math.pow(Math.random(), 1.2) * 1.1;
+            const theta = Math.random() * Math.PI * 2;
+            const phi   = Math.acos(2 * Math.random() - 1);
+            cPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+            cPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.32;
+            cPos[i*3+2] = r * Math.cos(phi);
+        }
+        const cScatter = new Float32Array(CORE_COUNT * 3);
+        for (let i = 0; i < CORE_COUNT; i++) {
+            cScatter[i*3]   = (Math.random()-0.5) * 22;
+            cScatter[i*3+1] = (Math.random()-0.5) * 22;
+            cScatter[i*3+2] = (Math.random()-0.5) * 22;
+        }
+        const cOrig = cPos.slice();
+
+        // — Background galaxy —
+        const g2Pos    = new Float32Array(1600 * 3);
+        const g2Colors = new Float32Array(1600 * 3);
+        const c1 = new THREE.Color("#6366f1"), c2 = new THREE.Color("#38bdf8");
+        for (let i = 0; i < 1600; i++) {
+            const arm = i % 3, ba = (arm/3)*Math.PI*2, r = Math.random()*5.8, sp = r*1.35;
+            g2Pos[i*3]   = Math.cos(ba+sp)*r + (Math.random()-0.5)*0.55;
+            g2Pos[i*3+1] = (Math.random()-0.5)*0.16;
+            g2Pos[i*3+2] = Math.sin(ba+sp)*r + (Math.random()-0.5)*0.55;
+            const gc = c1.clone().lerp(c2, r/5.8);
+            g2Colors[i*3]=gc.r; g2Colors[i*3+1]=gc.g; g2Colors[i*3+2]=gc.b;
+        }
+
+        // — Star field —
+        const stars = new Float32Array(1800 * 3);
+        for (let i = 0; i < 1800; i++) {
+            stars[i*3]=(Math.random()-0.5)*32; stars[i*3+1]=(Math.random()-0.5)*12; stars[i*3+2]=(Math.random()-0.5)*16;
+        }
+
+        return { gPos, gColors, gScatter, gOrig, cPos, cScatter, cOrig, g2Pos, g2Colors, stars };
+    }, []);
+
+    useFrame((state) => {
+        const t         = state.clock.elapsedTime;
+        const scattered = scatterRef.current;
+        const mx        = state.pointer.x * 0.14;
+        const my        = state.pointer.y * 0.07;
+
+        // ── Group rotation + float ─────────────────────────────────────
+        if (groupRef.current) {
+            groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, t * 0.05 + mx, 0.035);
+            groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, Math.sin(t*0.035)*0.11 - 0.18 + my, 0.035);
+            groupRef.current.position.y = Math.sin(t * 0.28) * 0.06;
+        }
+        if (galaxy2Ref.current) galaxy2Ref.current.rotation.y = -t * 0.025;
+        if (starsRef.current)   starsRef.current.rotation.y   =  t * 0.007;
+
+        // Core pulse (only when not scattered)
+        if (coreRef.current && !scattered) {
+            coreRef.current.scale.setScalar(1 + Math.sin(t * 2.4) * 0.09);
+        }
+
+        // ── Scatter / rejoin — mutate buffer positions every frame ─────
+        const scatterSpeed = 0.072;  // fast burst outward
+        const rejoinSpeed  = 0.028;  // slow gravity-like pull
+
+        if (galaxyRef.current) {
+            const pa   = galaxyRef.current.geometry.attributes.position.array;
+            const tgt  = scattered ? data.gScatter : data.gOrig;
+            const spd  = scattered ? scatterSpeed : rejoinSpeed;
+            for (let i = 0; i < G_COUNT * 3; i++) {
+                pa[i] += (tgt[i] - pa[i]) * spd;
+            }
+            galaxyRef.current.geometry.attributes.position.needsUpdate = true;
+        }
+
+        if (coreRef.current) {
+            const pa  = coreRef.current.geometry.attributes.position.array;
+            const tgt = scattered ? data.cScatter : data.cOrig;
+            const spd = scattered ? scatterSpeed + 0.02 : rejoinSpeed - 0.005;
+            for (let i = 0; i < CORE_COUNT * 3; i++) {
+                pa[i] += (tgt[i] - pa[i]) * spd;
+            }
+            coreRef.current.geometry.attributes.position.needsUpdate = true;
+        }
+    });
+
+    return (
+        <>
+            {/* Deep star field */}
+            <points ref={starsRef}>
+                <bufferGeometry>
+                    <bufferAttribute attach="attributes-position" count={1800} array={data.stars} itemSize={3} />
+                </bufferGeometry>
+                <pointsMaterial size={0.013} sizeAttenuation color="#ede9fe" transparent opacity={0.35} toneMapped={false} alphaMap={disc} alphaTest={0.01} />
+            </points>
+
+            {/* Background galaxy — depth layer */}
+            <points ref={galaxy2Ref} rotation={[Math.PI * 0.3, 0.6, 0.4]} position={[1.5, -0.5, -3]}>
+                <bufferGeometry>
+                    <bufferAttribute attach="attributes-position" count={1600} array={data.g2Pos}    itemSize={3} />
+                    <bufferAttribute attach="attributes-color"    count={1600} array={data.g2Colors} itemSize={3} />
+                </bufferGeometry>
+                <pointsMaterial size={0.02} sizeAttenuation vertexColors transparent opacity={0.22} toneMapped={false} alphaMap={disc} alphaTest={0.01} />
+            </points>
+
+            {/* Main interactive group */}
+            <group ref={groupRef}>
+                {/* Primary spiral arms — positions mutated each frame */}
+                <points ref={galaxyRef}>
+                    <bufferGeometry>
+                        <bufferAttribute attach="attributes-position" count={G_COUNT} array={data.gPos}    itemSize={3} />
+                        <bufferAttribute attach="attributes-color"    count={G_COUNT} array={data.gColors} itemSize={3} />
+                    </bufferGeometry>
+                    <pointsMaterial size={0.034} sizeAttenuation vertexColors transparent opacity={0.97} toneMapped={false} alphaMap={disc} alphaTest={0.01} />
+                </points>
+
+                {/* Core — positions mutated, scale pulses */}
+                <points ref={coreRef}>
+                    <bufferGeometry>
+                        <bufferAttribute attach="attributes-position" count={CORE_COUNT} array={data.cPos} itemSize={3} />
+                    </bufferGeometry>
+                    <pointsMaterial size={0.08} sizeAttenuation color="#fef9c3" transparent opacity={1} toneMapped={false} alphaMap={disc} alphaTest={0.01} />
+                </points>
+            </group>
+        </>
+    );
+}
+
+const AchievementGalaxy = () => {
+    if (typeof window !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+
+    const scatterRef  = useRef(false);
+    const labelRef    = useRef(null);
+
+    const handleClick = useCallback(() => {
+        scatterRef.current = !scatterRef.current;
+        if (labelRef.current) {
+            labelRef.current.textContent = scatterRef.current
+                ? "click to reform"
+                : "click to scatter";
+        }
+    }, []);
+
+    return (
+        <div
+            className="ach-galaxy-wrap"
+            onClick={handleClick}
+            style={{ cursor: "pointer" }}
+            title="Click to scatter · click again to reform"
+        >
+            <SceneBoundary>
+                <Suspense fallback={null}>
+                    <Canvas
+                        camera={{ position: [0, 1.4, 10.5], fov: 50 }}
+                        gl={{ antialias: true, alpha: true }}
+                        style={{ width: "100%", height: "100%" }}
+                    >
+                        <GalaxyParticles scatterRef={scatterRef} />
+                        <EffectComposer>
+                            <Bloom luminanceThreshold={0.01} luminanceSmoothing={0.9} intensity={2.2} mipmapBlur />
+                        </EffectComposer>
+                    </Canvas>
+                </Suspense>
+            </SceneBoundary>
+
+            <div className="ach-galaxy-fade" />
+
+            <div className="ach-galaxy-label">
+                <span className="ach-galaxy-dot" />
+                <span ref={labelRef}>click to scatter</span>
+            </div>
+        </div>
+    );
+};
 
 const achievements = [
     {
@@ -57,51 +302,7 @@ const summaryStats = [
     { value: "03", suffix: null, label: "Years Recognized", caption: "Of consistent excellence" },
 ];
 
-const AchievementCard = memo(({ ach, index }) => {
-    const cardRef = useRef(null);
-    const contentRef = useRef(null);
-
-    const handleMouseMove = useCallback((e) => {
-        if (!cardRef.current || !contentRef.current) return;
-
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const rx = ((y - cy) / cy) * 6;
-        const ry = ((x - cx) / cx) * 6;
-
-        const spot = cardRef.current.querySelector(".ach-spotlight");
-        if (spot) {
-            spot.style.background = `radial-gradient(420px circle at ${x}px ${y}px, ${ach.glow}, transparent 55%)`;
-            spot.style.opacity = "1";
-        }
-
-        gsap.to(contentRef.current, {
-            rotateX: -rx,
-            rotateY: ry,
-            duration: 0.55,
-            ease: "expo.out",
-            overwrite: "auto",
-        });
-    }, [ach.glow]);
-
-    const handleMouseLeave = useCallback(() => {
-        if (!cardRef.current || !contentRef.current) return;
-
-        const spot = cardRef.current.querySelector(".ach-spotlight");
-        if (spot) gsap.to(spot, { opacity: 0, duration: 0.5, ease: "power2.out" });
-
-        gsap.to(contentRef.current, {
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.75,
-            ease: "expo.out",
-            overwrite: "auto",
-        });
-    }, []);
-
+const AchievementAccordion = memo(({ ach, index, isActive, isDimmed, onEnter, onLeave }) => {
     const Tag = ach.link ? "a" : "div";
     const linkProps = ach.link
         ? { href: ach.link, target: "_blank", rel: "noopener noreferrer" }
@@ -109,86 +310,64 @@ const AchievementCard = memo(({ ach, index }) => {
 
     return (
         <Tag
-            ref={cardRef}
-            className={`ach-card${ach.link ? " ach-card-link" : ""}`}
+            className={`ach-acc-item${isActive ? " is-active" : ""}${isDimmed ? " is-dimmed" : ""}${ach.link ? " ach-acc-link" : ""}`}
             style={{ "--ach-color": ach.color, "--ach-glow": ach.glow }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={onEnter}
+            onMouseLeave={onLeave}
             {...linkProps}
         >
-            <div className="ach-border" />
-            <div className="ach-ambient" />
-            <div className="ach-spotlight" />
+            <div className="ach-acc-bar" />
+            <div className="ach-acc-glow" />
+            <div className="ach-acc-wm">{String(index + 1).padStart(2, "0")}</div>
 
-            <div ref={contentRef} className="ach-content">
-                <div className="ach-shimmer" />
-
-                <div className="ach-top">
-                    <div className="ach-icon-wrap">
-                        <div className="ach-icon-ring" />
-                        <div className="ach-icon-bg" />
+            <div className="ach-acc-head">
+                <div className="ach-acc-left">
+                    <div className="ach-acc-icon-wrap">
                         {ach.icon.startsWith("/") ? (
-                            <img src={ach.icon} alt={ach.title} className="ach-icon" />
+                            <img src={ach.icon} alt={ach.title} className="ach-acc-icon-img" />
                         ) : (
-                            <span className="ach-icon">{ach.icon}</span>
+                            <span className="ach-acc-icon">{ach.icon}</span>
                         )}
                     </div>
-                    <div className="ach-badge">
-                        <span className="ach-badge-dot" />
-                        {ach.badge}
+                    <div className="ach-acc-title-group">
+                        <h3 className="ach-acc-title">{ach.title}</h3>
+                        <p className="ach-acc-org">{ach.organization}</p>
                     </div>
                 </div>
-
-                <h3 className="ach-title">
-                    {ach.title}
-                    {ach.link && (
-                        <svg
-                            className="ach-title-link"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.4"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                        >
-                            <path d="M7 17L17 7" />
-                            <path d="M8 7h9v9" />
-                        </svg>
-                    )}
-                </h3>
-                <p className="ach-org">{ach.organization}</p>
-
-                <div className="ach-divider" />
-
-                <p className="ach-desc">{ach.description}</p>
-
-                <div className="ach-footer">
-                    <span className="ach-date">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        {ach.date}
+                <div className="ach-acc-right">
+                    <span className="ach-acc-badge">
+                        <span className="ach-acc-badge-dot" />
+                        {ach.badge}
                     </span>
-                    <span className="ach-no">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="ach-acc-date">{ach.date}</span>
+                </div>
+            </div>
+
+            <div className="ach-acc-body">
+                <div className="ach-acc-body-inner">
+                    <p className="ach-acc-desc">{ach.description}</p>
+                    {ach.link && (
+                        <span className="ach-acc-view">
+                            View credential
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M7 17L17 7"/><path d="M8 7h9v9"/>
+                            </svg>
+                        </span>
+                    )}
                 </div>
             </div>
         </Tag>
     );
 });
-AchievementCard.displayName = "AchievementCard";
+AchievementAccordion.displayName = "AchievementAccordion";
 
 const Achievements = () => {
     const sectionRef = useRef(null);
+    const [hoveredIndex, setHoveredIndex] = useState(null);
 
     useGSAP(() => {
         gsap.fromTo(
-            ".ach-card",
+            ".ach-acc-item",
             { y: 80, opacity: 0, scale: 0.92 },
             {
                 y: 0,
@@ -198,7 +377,7 @@ const Achievements = () => {
                 stagger: 0.12,
                 ease: "back.out(1.3)",
                 scrollTrigger: {
-                    trigger: ".ach-grid",
+                    trigger: ".ach-accordion",
                     start: "top 85%",
                 },
             }
@@ -219,17 +398,6 @@ const Achievements = () => {
                 },
             }
         );
-
-        gsap.utils.toArray(".ach-icon").forEach((el, i) => {
-            gsap.to(el, {
-                y: -6,
-                duration: 2.6 + i * 0.15,
-                ease: "sine.inOut",
-                yoyo: true,
-                repeat: -1,
-                delay: i * 0.2,
-            });
-        });
     }, []);
 
     return (
@@ -270,6 +438,8 @@ const Achievements = () => {
                     }
                 />
 
+                <AchievementGalaxy />
+
                 <div className="ach-stats">
                     {summaryStats.map((stat, i) => (
                         <div key={i} className="ach-stat">
@@ -289,9 +459,17 @@ const Achievements = () => {
                     ))}
                 </div>
 
-                <div className="ach-grid">
+                <div className="ach-accordion">
                     {achievements.map((ach, i) => (
-                        <AchievementCard key={ach.title} ach={ach} index={i} />
+                        <AchievementAccordion
+                            key={ach.title}
+                            ach={ach}
+                            index={i}
+                            isActive={hoveredIndex === i}
+                            isDimmed={hoveredIndex !== null && hoveredIndex !== i}
+                            onEnter={() => setHoveredIndex(i)}
+                            onLeave={() => setHoveredIndex(null)}
+                        />
                     ))}
                 </div>
             </div>
