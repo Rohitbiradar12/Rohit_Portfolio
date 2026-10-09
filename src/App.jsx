@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import AssistantHost from "./assistant/AssistantHost";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
@@ -26,7 +27,6 @@ const App = () => (
     <Testimonials />
     <Contact />
     <Footer />
-    <AssistantHost />
   </>
 );
 
