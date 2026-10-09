@@ -1,4 +1,4 @@
-import { useGSAP } from "@gsap/react";
+import useGSAP from "../hooks/usePortfolioGSAP";
 import gsap from "gsap";
 
 import Button from "../components/Button";
@@ -58,7 +58,7 @@ const Hero = () => {
               </p>
             </div>
 
-            <Button text="Scroll Down" href="about" />
+            <div className="hero-actions"><Button text="Scroll Down" href="about" /></div>
           </div>
         </header>
 
