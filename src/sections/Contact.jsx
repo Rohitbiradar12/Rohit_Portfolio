@@ -1,19 +1,19 @@
-import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import useDialog from "../hooks/useDialog";
+import { useRef, useState, useCallback } from "react";
 import emailjs from "@emailjs/browser";
 
 import TitleHeader from "../components/TitleHeader";
 import ContactExperience from "../components/models/contact/ContactExperience";
 
-const SuccessAnimation = ({ onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => onClose(), 5000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
+const SuccessAnimation = ({ onClose, returnFocusRef }) => {
+  const dialogRef = useRef(null);
+  useDialog(dialogRef, true, onClose, returnFocusRef);
 
-  return (
+  return createPortal(
     <div className="ct-modal-overlay">
-      <div className="ct-modal-backdrop" onClick={onClose} />
-      <div className="ct-modal ct-modal-success" role="dialog" aria-live="polite">
+      <div data-dialog-backdrop className="ct-modal-backdrop" onClick={onClose} />
+      <div ref={dialogRef} tabIndex={-1} className="ct-modal ct-modal-success" role="dialog" aria-modal="true" aria-label="Message sent">
         <div className="ct-modal-icon-wrap">
           <svg className="ct-modal-icon" viewBox="0 0 52 52" aria-hidden="true">
             <circle className="ct-modal-ring" cx="26" cy="26" r="24" fill="none" />
@@ -54,20 +54,18 @@ const SuccessAnimation = ({ onClose }) => {
           </svg>
         </button>
       </div>
-    </div>
+    </div>, document.body
   );
 };
 
-const ErrorAnimation = ({ onClose }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => onClose(), 6000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
+const ErrorAnimation = ({ onClose, returnFocusRef }) => {
+  const dialogRef = useRef(null);
+  useDialog(dialogRef, true, onClose, returnFocusRef);
 
-  return (
+  return createPortal(
     <div className="ct-modal-overlay">
-      <div className="ct-modal-backdrop" onClick={onClose} />
-      <div className="ct-modal ct-modal-error" role="alertdialog" aria-live="assertive">
+      <div data-dialog-backdrop className="ct-modal-backdrop" onClick={onClose} />
+      <div ref={dialogRef} tabIndex={-1} className="ct-modal ct-modal-error" role="alertdialog" aria-modal="true" aria-label="Message delivery failed">
         <div className="ct-modal-icon-wrap">
           <svg className="ct-modal-icon" viewBox="0 0 52 52" aria-hidden="true">
             <circle className="ct-modal-ring" cx="26" cy="26" r="24" fill="none" />
@@ -114,12 +112,16 @@ const ErrorAnimation = ({ onClose }) => {
           </svg>
         </button>
       </div>
-    </div>
+    </div>, document.body
   );
 };
 
 const Contact = () => {
   const formRef = useRef(null);
+  const submitRef = useRef(null);
+  const sending = useRef(false);
+  const closeSuccess = useCallback(() => setShowSuccess(false), []);
+  const closeError = useCallback(() => setShowError(false), []);
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -136,6 +138,8 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (sending.current) return;
+    sending.current = true;
     setLoading(true);
 
     try {
@@ -146,27 +150,32 @@ const Contact = () => {
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
       );
 
-      await emailjs.sendForm(
-        import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_APP_EMAILJS_AUTOREPLY_TEMPLATE_ID,
-        formRef.current,
-        import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
-      );
+      // Primary delivery succeeded; acknowledgement failure must not suggest resending.
+      if (import.meta.env.VITE_APP_EMAILJS_AUTOREPLY_TEMPLATE_ID) {
+        try {
+          await emailjs.sendForm(
+            import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_APP_EMAILJS_AUTOREPLY_TEMPLATE_ID,
+            formRef.current,
+            import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+          );
+        } catch { /* The primary message was already delivered. */ }
+      }
 
       setForm({ name: "", email: "", message: "" });
       setShowSuccess(true);
-    } catch (error) {
-      console.error("EmailJS Error:", error);
+    } catch {
       setShowError(true);
     } finally {
+      sending.current = false;
       setLoading(false);
     }
   };
 
   return (
     <section id="contact" className="ct-section relative md:mt-24 mt-12">
-      {showSuccess && <SuccessAnimation onClose={() => setShowSuccess(false)} />}
-      {showError && <ErrorAnimation onClose={() => setShowError(false)} />}
+      {showSuccess && <SuccessAnimation onClose={closeSuccess} returnFocusRef={submitRef} />}
+      {showError && <ErrorAnimation onClose={closeError} returnFocusRef={submitRef} />}
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 md:px-10 py-20 md:py-28">
         <TitleHeader
@@ -203,6 +212,7 @@ const Contact = () => {
                   name="name"
                   value={form.name}
                   onChange={handleChange}
+                  readOnly={loading}
                   placeholder="What's your good name?"
                   required
                   className="ct-input"
@@ -219,6 +229,7 @@ const Contact = () => {
                   name="email"
                   value={form.email}
                   onChange={handleChange}
+                  readOnly={loading}
                   placeholder="What's your email address?"
                   required
                   className="ct-input"
@@ -234,6 +245,7 @@ const Contact = () => {
                   name="message"
                   value={form.message}
                   onChange={handleChange}
+                  readOnly={loading}
                   placeholder="How can I help you?"
                   rows="5"
                   required
@@ -242,6 +254,7 @@ const Contact = () => {
               </div>
 
               <button
+                ref={submitRef}
                 type="submit"
                 disabled={loading}
                 className="ct-submit"
