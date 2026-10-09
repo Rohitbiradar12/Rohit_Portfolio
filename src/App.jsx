@@ -15,6 +15,7 @@ import Navbar from "./components/NavBar";
 
 const App = () => (
   <>
+    <AssistantHost />
     <Navbar />
     <Hero />
     <About />
@@ -27,6 +28,7 @@ const App = () => (
     <Testimonials />
     <Contact />
     <Footer />
+    <SpeedInsights />
   </>
 );
 
