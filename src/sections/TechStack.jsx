@@ -1,5 +1,5 @@
 import { useRef, useCallback, memo } from "react";
-import { useGSAP } from "@gsap/react";
+import useGSAP from "../hooks/usePortfolioGSAP";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
