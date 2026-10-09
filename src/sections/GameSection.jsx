@@ -121,6 +121,7 @@ const GameSection = () => {
 
     useEffect(() => {
         const fn = (e) => {
+            if (e.defaultPrevented || document.activeElement !== canvasRef.current || !visibleRef.current) return;
             // Skip game controls when user is typing in a form field
             const t = e.target;
             const tag = t && t.tagName ? t.tagName.toLowerCase() : "";
@@ -156,6 +157,8 @@ const GameSection = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
         const render = () => {
             const g = gRef.current;
@@ -218,7 +221,7 @@ const GameSection = () => {
                         setScore(sc); setDist(ds);
                         setHi(prev => {
                             const best = Math.max(prev, sc + ds);
-                            try { localStorage.setItem("crHi", best.toString()); } catch { }
+                            try { localStorage.setItem("crHi", best.toString()); } catch { /* Storage may be disabled; retain the in-memory score. */ }
                             return best;
                         });
                     }
@@ -273,7 +276,7 @@ const GameSection = () => {
             g.parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.a -= 0.016; });
 
             g.codeParticles.forEach(cp => {
-                cp.x -= cp.speed;
+                if (!reduced.matches || g.started) cp.x -= cp.speed;
                 if (cp.x < -20) { cp.x = W + 20; cp.y = Math.random() * HORIZON * 0.8; }
             });
 
@@ -827,7 +830,7 @@ const GameSection = () => {
                 ctx.fillText("Click or press Space to start", W / 2, H / 2 + 38);
 
                 // Bouncing chevron
-                const ab = Math.sin(Date.now() * 0.004) * 6;
+                const ab = reduced.matches ? 0 : Math.sin(Date.now() * 0.004) * 6;
                 ctx.fillStyle = "rgba(167, 139, 250, 0.55)";
                 ctx.font = "20px sans-serif";
                 ctx.fillText("▼", W / 2, H / 2 + 78 + ab);
@@ -920,12 +923,14 @@ const GameSection = () => {
 
                 <div
                     className="cr-canvas-wrap"
-                    onClick={handleAction}
+                    onClick={() => { canvasRef.current?.focus({ preventScroll: true }); handleAction(); }}
                     onTouchStart={onTS}
                     onTouchEnd={onTE}
                 >
                     <canvas
                         ref={canvasRef}
+                        tabIndex={0}
+                        aria-label="Code Runner game. Focus here to use arrow keys to dodge; Space or Enter to start."
                         width={W}
                         height={H}
                         className="cr-canvas"
