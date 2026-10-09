@@ -1,3 +1,4 @@
+import AssistantHost from "./assistant/AssistantHost";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
 import Projects from "./sections/Projects";
@@ -25,6 +26,7 @@ const App = () => (
     <Testimonials />
     <Contact />
     <Footer />
+    <AssistantHost />
   </>
 );
 
