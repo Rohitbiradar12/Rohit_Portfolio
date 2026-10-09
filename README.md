@@ -1,137 +1,52 @@
-<div align="center">
-  <img src="public/images/readme.png" alt="Rohit's 3D Portfolio" width="800">
-  
-  <br />
-  <br />
+# Rohit Biradar — 3D Portfolio
 
-  <img src="https://img.shields.io/badge/-Three.js-black?style=for-the-badge&logo=three.js&logoColor=white" />
-  <img src="https://img.shields.io/badge/-React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
-  <img src="https://img.shields.io/badge/-GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" />
-  <img src="https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+A single-page React 19 portfolio built with Vite, Tailwind CSS, GSAP, and React Three Fiber. Sections cover profile, projects, experience, achievements, skills, Code Runner, résumé, testimonials, and contact.
 
-  <h1>Interactive 3D Portfolio</h1>
-  <p>A modern web experience combining real-time 3D graphics with smooth animations and responsive design</p>
-</div>
+Ask Rohit is a source-grounded AI guide to the published portfolio. Open it from the hero, floating launcher, a project card, or the résumé's job-description comparison action.
 
----
+## Development
 
-## About This Project
+Use Node.js 22 or newer and npm.
 
-This portfolio pushes beyond traditional static websites by integrating Three.js-powered 3D scenes with React's component architecture. Every interaction is crafted to feel natural—from the scroll-triggered camera movements to the responsive lighting that adapts to user input.
-
-The goal was simple: create something memorable that showcases both technical capability and attention to design detail. The 3D room scene in the hero section sets the tone, while GSAP handles the transitions between sections with precision timing.
-
-## Technical Foundation
-
-**Core Technologies**
-- Three.js & React Three Fiber for WebGL rendering
-- GSAP for animation sequencing and scroll interactions
-- React 19 with concurrent features for smooth UI updates
-- Vite for fast development iteration and optimized production builds
-- Tailwind CSS for consistent styling with custom design tokens
-
-**Key Libraries**
-- `@react-three/drei` - Essential Three.js helpers and abstractions
-- `@react-three/fiber` - React reconciler for Three.js scene graph
-- `EmailJS` - Client-side email functionality for contact form
-- `Sentry` - Error tracking and performance monitoring
-
-## What's Inside
-
-**3D Graphics Engine**  
-The hero section features a fully modeled 3D room with dynamic lighting, reflective surfaces, and animated elements. The scene responds to viewport changes and user interactions, with optimized LOD (Level of Detail) switching for performance.
-
-**Scroll-Driven Storytelling**  
-GSAP ScrollTrigger orchestrates camera movements and element animations as you navigate through sections. Each transition is timed to feel intentional rather than reactive.
-
-**Project Showcase**  
-Interactive 3D cards with depth and parallax effects. Each project card includes live demos, tech stacks, and links to repositories.
-
-**Experience Timeline**  
-A chronological view of professional experience with company details, role responsibilities, and technology highlights.
-
-**Tech Stack Visualization**  
-Filterable grid of technologies organized by category (Frontend, Backend, Database, Tools). Visual indicators show proficiency levels.
-
-**Contact Integration**  
-Direct email functionality through EmailJS with custom templates for both initial contact and auto-replies. Form validation and submission states handled client-side.
-
-## Getting Started
-
-**Requirements**
-- Node.js 18 or higher
-- npm or yarn package manager
-
-**Installation**
-
-```bash
-git clone https://github.com/Rohitbiradar12/Rohit_Portfolio.git
-cd Rohit_Portfolio
+```sh
 npm install
+npm run dev:api
 ```
 
-**Environment Setup**
+In a second terminal:
 
-Create `.env` in the project root:
-
-```env
-VITE_APP_EMAILJS_SERVICE_ID=your_service_id
-VITE_APP_EMAILJS_TEMPLATE_ID=your_template_id
-VITE_APP_EMAILJS_AUTOREPLY_TEMPLATE_ID=your_autoreply_template_id
-VITE_APP_EMAILJS_PUBLIC_KEY=your_public_key
-```
-
-Sign up at [EmailJS](https://www.emailjs.com/) to get your credentials. The service handles email delivery without requiring a backend server.
-
-**Development**
-
-```bash
+```sh
 npm run dev
 ```
 
-The development server starts at `http://localhost:5173` with hot module replacement enabled.
+Vite serves the site at http://localhost:5173 and proxies /api to the local Node server on 127.0.0.1:3001. Vite alone does not serve Vercel functions. The local API loads .env and .env.local. Keep existing EmailJS values; use .env.example as a reference for additional variables, not a replacement for your existing .env.
 
-**Production Build**
+AI remains unavailable until the provider key, shared Redis protections, and explicit enable flag are configured. The portfolio and evidence links work without AI credentials. No generated answers are simulated.
 
-```bash
+## Validation
+
+```sh
+npm run lint
+npm test
+npm run test:browser
 npm run build
 npm run preview
 ```
 
-The build outputs to the `dist/` directory. Vite automatically handles code splitting, asset optimization, and tree shaking.
+Browser tests use installed Google Chrome (configurable in playwright.config.js), start local servers, and mock AI and EmailJS. They do not send real email. Node tests mock the provider and Redis. There is no TypeScript type-check command because this is a JavaScript project.
 
-## Performance Considerations
+Production preview serves static files only; use the local frontend/API pair to exercise endpoints. A manual, one-request live check is available with `node scripts/live-smoke.js` after configuration. It reports a skip when configuration is missing.
 
-The 3D scene uses several optimization techniques:
-- Frustum culling to avoid rendering off-screen objects
-- Texture compression and lazy loading for assets
-- Adaptive quality settings based on device capabilities
-- RequestAnimationFrame throttling on mobile devices
+## Deployment
 
-Initial load time is kept under 3 seconds on 3G connections through aggressive code splitting and deferred loading of non-critical assets.
+Keep the existing Vercel Vite project: build command `npm run build`, output directory `dist`, Node.js 22 or newer. Root /api handlers deploy separately as Vercel functions. vercel.json sets a 60-second function duration. Add server variables in Vercel settings before enabling AI; no credentials should use a VITE_ prefix.
 
-## Browser Support
+See [Ask Rohit setup and architecture](docs/ASK_ROHIT.md) for exact environment variables, quotas, local development, citations, and limitations. See [content gaps](docs/CONTENT_GAPS.md) before adding technical claims.
 
-Tested and optimized for:
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile Safari (iOS 14+)
-- Chrome Android
+## Assets and motion
 
-WebGL 2.0 support is required. Graceful degradation to 2D fallback is implemented for unsupported browsers.
+Both 3D scenes pause their render loops offscreen. Reduced-motion preferences disable scroll-entry animations and hero particles; the game animates during explicit play. Unsupported or failed 3D rendering has a text fallback. The assistant is a separate, lazy-loaded chunk and adds no 3D scene.
 
-## Connect
+Project imagery, the résumé preview, portrait, AWS icon, and favicon have optimized derivatives. Originals remain for future editing. Run `npm run optimize:images` to regenerate them.
 
-**Rohit Biradar**  
-Software Developer specializing in full-stack development and 3D web experiences
-
-[LinkedIn](https://www.linkedin.com/in/biradar-rohit/) · [X/Twitter](https://x.com/iamRohit1567) · [LeetCode](https://leetcode.com/Rohit_biradar)
-
-Email: biradarrohit155@gmail.com
-
----
-
-<div align="center">
-  <sub>Always open to connecting, collaborating, and building cool things.</sub>
-</div>
+No Sentry integration, adaptive LOD, or measured 3G-load-time guarantee is claimed. The existing Three.js bundle remains substantial. See the architecture notes for performance limits.
