@@ -1,9 +1,19 @@
-import { useState, useEffect } from "react";
+import useDialog from "../hooks/useDialog";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { navLinks } from "../constants";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const dialogRef = useRef(null);
+  const closeMenu = useCallback(() => setMobileMenuOpen(false), []);
+  useDialog(dialogRef, mobileMenuOpen, closeMenu);
+  useEffect(() => {
+    const media = matchMedia("(min-width: 1024px)");
+    const resize = () => { if (media.matches) closeMenu(); };
+    media.addEventListener("change", resize);
+    return () => media.removeEventListener("change", resize);
+  }, [closeMenu]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -11,7 +21,8 @@ const NavBar = () => {
       setScrolled(isScrolled);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -21,16 +32,7 @@ const NavBar = () => {
   };
 
 
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [mobileMenuOpen]);
+
 
   return (
     <>
@@ -75,7 +77,9 @@ const NavBar = () => {
 
 
           <button
-            className="mobile-menu-btn md:hidden"
+            className="mobile-menu-btn"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -93,7 +97,7 @@ const NavBar = () => {
         onClick={() => setMobileMenuOpen(false)}
       />
 
-      <aside className={`mobile-sidebar ${mobileMenuOpen ? "open" : ""}`}>
+      <aside id="mobile-navigation" ref={dialogRef} role="dialog" aria-modal={mobileMenuOpen ? "true" : undefined} aria-label="Navigation menu" aria-hidden={!mobileMenuOpen} inert={!mobileMenuOpen} tabIndex={-1} className={`mobile-sidebar ${mobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-sidebar-content">
 
           <div className="mobile-sidebar-header">
@@ -158,7 +162,7 @@ const NavBar = () => {
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
-            <p className="mobile-sidebar-credit">© 2025 Rohit Biradar</p>
+            <p className="mobile-sidebar-credit">© {new Date().getFullYear()} Rohit Biradar</p>
           </div>
         </div>
       </aside>
