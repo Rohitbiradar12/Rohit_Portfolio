@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import useGSAP from "../hooks/usePortfolioGSAP";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import TitleHeader from "../components/TitleHeader";
@@ -181,7 +181,7 @@ const Resume = () => {
                     <div className="rs-preview">
                         {!imgError ? (
                             <img
-                                src="/images/resume_preview.jpg"
+                                src="/images/resume_preview.webp"
                                 alt="Resume preview"
                                 className="rs-preview-img"
                                 onError={() => setImgError(true)}
@@ -243,7 +243,6 @@ const Resume = () => {
                         <ArrowIcon />
                     </button>
                 </div>
-
                 <a href="#contact" className="rs-cta">
                     <span>Impressed? Let's connect and build something</span>
                     <svg
