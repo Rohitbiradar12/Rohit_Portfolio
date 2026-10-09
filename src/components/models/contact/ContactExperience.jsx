@@ -1,10 +1,13 @@
+import useReducedMotion from "../../../hooks/useReducedMotion";
+import SceneBoundary from "../../SceneBoundary";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import Computer from "./Computer";
 
 const ContactExperience = () => {
+  const reduced = useReducedMotion();
   const wrapperRef = useRef(null);
   const [visible, setVisible] = useState(true);
 
@@ -21,10 +24,11 @@ const ContactExperience = () => {
 
   return (
     <div ref={wrapperRef} style={{ width: "100%", height: "100%" }}>
-      <Canvas
+      <SceneBoundary><Canvas
         shadows
         camera={{ position: [0, 3, 7], fov: 45 }}
-        frameloop={visible ? "always" : "never"}
+        frameloop={visible ? (reduced ? "demand" : "always") : "never"}
+        fallback={<div className="scene-fallback">Explore Rohit’s work below. This device does not support the 3D view.</div>}
       >
         <ambientLight intensity={0.5} color="#fff4e6" />
 
@@ -55,9 +59,9 @@ const ContactExperience = () => {
         </group>
 
         <group scale={0.03} position={[0, -1.49, -2]} castShadow>
-          <Computer />
+          <Suspense fallback={null}><Computer /></Suspense>
         </group>
-      </Canvas>
+      </Canvas></SceneBoundary>
     </div>
   );
 };

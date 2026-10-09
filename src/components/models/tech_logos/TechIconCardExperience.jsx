@@ -16,7 +16,7 @@ const TechIconCardExperience = ({ model }) => {
         }
       });
     }
-  }, [scene]);
+  }, [scene, model.name]);
 
   return (
     <Canvas>
