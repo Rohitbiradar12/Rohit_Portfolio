@@ -1,0 +1,462 @@
+.ar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px 12px;
+}
+.ar-tabs {
+  display: flex;
+  padding: 3px;
+  border: 1px solid #ffffff10;
+  background: #08070c;
+  border-radius: 10px;
+}
+.ar-tabs button {
+  border: 0;
+  border-radius: 7px;
+  padding: 9px 12px;
+  background: transparent;
+  color: #aaa0b7;
+  font: 500 12px inherit;
+  cursor: pointer;
+}
+.ar-tabs button[aria-pressed="true"] {
+  color: #eee6ff;
+  background: #30243f;
+  box-shadow: 0 1px 4px #0005;
+}
+.ar-reset {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 0;
+  color: #b9adc9;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ar-scope {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 24px 14px;
+  border-bottom: 1px solid #ffffff0d;
+}
+.ar-scope label,
+.ar-eyebrow {
+  font:
+    10px ui-monospace,
+    monospace;
+  letter-spacing: 1.7px;
+  color: #ad93d5;
+}
+.ar-scope select {
+  max-width: 75%;
+  background: #19151f;
+  border: 1px solid #ffffff15;
+  border-radius: 7px;
+  padding: 6px 8px;
+  color: #d5c9e5;
+  font-size: 11px;
+}
+.ar-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #44354f transparent;
+  overflow-wrap: anywhere;
+}
+.ar-welcome,
+.ar-compare {
+  padding: 28px 26px;
+}
+.ar-welcome h3,
+.ar-compare > h3 {
+  font-size: 38px;
+  font-weight: 500;
+  letter-spacing: -1.5px;
+  line-height: 1.16;
+  margin: 18px 0 14px;
+}
+.ar-welcome h3 span,
+.ar-compare > h3 span {
+  color: #baa0e5;
+}
+.ar-welcome > p,
+.ar-compare > p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #b3a9c0;
+  max-width: 360px;
+}
+.ar-suggestions {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+}
+.ar-suggestions button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 15px 12px;
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  color: #ded5eb;
+  background: linear-gradient(120deg, #ffffff04, transparent);
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.ar-suggestions button:hover {
+  border-color: #a78bfa65;
+  background: #a78bfa0b;
+}
+.ar-suggestions button > span:nth-child(2) {
+  flex: 1;
+}
+.ar-question-number {
+  font:
+    10px ui-monospace,
+    monospace;
+  color: #9076af;
+}
+.ar-grounded {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94879f;
+  font-size: 10px;
+  margin-top: 22px;
+}
+.ar-messages {
+  padding: 0 24px;
+}
+.ar-message {
+  padding: 24px 0;
+  border-bottom: 1px solid #ffffff0d;
+}
+.ar-message-label {
+  font:
+    9px ui-monospace,
+    monospace;
+  letter-spacing: 1.5px;
+  color: #b499d8;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ar-message-label span {
+  letter-spacing: 0;
+  color: #8f819f;
+  font-size: 9px;
+}
+.ar-message p {
+  white-space: pre-wrap;
+  font-size: 13px;
+  line-height: 1.85;
+  color: #e1d9eb;
+  margin: 12px 0;
+}
+.ar-user p {
+  color: #b7acc4;
+}
+.ar-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+.ar-sources a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #a78bfa30;
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: #cbb7eb;
+  background: #a78bfa08;
+  font-size: 10px;
+  text-decoration: none;
+}
+.ar-sources a:hover {
+  border-color: #bba0e4;
+}
+.ar-composer {
+  padding: 16px 24px max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid #ffffff12;
+  background: #121018;
+}
+.ar-input-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  border: 1px solid #a78bfa40;
+  border-radius: 12px;
+  padding: 12px;
+  background: #08070c;
+}
+.ar-input-wrap:focus-within {
+  border-color: #b39ad6;
+}
+.ar-input-wrap textarea {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  background: none;
+  border: 0;
+  color: #eee6f8;
+  font: 13px/1.6 inherit;
+  outline: none;
+  max-height: 120px;
+}
+.ar-input-wrap textarea::placeholder,
+.ar-compare textarea::placeholder {
+  color: #82738f;
+}
+.ar-send {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid #c4b5fd66;
+  border-radius: 9px;
+  background: #a78bfa;
+  color: #140d21;
+  font-size: 21px;
+  cursor: pointer;
+}
+.ar-panel button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ar-field-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 0;
+  color: #8c7f99;
+  font-size: 9px;
+}
+.ar-field-meta button {
+  background: none;
+  border: 0;
+  color: #c3a8e5;
+  text-align: left;
+  font-size: 10px;
+  cursor: pointer;
+}
+.ar-privacy {
+  color: #978aa4;
+  font-size: 9px;
+  line-height: 1.7;
+  margin: 12px 0 0;
+}
+.ar-pending {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 24px;
+  color: #c8b3e4;
+  font-size: 12px;
+}
+.ar-pending button {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: #bbaacb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.ar-status-dot {
+  width: 6px;
+  height: 6px;
+  background: #a78bfa;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ar-error {
+  margin: 16px 24px 24px;
+  padding: 18px;
+  border: 1px solid #c9a0e833;
+  border-radius: 12px;
+  background: #a78bfa08;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.ar-error strong {
+  font-weight: 600;
+  color: #dbc8f1;
+}
+.ar-error p {
+  margin-top: 7px;
+  color: #b4a6c3;
+}
+.ar-error > button {
+  margin-top: 12px;
+  background: none;
+  border: 0;
+  color: #d4bafa;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.ar-compare label {
+  display: block;
+  font-size: 12px;
+  color: #d1c1e2;
+  margin: 24px 0 10px;
+}
+.ar-compare textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 160px;
+  max-height: 320px;
+  background: #08070c;
+  border: 1px solid #ffffff20;
+  border-radius: 12px;
+  padding: 14px;
+  color: #e1d5ee;
+  font: 12px/1.8 inherit;
+}
+.ar-primary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 20px 0 0;
+  padding: 13px 16px;
+  border: 1px solid #c4b5fd44;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #47305e, #2a1e3b);
+  color: #eadcfb;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ar-report {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #ffffff20;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #c5b8d3;
+}
+.ar-report h3 {
+  font-size: 24px;
+  color: #eee3fa;
+  margin: 12px 0;
+}
+.ar-report h4 {
+  font-size: 14px;
+  color: #e1d4ef;
+  margin: 26px 0 12px;
+}
+.ar-requirement {
+  border: 1px solid #ffffff12;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0;
+  background: #ffffff03;
+}
+.ar-requirement h5 {
+  font-size: 13px;
+  color: #dfd2ee;
+  margin: 10px 0 8px;
+}
+.ar-evidence {
+  display: inline-block;
+  font:
+    9px ui-monospace,
+    monospace;
+  color: #c5a9df;
+  background: #a78bfa0d;
+  border: 1px solid #a78bfa20;
+  border-radius: 5px;
+  padding: 4px 6px;
+}
+.ar-direct {
+  color: #b4d8c7;
+  border-color: #92c5ad30;
+  background: #92c5ad09;
+}
+.ar-report ul {
+  padding-left: 18px;
+  list-style: disc;
+}
+.ar-report li {
+  margin: 8px 0;
+}
+.ar-note {
+  font-size: 10px;
+  margin-top: 24px;
+  color: #9485a1;
+}
+@keyframes ar-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.ar-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  background: #a78bfa;
+  border-radius: 1px;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: ar-blink 0.6s step-end infinite;
+}
+.ar-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .ar-toolbar {
+    padding: 14px 18px 10px;
+  }
+  .ar-scope {
+    padding: 0 18px 12px;
+  }
+  .ar-welcome,
+  .ar-compare {
+    padding: 24px 20px;
+  }
+  .ar-welcome h3,
+  .ar-compare > h3 {
+    font-size: 34px;
+  }
+  .ar-messages {
+    padding: 0 20px;
+  }
+  .ar-composer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .ar-tabs button {
+    padding: 8px 10px;
+  }
+  .ar-error {
+    margin: 16px 18px;
+  }
+  .ar-field-meta {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ar-panel * {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Readable controls and disclosures at every viewport. */
+.ar-tabs button{font-family:inherit;font-size:12px;font-weight:500}.ar-input-wrap textarea{font-family:inherit;font-size:14px;line-height:1.6}.ar-compare textarea{font-family:inherit;font-size:13px;line-height:1.8}.ar-privacy{font-size:10px}.ar-field-meta{font-size:10px}.ar-grounded{font-size:11px}.ar-report{scroll-margin-top:18px}
+@media(max-width:640px){.ar-input-wrap textarea,.ar-compare textarea{font-size:16px}.ar-welcome{padding-top:24px}.ar-welcome h3{margin-top:14px}.ar-suggestions{margin-top:22px}}
+
+.ar-composer form{gap:0}.ar-input-wrap textarea{padding:0;min-height:44px;height:44px;border-radius:0}.ar-heading p{font-size:12px}.ar-privacy{font-size:11px;line-height:1.6}
