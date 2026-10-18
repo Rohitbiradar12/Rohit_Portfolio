@@ -59,22 +59,10 @@ const NavBar = () => {
 
           <a href="#contact" className="nav-cta hidden md:inline-flex">
             <span className="nav-cta-label">Contact me</span>
-            <svg
-              className="nav-cta-arrow"
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
+            <svg className="nav-cta-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </a>
-
 
           <button
             className="mobile-menu-btn"
@@ -102,7 +90,7 @@ const NavBar = () => {
 
           <div className="sb-header">
             <a href="#hero" className="sb-logo" onClick={handleLinkClick}>Rohit Biradar</a>
-            <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+            <button className="mobile-close-btn" data-autofocus onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>

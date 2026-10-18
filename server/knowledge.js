@@ -1,17 +1,21 @@
 import { expCards, projects, techStackImgs } from "../src/constants/index.js";
 import { safeDestination, sourceIds } from "../shared/assistant.js";
+import { projectFacts, roleFacts } from "./project-facts.js";
 
-// Only published descriptions and responsibilities are evidence. Logos are not evidence.
+// Only published descriptions, responsibilities and facts verified in the public repositories are
+// evidence. Logos are not evidence. Every entry has short `facts` that are always sent; `details`
+// are sent only when a question is about that entry (see contextFor), so requests stay small.
 export const knowledge = [
   {
     id: "profile",
     label: "About Rohit",
     href: "#about",
     facts: [
-      "Rohit Biradar is based in Boston.",
+      "Rohit Biradar is a software engineer based in Boston.",
       "Computer Science degree from REVA University.",
       "The portfolio lists MS Computer Science at Northeastern University, Khoury College. No graduation date is established.",
-      "Backend work on a loan management system serving African markets.",
+      "Professional focus: backend services (Java, Spring Boot, Kafka, Redis, SQL) and, at AWS, agentic AI on Amazon Bedrock.",
+      "Rohit's code is public on GitHub; each project's code and live demo links appear under answers that cite the project.",
     ],
   },
   {
@@ -24,45 +28,38 @@ export const knowledge = [
       "REVA Developer's Club is university club experience, not established as commercial employment.",
     ],
   },
-  ...expCards.map((role, i) => ({
-    id: ["role-aws", "role-engineer", "role-intern", "role-club"][i],
-    label: [
-      "SDE Intern · Amazon Web Services",
-      "Software Engineer · Torry Harris",
-      "Intern · Torry Harris",
-      "REVA Developer's Club",
-    ][i],
-    href: "#experience",
-    facts: [
-      role.title.trim(),
-      role.date,
-      i === 0
-        ? "Professional internship at Amazon Web Services, Redmond WA."
-        : i === 3
-          ? "University club contribution."
-          : "Professional role at Torry Harris Integration Solutions.",
-      ...role.responsibilities,
-    ],
-  })),
+  ...expCards.map((role, i) => {
+    const id = ["role-aws", "role-engineer", "role-intern", "role-club"][i];
+    return {
+      id,
+      label: ["SDE Intern · Amazon Web Services", "Software Engineer · Torry Harris", "Intern · Torry Harris", "REVA Developer's Club"][i],
+      href: "#experience",
+      keywords: roleFacts[id].keywords,
+      facts: [role.title.trim() + ", " + role.date + ". " + roleFacts[id].kind, "Technologies: " + roleFacts[id].stack.join(", ") + "."],
+      details: role.responsibilities,
+    };
+  }),
   {
     id: "skills",
     label: "Published skills",
     href: "#skills",
     facts: [
-      "Self-reported skills; listing alone does not establish production use or proficiency: " +
-        techStackImgs.map((t) => t.name).join(", "),
+      "Self-reported skills; listing alone does not establish production use or proficiency: " + techStackImgs.map((t) => t.name).join(", "),
+      "Where a skill was actually used is shown by the roles and projects that list it in their technologies.",
     ],
   },
-  ...projects.map((p) => ({
-    id: "project-" + p.id,
-    label: p.title,
-    href: "#project-" + p.id,
-    publicUrl: p.link,
-    facts: [
-      p.des,
-      "Portfolio project. Academic vs personal classification, individual ownership, implementation trade-offs, and measured results are not established unless explicitly stated in this description.",
-    ],
-  })),
+  ...projects.map((p) => {
+    const f = projectFacts["project-" + p.id];
+    return {
+      id: "project-" + p.id,
+      label: p.title,
+      href: "#project-" + p.id,
+      publicUrl: p.link,
+      keywords: f.keywords,
+      facts: [f.summary, "Technologies: " + f.stack.map((s) => s.tech).join(", ") + ".", f.links],
+      details: [...f.details, ...f.stack.map((s) => `${s.tech}: ${s.use}`)],
+    };
+  }),
   {
     id: "resume",
     label: "Resume",
@@ -99,13 +96,36 @@ export function resolveSources(ids) {
     return source;
   });
 }
-export function contextFor(projectId) {
-  return projectId
-    ? knowledge.filter(
-        (k) =>
-          k.id === projectId || ["profile", "contact", "resume"].includes(k.id),
-      )
-    : knowledge;
+
+// Lightweight retrieval: score roles and projects by how strongly the question names them
+// (names and aliases) or their technologies, and expand the best few with their details.
+const normalise = (text) => " " + text.toLowerCase().replace(/[^a-z0-9+#.]+/g, " ") + " ";
+const mentions = (text, keyword) => {
+  const term = normalise(keyword).trim();
+  return text.includes(" " + term + " ") || (term.length > 4 && text.includes(term));
+};
+function relevance(entry, text) {
+  let score = 0;
+  for (const name of entry.keywords.names) if (mentions(text, name)) score += 6;
+  for (const tech of entry.keywords.tech) if (mentions(text, tech)) score += 2;
+  return score;
+}
+export function contextFor(projectId, query = "", mode = "chat") {
+  const pick = (entry, expand) => ({ id: entry.id, label: entry.label, facts: expand ? [...entry.facts, ...(entry.details || [])] : entry.facts });
+  if (projectId)
+    return knowledge
+      .filter((k) => k.id === projectId || ["profile", "contact", "resume"].includes(k.id))
+      .map((k) => pick(k, k.id === projectId));
+  const text = normalise(query);
+  const ranked = knowledge
+    .filter((k) => k.keywords)
+    .map((k) => ({ id: k.id, score: relevance(k, text) }))
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score);
+  // A job description touches many technologies, so compare mode always expands the professional roles.
+  const expanded = new Set(ranked.slice(0, mode === "compare" ? 2 : 3).map((r) => r.id));
+  if (mode === "compare") ["role-aws", "role-engineer", "role-intern"].forEach((id) => expanded.add(id));
+  return knowledge.map((k) => pick(k, expanded.has(k.id)));
 }
 export function attachSources(mode, output) {
   if (mode === "chat")

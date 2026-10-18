@@ -3,6 +3,7 @@ import { configuration, PublicError } from "./config.js";
 import { reserveQuota } from "./rate-limit.js";
 import { generate } from "./provider.js";
 import { attachSources } from "./knowledge.js";
+import { cacheAnswer, cacheKey, readCachedAnswer } from "./cache.js";
 
 export async function readBody(req) {
   if (!/^application\/json(?:\s*;|$)/i.test(req.headers["content-type"] || ""))
@@ -71,7 +72,10 @@ export function createHandler(mode, deps = {}) {
           "unavailable",
           "The AI guide is not available right now. Explore Rohit's published work below.",
         );
-      await (deps.reserveQuota || reserveQuota)(req, mode, config);
+      const key = mode === "chat" ? cacheKey(parsed.data, config.model) : null;
+      const cached = key && (await (deps.readCachedAnswer || readCachedAnswer)(key, config));
+      // A cached answer costs no model tokens, so it doesn't count against the visitor's quota.
+      if (!cached) await (deps.reserveQuota || reserveQuota)(req, mode, config);
       timer = setTimeout(
         () => controller.abort(new Error("timeout")),
         deps.timeoutMs || LIMITS.timeoutMs,
@@ -84,16 +88,19 @@ export function createHandler(mode, deps = {}) {
         streaming = true;
         emit("status", { message: "Reading the published portfolio…" });
       }
-      const output = await (deps.generate || generate)(
-        mode,
-        parsed.data,
-        config,
-        controller.signal,
-        (message) => {
-          if (streaming) emit("status", { message });
-        },
-      );
+      const output =
+        cached ||
+        (await (deps.generate || generate)(
+          mode,
+          parsed.data,
+          config,
+          controller.signal,
+          (message) => {
+            if (streaming) emit("status", { message });
+          },
+        ));
       if (controller.signal.aborted) throw new Error("Aborted");
+      if (key && !cached) await (deps.cacheAnswer || cacheAnswer)(key, output, config);
       const result = attachSources(mode, output);
       if (streaming) {
         emit("result", result);

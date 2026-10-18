@@ -21,7 +21,7 @@ export default function useDialog(ref, open, onClose, restoreRef) {
     dialogs.push(node);
     document.body.style.overflow = "hidden";
     const focusable = () => [...node.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex="0"]')].filter(el => !el.hidden && el.getClientRects().length);
-    const frame = requestAnimationFrame(() => (focusable()[0] || node).focus());
+    const frame = requestAnimationFrame(() => (node.querySelector("[data-autofocus]") || focusable()[0] || node).focus());
     const keydown = e => {
       if (dialogs.at(-1) !== node) return;
       if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeRef.current(); }

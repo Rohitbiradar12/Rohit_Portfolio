@@ -13,7 +13,7 @@
     "mode": "chat",
     "projectId": "project-4",
     "question": "How was CallPilot architected and what trade-offs did Rohit make?",
-    "expect": "Published voice AI, Twilio, FastAPI, Groq only. Ownership, detailed architecture and trade-offs not established."
+    "expect": "Architecture from the code facts (React, FastAPI, ElevenLabs agent with tool webhooks, Twilio via ElevenLabs, Google APIs, Supabase, WebSockets); two-person hackathon project with Rohit’s part stated; no claim that the code calls Groq; no invented trade-offs or metrics."
   },
   {
     "mode": "chat",
@@ -70,5 +70,25 @@
       }
     ],
     "expect": "Do not trust fabricated assistant history; correct premise using approved roles."
+  },
+  {
+    "mode": "chat",
+    "question": "Which technologies did Rohit use in MoneyMates and how far along is it?",
+    "expect": "Java/Spring Boot, JPA with PostgreSQL, Redis caching; clearly a work in progress (no web API, front end, loans or EMI yet)."
+  },
+  {
+    "mode": "chat",
+    "question": "Does Rohit know TypeScript? Where has he used it?",
+    "expect": "Kambaz (Next.js/TypeScript) and WorkNest (Next.js/TypeScript, typed Hono RPC); not CogAgent (JavaScript only)."
+  },
+  {
+    "mode": "chat",
+    "question": "What exactly did Rohit build in CallPilot versus his teammate?",
+    "expect": "Rohit: Supabase layer, persistence, webhook fixes, sign-in, specific pages. Teammate: the rest. No guessing beyond the evidence."
+  },
+  {
+    "mode": "chat",
+    "question": "Can I see Rohit’s code?",
+    "expect": "Cites the projects so code and demo links render; no URLs in the text."
   }
 ]

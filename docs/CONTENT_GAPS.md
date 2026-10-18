@@ -12,7 +12,7 @@ About described September 2025 as a future start. It now describes studies towar
 
 ## Projects
 
-For each of 3D Canvas Application, Work-Nest, Money-Mates, CallPilot, and CogAgent Marketplace, add a reviewed public case study containing:
+For each of Kambaz LMS, Work-Nest, Money-Mates, CallPilot, and CogAgent Marketplace, add a reviewed public case study containing:
 - Personal, academic, or team context and Rohit's precise individual contribution.
 - Architecture and data flow, with technologies explicitly stated in prose.
 - Constraints, alternatives considered, trade-offs and the reason for the final design.

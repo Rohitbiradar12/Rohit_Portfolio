@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { projects } from "../constants";
 import { LIMITS } from "../../shared/assistant.js";
 import { requestAssistant } from "./client";
@@ -14,8 +14,28 @@ const catalog = {
 };
 const sample = "SAMPLE BACKEND ROLE — Java Backend Engineer\nBuild Spring Boot services and REST APIs with PostgreSQL. Use Kafka for asynchronous workflows and Redis for caching. Collaborate on authentication, automated testing, and observability. Discuss production reliability and deployment experience with Kubernetes. This is a fictional example, not a real vacancy.";
 
+// Cited projects also get direct links to the live demo (when there is one) and the code.
+const projectLinks = Object.fromEntries(projects.map(p => ["project-" + p.id, [
+  ...(p.link !== p.repo ? [[p.title + " live demo", p.link]] : []),
+  ...(p.repo ? [[p.title + " code", p.repo]] : []),
+]]));
+const external = { target: "_blank", rel: "noopener noreferrer" };
 function Sources({ ids, navigate }) {
-  return <div className="ar-sources" aria-label="Supporting sources">{[...new Set(ids)].map(id => catalog[id] && <a key={id} href={catalog[id][1]} onClick={e => navigate(e, catalog[id][1])} {...(id === "resume" ? { target: "_blank", rel: "noopener noreferrer" } : {})}><span aria-hidden="true">↗</span> {catalog[id][0]}</a>)}</div>;
+  return <div className="ar-sources" aria-label="Supporting sources">{[...new Set(ids)].map(id => catalog[id] && <Fragment key={id}>
+    <a href={catalog[id][1]} onClick={e => navigate(e, catalog[id][1])} {...(id === "resume" ? external : {})}><span aria-hidden="true">↗</span> {catalog[id][0]}</a>
+    {projectLinks[id]?.map(([label, href]) => <a key={href} href={href} {...external}><span aria-hidden="true">↗</span> {label}</a>)}
+  </Fragment>)}</div>;
+}
+// The empty composer suggests things to ask, one at a time.
+const prompts = ["Ask how CallPilot works…", "Which projects use Java and Spring Boot?", "What did Rohit build at AWS?", "Where has he used Kafka and Redis?", "Show me code I can review…"];
+function CyclingPlaceholder() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setIndex(i => (i + 1) % prompts.length), 3200);
+    return () => clearInterval(timer);
+  }, []);
+  return <span className="ar-placeholder" aria-hidden="true"><span key={index}>{prompts[index]}</span></span>;
 }
 function Report({ report, navigate }) {
   return <article className="ar-report">
@@ -28,7 +48,7 @@ function Report({ report, navigate }) {
     <p className="ar-note">Missing evidence does not mean a missing skill. This is a guide to published work, not a hiring recommendation.</p>
   </article>;
 }
-export default function AssistantPanel({ selection, open, onClose }) {
+export default function AssistantPanel({ selection, open, onClose, onBusyChange }) {
   const [mode, setMode] = useState(selection.mode);
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState("");
@@ -39,11 +59,28 @@ export default function AssistantPanel({ selection, open, onClose }) {
   const [error, setError] = useState(null);
   const [retry, setRetry] = useState(null);
   const [streamingMessage, setStreamingMessage] = useState(null);
-  const controller = useRef(null), busy = useRef(false), scroll = useRef(null), nearBottom = useRef(false), input = useRef(null), streamRef = useRef(null), autoTimer = useRef(null);
-  const stopStreaming = () => { clearTimeout(streamRef.current); streamRef.current = null; };
+  const controller = useRef(null), busy = useRef(false), scroll = useRef(null), nearBottom = useRef(false), input = useRef(null), streamRef = useRef(null), typing = useRef(null), autoTimer = useRef(null);
+  // Discard an answer that is still appearing (new conversation).
+  const stopStreaming = () => { streamRef.current?.(); streamRef.current = null; typing.current = null; };
+  // Show the rest of an answer that is still appearing straight away, keeping it in the conversation.
+  const finishTyping = () => {
+    const done = typing.current;
+    if (!done) return;
+    stopStreaming();
+    setMessages(prev => [...prev, { role: "assistant", content: done.text, sourceIds: done.sourceIds }]);
+    setStreamingMessage(null);
+  };
+  const finishRef = useRef(finishTyping);
+  finishRef.current = finishTyping; // effects below call the latest version
+  useLayoutEffect(() => {
+    const el = input.current; // grow with the question, up to about six lines
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 168) + "px";
+  }, [question, mode]);
   useEffect(() => {
     controller.current?.abort();
-    stopStreaming();
+    finishRef.current();
     clearTimeout(autoTimer.current);
     busy.current = false;
     setPending(false);
@@ -53,19 +90,21 @@ export default function AssistantPanel({ selection, open, onClose }) {
     if (selection.projectId) {
       const project = projects.find(p => "project-" + p.id === selection.projectId);
       if (project) {
-        const q = `Tell me about the ${project.title} project — what skills does it demonstrate and where else has Rohit applied those skills?`;
+        const q = `Tell me about the ${project.title} project: what it does, how it's built, and what Rohit worked on.`;
         setMessages([{ role: "user", content: q }]);
         nearBottom.current = true;
-        autoTimer.current = setTimeout(() => run({ mode: "chat", body: { message: q, history: [] } }), 0);
+        // Only this project's facts are sent for the opening answer; follow-ups use the whole portfolio.
+        autoTimer.current = setTimeout(() => run({ mode: "chat", body: { message: q, history: [], projectId: selection.projectId } }), 0);
       }
     }
   }, [selection]);
   useEffect(() => () => { controller.current?.abort(); stopStreaming(); clearTimeout(autoTimer.current); }, []);
+  useEffect(() => { onBusyChange?.(pending); }, [pending, onBusyChange]); // Ro "thinks" while a reply is pending
   useEffect(() => {
     if (nearBottom.current && scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
   }, [messages, streamingMessage, pending, status, report, error]);
   useEffect(() => { if (report) scroll.current?.querySelector(".ar-report")?.scrollIntoView({ block: "start", behavior: "auto" }); }, [report]);
-  useEffect(() => { if (!open) { controller.current?.abort(); stopStreaming(); clearTimeout(autoTimer.current); setStreamingMessage(null); } }, [open]);
+  useEffect(() => { if (!open) { controller.current?.abort(); finishRef.current(); clearTimeout(autoTimer.current); } }, [open]);
   const navigate = (e, href) => {
     if (!href.startsWith("#")) return;
     e.preventDefault(); onClose();
@@ -79,26 +118,29 @@ export default function AssistantPanel({ selection, open, onClose }) {
       target.focus({ preventScroll: true });
     }));
   };
-  const startTyping = (fullText, sourceIds) => {
+  // Words appear one at a time, each fading in from a soft blur. The pace adapts to the length,
+  // so short replies feel lively and long ones finish in about two and a half seconds.
+  const startTyping = (text, sourceIds) => {
+    finishTyping();
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setMessages(prev => [...prev, { role: "assistant", content: fullText, sourceIds }]);
+      setMessages(prev => [...prev, { role: "assistant", content: text, sourceIds }]);
       return;
     }
-    let index = 0;
+    const tokens = text.split(/(\s+)/);
+    const duration = Math.min(2600, Math.max(700, tokens.filter(t => t.trim()).length * 32));
+    const startedAt = performance.now();
+    let shown = 0, frame, settle;
+    typing.current = { text, sourceIds };
+    streamRef.current = () => { cancelAnimationFrame(frame); clearTimeout(settle); };
     nearBottom.current = true;
-    setStreamingMessage({ content: "", sourceIds });
-    const tick = () => {
-      index = Math.min(index + 5, fullText.length);
-      setStreamingMessage({ content: fullText.slice(0, index), sourceIds });
-      if (index < fullText.length) {
-        streamRef.current = setTimeout(tick, 16);
-      } else {
-        streamRef.current = null;
-        setMessages(prev => [...prev, { role: "assistant", content: fullText, sourceIds }]);
-        setStreamingMessage(null);
-      }
+    setStreamingMessage({ tokens, shown, sourceIds });
+    const tick = now => {
+      const next = Math.ceil(Math.min(1, (now - startedAt) / duration) * tokens.length);
+      if (next !== shown) { shown = next; setStreamingMessage({ tokens, shown, sourceIds }); }
+      if (shown < tokens.length) frame = requestAnimationFrame(tick);
+      else settle = setTimeout(finishTyping, 450); // let the last words finish fading in
     };
-    streamRef.current = setTimeout(tick, 16);
+    frame = requestAnimationFrame(tick);
   };
   const run = async (request) => {
     if (busy.current) return;
@@ -136,13 +178,25 @@ export default function AssistantPanel({ selection, open, onClose }) {
     <div className="ar-scroll" ref={scroll} onScroll={() => { const el = scroll.current; nearBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80; }}>
       {mode === "chat" ? <>
         {messages.length === 0 && <div className="ar-welcome"><span className="ar-eyebrow">THE WORK, WITH EVIDENCE</span><h3>Go beyond<br /><span>the résumé.</span></h3><p>Explore Rohit's experience, follow the evidence, and find the projects that matter to you.</p><div className="ar-suggestions">{suggestions.map((s, i) => <button key={s} onClick={() => send(s)} disabled={pending}><span className="ar-question-number">0{i + 1}</span><span>{s}</span><span aria-hidden="true">↗</span></button>)}</div><div className="ar-grounded"><span aria-hidden="true">◎</span> Grounded in published work. Sources included.</div></div>}
-        <div className="ar-messages" role="log" aria-label="Conversation">{messages.map((m, i) => <article key={i} className={"ar-message ar-" + m.role}><div className="ar-message-label">{m.role === "user" ? "YOU" : "ASK ROHIT · AI"}</div><p>{m.content}</p>{m.sourceIds && <Sources ids={m.sourceIds} navigate={navigate} />}</article>)}{streamingMessage && <article className="ar-message ar-assistant" aria-live="polite" aria-atomic="false"><div className="ar-message-label">ASK ROHIT · AI</div><p>{streamingMessage.content}<span className="ar-cursor" aria-hidden="true" /></p></article>}</div>
+        <div className="ar-messages" role="log" aria-label="Conversation">{messages.map((m, i) => <article key={i} className={"ar-message ar-" + m.role}><div className="ar-message-label">{m.role === "user" ? "YOU" : "ASK RO · AI"}</div><p>{m.content}</p>{m.sourceIds && <Sources ids={m.sourceIds} navigate={navigate} />}</article>)}{streamingMessage && <article className="ar-message ar-assistant ar-streaming" aria-hidden="true"><div className="ar-message-label">ASK RO · AI</div><p>{streamingMessage.tokens.slice(0, streamingMessage.shown).map((t, i) => t.trim() ? <span key={i} className="ar-word">{t}</span> : t)}<span className="ar-caret" /></p></article>}</div>
       </> : <div className="ar-compare"><div className="ar-eyebrow">FROM REQUIREMENTS TO EVIDENCE</div><h3>Bring a role.<br /><span>Explore the fit.</span></h3><p>See where the published work connects—and what deserves a conversation.</p><label htmlFor="ar-job">Job description</label><textarea id="ar-job" value={job} onChange={e => setJob(e.target.value)} maxLength={LIMITS.job} rows={8} disabled={pending} placeholder="Paste the responsibilities and requirements…" /><div className="ar-field-meta"><button onClick={() => { setJob(sample); setReport(null); setError(null); }} disabled={pending}>Try an example · sample backend role</button><span>{job.length.toLocaleString()} / 12,000</span></div><button className="ar-primary" onClick={compare} disabled={pending || !job.trim()}>Compare experience <span aria-hidden="true">↗</span></button>{report && <Report report={report} navigate={navigate} />}</div>}
-      {pending && <div className="ar-pending" role="status"><span className="ar-status-dot" />{status}<button onClick={() => controller.current?.abort()}>Cancel</button></div>}
+      {pending && <div className="ar-thinking" role="status"><span className="ar-orb" aria-hidden="true"><i /><i /><i /></span><span className="ar-shimmer">{status}</span>{mode === "compare" && <button onClick={() => controller.current?.abort()}>Cancel</button>}</div>}
       {error && <div className="ar-error" role="alert"><strong>{error.unavailable ? "The guide is taking a break." : "Let's try that again."}</strong><p>{error.message}</p>{retry && <button onClick={() => run(retry)} disabled={pending}>Retry request ↗</button>}<Sources ids={["experience", "project-4", "resume"]} navigate={navigate} /></div>}
     </div>
     <footer className="ar-composer">
-      {mode === "chat" && <form onSubmit={e => { e.preventDefault(); send(); }}><label className="ar-sr-only" htmlFor="ar-question">Ask about Rohit's published work</label><div className="ar-input-wrap"><textarea ref={input} id="ar-question" value={question} onChange={e => setQuestion(e.target.value)} maxLength={LIMITS.message} rows={2} disabled={pending} placeholder="What would you like to know?" onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} /><button className="ar-send" disabled={pending || !question.trim()} aria-label="Send question">↑</button></div><div className="ar-field-meta"><span>Enter to send · Shift + Enter for a new line</span><span>{question.length} / 2,000</span></div></form>}
+      {mode === "chat" && <form onSubmit={e => { e.preventDefault(); send(); }}>
+        <label className="ar-sr-only" htmlFor="ar-question">Ask about Rohit's published work</label>
+        <div className={"ar-input-wrap" + (pending ? " is-busy" : "")}>
+          <div className="ar-input-field">
+            <textarea ref={input} id="ar-question" value={question} onChange={e => setQuestion(e.target.value)} maxLength={LIMITS.message} rows={1} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); send(); } }} />
+            {!question && <CyclingPlaceholder />}
+          </div>
+          {pending
+            ? <button type="button" className="ar-send ar-stop" onClick={() => controller.current?.abort()} aria-label="Cancel"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2.5" fill="currentColor" /></svg></button>
+            : <button className="ar-send" disabled={!question.trim()} aria-label="Send question"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg></button>}
+        </div>
+        <div className="ar-field-meta"><span className="ar-keys"><kbd>Enter</kbd> to send <kbd>Shift</kbd>+<kbd>Enter</kbd> new line</span>{question.length > 1500 && <span className={"ar-count" + (question.length > 1900 ? " is-near" : "")}>{question.length.toLocaleString()} / 2,000</span>}</div>
+      </form>}
       <p className="ar-privacy">Avoid sensitive information. Conversations stay in memory for this page session; nothing is saved by this app. AI can make mistakes—check the sources.</p>
     </footer>
   </>;

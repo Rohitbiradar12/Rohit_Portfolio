@@ -1,5 +1,6 @@
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import AssistantHost from "./assistant/AssistantHost";
+import CursorTrail from "./components/CursorTrail";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
 import Projects from "./sections/Projects";
@@ -16,6 +17,7 @@ import Navbar from "./components/NavBar";
 const App = () => (
   <>
     <AssistantHost />
+    <CursorTrail />
     <Navbar />
     <Hero />
     <About />

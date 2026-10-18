@@ -10,43 +10,43 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PROJECT_META = {
     1: {
-        tag: "EdTech Platform",
+        tag: "EdTech",
         palette: "violet",
         metrics: [
-            { value: "AI", label: "Powered" },
-            { value: "3D", label: "Canvas" },
+            { value: "REST", label: "Express API" },
+            { value: "MongoDB", label: "Data model" },
         ],
     },
     2: {
         tag: "Full-Stack",
         palette: "teal",
         metrics: [
-            { value: "Real-Time", label: "Sync" },
-            { value: "Multi", label: "Workspace" },
+            { value: "RBAC", label: "Multi-company roles" },
+            { value: "Kanban", label: "Tasks & timesheets" },
         ],
     },
     3: {
-        tag: "FinTech",
+        tag: "Backend",
         palette: "amber",
         metrics: [
-            { value: "Split", label: "Expenses" },
-            { value: "EMI", label: "Calculator" },
+            { value: "Split", label: "Expense model" },
+            { value: "Redis", label: "Cached lookups" },
         ],
     },
     4: {
         tag: "AI Voice Agent",
         palette: "blue",
         metrics: [
-            { value: "Voice", label: "Real-time" },
+            { value: "Parallel", label: "Voice calls" },
             { value: "Auto", label: "Booking" },
         ],
     },
     5: {
-        tag: "Decentralized AI",
+        tag: "AI Agents",
         palette: "emerald",
         metrics: [
-            { value: "On-Chain", label: "Bitcoin data" },
-            { value: "COG", label: "Token protocol" },
+            { value: "Live", label: "Bitcoin data" },
+            { value: "Swarms", label: "Claude agents" },
         ],
     },
 };
@@ -79,12 +79,9 @@ const ProjectCard = ({ project }) => {
     };
 
     return (
-        <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
+        <article
+            id={`project-${project.id}`}
             className={`pj-card pj-${meta.palette}`}
-            aria-label={`View ${project.title}`}
         >
             <div className="pj-card-media">
                 <img
@@ -120,7 +117,16 @@ const ProjectCard = ({ project }) => {
             </div>
 
             <div className="pj-card-body">
-                <h3 className="pj-card-title">{project.title}</h3>
+                <h3 className="pj-card-title">
+                    <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="pj-main-link"
+                    >
+                        {project.title}
+                    </a>
+                </h3>
                 <p className="pj-card-desc">{project.des}</p>
 
                 {meta.metrics && meta.metrics.length > 0 && (
@@ -140,13 +146,13 @@ const ProjectCard = ({ project }) => {
             <button
                 type="button"
                 className="pj-ask-btn"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); openAI(project.id); }}
+                onClick={() => openAI(project.id)}
                 aria-label={`Ask AI about ${project.title}`}
                 title="Ask AI about this project"
             >
                 ✧
             </button>
-        </a>
+        </article>
     );
 };
 

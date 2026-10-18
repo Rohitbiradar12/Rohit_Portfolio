@@ -8,7 +8,9 @@ The existing Vite/React application stays intact. There is no framework migratio
 - `src/assistant/AssistantPanel.jsx`: question and comparison modes, sources, retry/cancel, memory-only state.
 - `src/assistant/client.js`: bounded SSE reader, interrupted-response handling, client schema validation.
 - `shared/assistant.js`: strict Zod input/output schemas, source IDs, centralized limits.
-- `server/knowledge.js`: approved context and server-owned source destinations. Reuses existing project descriptions, roles/responsibilities, and skills.
+- `server/knowledge.js`: approved context, server-owned source destinations and retrieval. Every entry has short facts that are always sent and details sent only when the question is about it (project/role names and technologies), which keeps each request near 2–3k tokens.
+- `server/project-facts.js`: detailed project evidence verified against each public repository (README, manifests, source, commit history), including Rohit’s part on team projects, plus role keywords and technologies.
+- `server/cache.js`: opening answers (no earlier conversation, such as the suggested questions and project buttons) are cached in Upstash Redis for 24 hours and served without calling the model or counting against quotas. Keys include a fingerprint of the knowledge and instructions, so editing facts or prompts starts a fresh cache. Cache failures fall through to a fresh answer.
 - `server/provider.js`: OpenAI-compatible JavaScript SDK pointed at Groq Chat Completions with strict JSON-schema output. No tools, browsing, filesystem access, or code execution.
 - `server/handler.js`: POST-only API, request limits, fail-closed configuration, quotas, timeouts, disconnect cancellation, safe errors.
 - `server/rate-limit.js`: shared Upstash Redis quotas using one atomic Lua reservation.
@@ -73,11 +75,11 @@ For deployment, retain Vercel's Vite preset, dist output, and root /api director
 
 ## Evidence and updates
 
-Update existing data in src/constants/index.js for project descriptions, roles, and skill names. The backend imports those fields; it does not infer technologies from iconLists. Profile facts and source metadata live in server/knowledge.js. Each evidence entry must have a stable ID from shared/assistant.js and a verified public destination.
+Update existing data in src/constants/index.js for project descriptions, links (`link` for the live demo, `repo` for the code), roles, and skill names. The backend imports those fields; it does not infer technologies from iconLists. Detailed project facts live in server/project-facts.js: keep them to what the code shows, and re-check them against the repository when a project changes. Profile facts and source metadata live in server/knowledge.js. The chat shows each cited project’s live-demo and code links from the constants; the model never writes URLs. Each evidence entry must have a stable ID from shared/assistant.js and a verified public destination.
 
-The resume PDF is a source destination, not parsed model context. No claims are extracted from its filename or preview. Existing professional role responsibilities are used verbatim; university-club work is explicitly distinguished from commercial employment. Portfolio project classification and individual ownership remain unknown unless documented.
+The resume PDF is a source destination, not parsed model context. No claims are extracted from its filename or preview. Existing professional role responsibilities are used verbatim; university-club work is explicitly distinguished from commercial employment. Project ownership comes from commit history: team projects state Rohit’s part and do not guess a teammate’s.
 
-For a new project: add its approved public description, extend project/source IDs, add a matching #project-N anchor, update the client source catalogue, and test source navigation. Do not reorder role data without updating stable role-ID mappings. Ask Rohit currently uses general portfolio context for every question; project-specific scoping is disabled in the interface.
+For a new project: add its approved public description and a project-facts entry (summary, details, stack, keywords), extend project/source IDs, add a matching #project-N anchor, update the client source catalogue, and test source navigation. Do not reorder role data without updating stable role-ID mappings. A project card’s ✧ button sends its opening question with that project’s ID, so only that project’s facts (plus profile, contact and resume) are sent; follow-up questions use the general, retrieval-based context.
 
 Sources are returned as server-validated IDs and links. The browser independently maps known IDs to its own fixed link catalogue and never renders model-provided URLs. #project-N navigation reveals the actual carousel card, closes the panel, and focuses the destination. External resume links open separately. Text is rendered through React as plain text, including apparent Markdown/HTML.
 

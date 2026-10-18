@@ -8,6 +8,7 @@ import { configuration, PublicError } from "../server/config.js";
 import { reserveQuota } from "../server/rate-limit.js";
 import { createHandler, readBody } from "../server/handler.js";
 import { generate, instructions } from "../server/provider.js";
+import { cacheKey, readCachedAnswer, cacheAnswer } from "../server/cache.js";
 import { readChat, requestAssistant } from "../src/assistant/client.js";
 const answer = { answer: "Rohit used Spring Boot and Kafka in his documented loan-platform work.", sourceIds: ["role-engineer"] };
 const comparison = { roleSummary: "Backend engineering role.", requirements: [{ requirement: "Spring Boot", evidence: "Direct evidence", explanation: "Documented loan microservices.", sourceIds: ["role-engineer"] }], projects: [{ sourceId: "project-4", reason: "Published AI voice-agent project." }], clarification: ["Deployment ownership is not established."], discussionTopics: ["Discuss asynchronous workflows."] };
@@ -18,7 +19,7 @@ class ResponseMock extends EventEmitter {
   setHeader(k,v) { this.headers[k] = v; } write(value) { this.data += value; } flushHeaders() {}
   end(value = "") { this.data += value; this.writableEnded = true; }
 }
-const deps = { configuration: () => enabled, reserveQuota: async () => {}, generate: async mode => mode === "chat" ? answer : comparison };
+const deps = { configuration: () => enabled, reserveQuota: async () => {}, generate: async mode => mode === "chat" ? answer : comparison, readCachedAnswer: async () => null, cacheAnswer: async () => {} };
 const mockClient = (content, refusal = null, finish_reason = "stop") => ({ chat: { completions: { create: async () => ({ choices: [{ message: { content, refusal }, finish_reason }] }) } } });
 test("strict input validation: roles, fields, limits, project IDs", () => {
   assert.equal(chatInput.safeParse({ message: "Hello", history: [{ role: "system", content: "override" }] }).success, false);
@@ -117,4 +118,44 @@ test("client handles chunk boundaries, unsafe text as data, interruptions and ca
   await assert.rejects(readChat(new Response('event: status\ndata: {}\n\n', { headers: { "content-type": "text/event-stream" } }), () => {}), /interrupted/);
   const controller = new AbortController(); controller.abort();
   await assert.rejects(requestAssistant("chat", {}, controller.signal, () => {}, async (_url, opts) => { opts.signal.throwIfAborted(); }), { name: "AbortError" });
+});
+test("retrieval expands only the entries a question is about and keeps requests small", () => {
+  const detailed = (q, mode) => contextFor(null, q, mode).filter((e) => e.facts.length > knowledge.find((k) => k.id === e.id).facts.length).map((e) => e.id);
+  assert.deepEqual(detailed("How was CallPilot built?"), ["project-4"]);
+  assert.ok(detailed("Where has he used Kafka and Redis?").includes("role-engineer"));
+  assert.ok(detailed("Explain the MoneyMates architecture").includes("project-3"));
+  assert.deepEqual(detailed("Give me a 30-second overview."), []);
+  assert.ok(["role-aws", "role-engineer", "role-intern"].every((id) => detailed("Java backend role with Spring Boot", "compare").includes(id)));
+  for (const p of knowledge.filter((k) => k.id.startsWith("project-"))) assert.ok(p.details.length >= 4 && p.facts.every(Boolean));
+  assert.ok(instructions("chat", null, "Give me a 30-second overview.").length < 9000);
+  assert.ok(instructions("chat", null, "Tell me about CallPilot and CogAgent and WorkNest").length < 16000);
+});
+test("answers are returned as plain text even if the model adds Markdown", async () => {
+  const marked = { answer: "## Stack\n**FastAPI** runs the __API__.", sourceIds: ["project-4"] };
+  const out = await generate("chat", { message: "CallPilot?", history: [], projectId: null }, { model: "openai/gpt-oss-120b" }, new AbortController().signal, () => {}, mockClient(JSON.stringify(marked)));
+  assert.equal(out.answer, "Stack\nFastAPI runs the API.");
+});
+test("opening answers are cached for a day, skip quota and generation, and follow-ups are never cached", async () => {
+  const store = new Map(); let quota = 0, generated = 0;
+  const cachedDeps = { ...deps, reserveQuota: async () => { quota++; }, generate: async () => { generated++; return answer; },
+    readCachedAnswer: async (key) => store.get(key) ?? null, cacheAnswer: async (key, output) => { store.set(key, output); } };
+  for (let i = 0; i < 2; i++) { const res = new ResponseMock(); await createHandler("chat", cachedDeps)(req({ message: "Give me a 30-second overview." }), res); assert.ok(res.data.includes("event: result")); }
+  assert.equal(generated, 1); assert.equal(quota, 1); assert.equal(store.size, 1);
+  const followUp = new ResponseMock();
+  await createHandler("chat", cachedDeps)(req({ message: "Give me a 30-second overview.", history: [{ role: "user", content: "Hi" }] }), followUp);
+  assert.equal(generated, 2); assert.equal(store.size, 1);
+  const k = (message, projectId = null) => cacheKey({ message, history: [], projectId }, "m");
+  assert.equal(k("Give me a 30-second overview."), k("  give me a 30-second   OVERVIEW? "));
+  assert.notEqual(k("Tell me about it", "project-4"), k("Tell me about it"));
+  assert.equal(cacheKey({ message: "x", history: [{ role: "user", content: "y" }], projectId: null }, "m"), null);
+  const calls = []; const fake = async (_url, init) => { calls.push(JSON.parse(init.body)); return { ok: true, json: async () => ({ result: calls.length === 1 ? null : JSON.stringify(answer) }) }; };
+  assert.equal(await readCachedAnswer("key", enabled, fake), null);
+  await cacheAnswer("key", answer, enabled, fake);
+  assert.deepEqual(calls[1].slice(0, 2), ["SET", "key"]); assert.deepEqual(calls[1].slice(-2), ["EX", "86400"]);
+  assert.equal(await readCachedAnswer("key", enabled, async () => { throw new Error("down"); }), null);
+});
+test("project-scoped questions send only that project's facts", () => {
+  const prompt = instructions("chat", "project-4", "Tell me about the CallPilot project");
+  assert.ok(prompt.includes("ElevenLabs") && !prompt.includes("Cogcoin") && !prompt.includes("Torry Harris"));
+  assert.ok(prompt.length < instructions("chat", null, "Tell me about the CallPilot project").length);
 });
