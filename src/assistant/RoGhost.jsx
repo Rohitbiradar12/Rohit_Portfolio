@@ -107,6 +107,24 @@ function eyeFloorGeometry(eye) {
   return floor;
 }
 
+const BLINK = { close: 0.09, hold: 0.05, open: 0.13, line: 0.065 }; // seconds; line = thickness of the closed "‿"
+const LID = { x: 1.12, y: 1.04 }; // lids overlap the eye rim; extra width keeps the closed "‿" off the sides
+
+// An eyelid: an oval a little larger than the eye that slides down from just above it. Being full
+// width it never leaves slivers at the sides; it stops a little short, leaving a thin dark curve
+// along the bottom of the eye: a closed, smiling "‿". (A fan from the centre, rather than the traced
+// outline, avoids long thin triangles that can leave pinholes when rasterised.)
+function lidGeometry(eye) {
+  const lid = new THREE.CircleGeometry(1, 64);
+  lid.scale(eye.rx * LID.x, eye.ry * LID.y, 1);
+  return lid;
+}
+// How far above the eye the lid sits: clear of it when open, nearly covering it when closed.
+const lidOffset = (eye, closure) => {
+  const open = 2 * eye.ry * LID.y, closed = BLINK.line + eye.ry * (LID.y - 1);
+  return open - (open - closed) * closure;
+};
+
 const disc = new THREE.CircleGeometry(1, 48);
 const plane = new THREE.PlaneGeometry(1, 1);
 
@@ -116,7 +134,7 @@ function svgPath(flat) {
   return d + "Z";
 }
 
-function Face({ face, parts, groupRef, pupilRefs, cheekMaterial }) {
+function Face({ face, parts, groupRef, pupilRefs, cheekMaterial, lidRefs, lidMaterial }) {
   return (
     <group ref={groupRef}>
       <mesh geometry={parts.body}>
@@ -133,8 +151,11 @@ function Face({ face, parts, groupRef, pupilRefs, cheekMaterial }) {
           <meshBasicMaterial color="#ffffff" toneMapped={false} />
         </mesh>
       ))}
+      {parts.lids.map((lid, i) => (
+        <mesh key={"lid" + i} ref={lidRefs[i]} geometry={lid} material={lidMaterial} position={[face.eyes[i].x, face.eyes[i].y + lidOffset(face.eyes[i], 0), CAP_Z + 0.004]} renderOrder={1} visible={false} />
+      ))}
       {cheekPositions(face.eyes).map(([x, y], i) => (
-        <mesh key={"cheek" + i} geometry={plane} material={cheekMaterial} position={[x, y, CAP_Z + 0.006]} scale={[BLUSH.rx * 2, BLUSH.ry * 2, 1]} renderOrder={1} />
+        <mesh key={"cheek" + i} geometry={plane} material={cheekMaterial} position={[x, y, CAP_Z + 0.006]} scale={[BLUSH.rx * 2, BLUSH.ry * 2, 1]} renderOrder={2} />
       ))}
     </group>
   );
@@ -145,19 +166,23 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
   const turnRef = useRef();
   const faceRefs = { left: useRef(), right: useRef() };
   const pupilRefs = { left: [useRef(), useRef()], right: [useRef(), useRef()] };
+  const lidRefs = { left: [useRef(), useRef()], right: [useRef(), useRef()] };
   const look = useRef({ x: 0, y: 0 });
   const turn = useRef({ shown: facing, target: facing, start: null });
+  const blink = useRef({ next: 2 + Math.random() * 3, start: -1, quick: false });
   const parts = useMemo(
-    () => Object.fromEntries(Object.entries(FACES).map(([name, face]) => [name, { body: ghostGeometry(face), floors: face.eyes.map(eyeFloorGeometry) }])),
+    () => Object.fromEntries(Object.entries(FACES).map(([name, face]) => [name, { body: ghostGeometry(face), floors: face.eyes.map(eyeFloorGeometry), lids: face.eyes.map(lidGeometry) }])),
     [],
   );
   const cheeks = useMemo(blushMaterial, []);
+  // Lids draw after the body without depth testing, so the dark eye rim just beneath can never poke through.
+  const lidMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.38, clearcoat: 0.55, clearcoatRoughness: 0.28, depthTest: false }), []);
   const flush = useRef(0);
   const { size, viewport, gl, invalidate } = useThree();
   const rect = useRef(null);
 
-  useEffect(() => () => Object.values(parts).forEach(({ body, floors }) => { body.dispose(); floors.forEach((f) => f.dispose()); }), [parts]);
-  useEffect(() => () => { cheeks.map.dispose(); cheeks.dispose(); }, [cheeks]);
+  useEffect(() => () => Object.values(parts).forEach(({ body, floors, lids }) => { body.dispose(); [...floors, ...lids].forEach((g) => g.dispose()); }), [parts]);
+  useEffect(() => () => { cheeks.map.dispose(); cheeks.dispose(); lidMaterial.dispose(); }, [cheeks, lidMaterial]);
   // The launcher is position: fixed, so its box only changes on resize.
   useEffect(() => {
     const measure = () => { rect.current = gl.domElement.getBoundingClientRect(); };
@@ -228,6 +253,32 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
       });
     }
 
+    // Blink every few seconds, now and then twice in quick succession: the lids sweep down
+    // (ease in), hold for a moment, then lift (ease out).
+    let closure = 0;
+    const b = blink.current;
+    if (!reduced) {
+      if (b.start < 0 && t >= b.next) b.start = t;
+      if (b.start >= 0) {
+        const e = t - b.start;
+        if (e < BLINK.close) closure = (e / BLINK.close) ** 2;
+        else if (e < BLINK.close + BLINK.hold) closure = 1;
+        else if (e < BLINK.close + BLINK.hold + BLINK.open) closure = (1 - (e - BLINK.close - BLINK.hold) / BLINK.open) ** 2;
+        else {
+          b.start = -1;
+          b.quick = !b.quick && Math.random() < 0.2;
+          b.next = t + (b.quick ? 0.16 : 2.5 + Math.random() * 4);
+        }
+      }
+    }
+    for (const name of Object.keys(FACES))
+      FACES[name].eyes.forEach((eye, i) => {
+        const lid = lidRefs[name][i].current;
+        if (!lid) return;
+        lid.position.y = eye.y + lidOffset(eye, closure);
+        lid.visible = closure > 0;
+      });
+
     if (reduced) return;
     const wave = Math.sin((t * Math.PI * 2) / FLOAT_PERIOD);
     floatRef.current.position.y = 0.2 + wave * FLOAT_PX * (viewport.height / size.height);
@@ -242,7 +293,7 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
     <group ref={floatRef} position={[0, 0.2, 0]}>
       <group ref={turnRef}>
         {Object.entries(FACES).map(([name, face]) => (
-          <Face key={name} face={face} parts={parts[name]} groupRef={faceRefs[name]} pupilRefs={pupilRefs[name]} cheekMaterial={cheeks} />
+          <Face key={name} face={face} parts={parts[name]} groupRef={faceRefs[name]} pupilRefs={pupilRefs[name]} cheekMaterial={cheeks} lidRefs={lidRefs[name]} lidMaterial={lidMaterial} />
         ))}
       </group>
     </group>
@@ -295,7 +346,7 @@ export default function RoGhost({ reduced, paused, shadowRef, facing = "left", g
         className="ro-canvas"
         dpr={[1, 2]}
         frameloop={paused ? "never" : reduced ? "demand" : "always"}
-        camera={{ position: [0, 0, 40], fov: 8.9 }} // long lens: little perspective distortion
+        camera={{ position: [0, 0, 40], fov: 8.9, near: 30, far: 50 }} // long lens; tight depth range for crisp layering
         gl={{ alpha: true, antialias: true }}
         onCreated={(state) => {
           state.gl.toneMapping = THREE.NeutralToneMapping;
