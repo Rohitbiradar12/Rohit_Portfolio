@@ -57,3 +57,12 @@ test("motion is frame-rate independent: 60 Hz and 144 Hz screens see the identic
     for (const key of ["x", "height", "lean", "spin", "sy", "bow"]) assert.ok(Math.abs(p[key] - q[key]) < 1e-9, `${key} at tick ${p.tick}`);
   }
 });
+
+test("Ro dances with its eyes closed the whole way, and blushes once it sticks the final landing", () => {
+  const { poses, landings } = perform(60);
+  const afterOneBeat = poses.filter((p) => p.t > BEAT);
+  assert.ok(afterOneBeat.every((p) => p.happy > 0.99), "eyes stay closed through the dance");
+  const finale = landings.at(-1).beat;
+  assert.ok(poses.filter((p) => p.t / BEAT < finale - 0.05).every((p) => p.flush < 0.01), "no blush before the finale");
+  assert.ok(poses.at(-1).flush > 0.99, "blushing by the bow");
+});

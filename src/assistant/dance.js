@@ -74,7 +74,8 @@ export function createDance({ onLand } = {}) {
   const lookX = spring(2.3, 0.55);
   const lookY = spring(2.3, 0.55);
   const air = { y: 0, vy: 0, flying: false };
-  let homeX = 0, spinTarget = 0, happy = 0, beaming = false, time = 0, carry = 0, next = 0, prevVx = 0, finale = false;
+  // eyes: closed ("‿") for the whole dance, lost in the music; blush: arrives when Ro sticks the final landing.
+  let homeX = 0, spinTarget = 0, eyes = 0, blush = 0, beaming = false, time = 0, carry = 0, next = 0, prevVx = 0, finale = false;
 
   const tick = () => {
     const b = time / BEAT;
@@ -114,7 +115,8 @@ export function createDance({ onLand } = {}) {
     pull(bow, t.bow);
     pull(lookX, t.look.x);
     pull(lookY, t.look.y);
-    happy += ((beaming ? 1 : 0) - happy) * Math.min(1, STEP * 9);
+    eyes += (1 - eyes) * Math.min(1, STEP * 12);
+    blush += ((beaming ? 1 : 0) - blush) * Math.min(1, STEP * 9);
     time += STEP;
   };
 
@@ -136,8 +138,8 @@ export function createDance({ onLand } = {}) {
         sy,
         sx: 1 / Math.sqrt(Math.max(0.5, sy)),
         look: { x: Math.max(-1, Math.min(1, lookX.x)), y: Math.max(-1, Math.min(1, lookY.x)) },
-        happy,
-        flush: happy,
+        happy: eyes,
+        flush: blush,
       };
     },
     /** The routine has played out and every spring has come to rest. */

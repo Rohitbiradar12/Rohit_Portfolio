@@ -172,8 +172,8 @@ function Ghost({ reduced, pointer, shadowRef, visualRef, facing, gaze, blush, da
   const squashRef = useRef();
   const turnRef = useRef();
   // One physics simulation per performance (see dance.js); `calm` fades the idle float out while
-  // dancing so hops start and land on solid ground, and `glow` eases the happy face in and out.
-  const moves = useRef({ id: 0, sim: null, ended: false, calm: 1, glow: 0 });
+  // dancing so hops start and land on solid ground; `shut` and `glow` ease the closed eyes and blush.
+  const moves = useRef({ id: 0, sim: null, ended: false, calm: 1, shut: 0, glow: 0 });
   const landRef = useRef(onLand);
   landRef.current = onLand;
   const pivot = useMemo(() => ({ hip: new THREE.Vector3(), turned: new THREE.Vector3() }), []);
@@ -235,7 +235,8 @@ function Ghost({ reduced, pointer, shadowRef, visualRef, facing, gaze, blush, da
     const pose = mv.sim ? mv.sim.step(delta) : dance ? BEAM : STILL;
     if (mv.sim?.done && !mv.ended) { mv.ended = true; onDanceEnd?.(); }
     const settle = reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 9);
-    mv.glow += (pose.happy - mv.glow) * settle;
+    mv.shut += (pose.happy - mv.shut) * settle; // closed "‿" eyes
+    mv.glow += (pose.flush - mv.glow) * settle;  // dance blush
     mv.calm += ((mv.sim ? 0 : 1) - mv.calm) * (reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 5));
 
     // Lean and bow turn about the hips: rotate, then shift so the hip point stays put.
@@ -319,7 +320,7 @@ function Ghost({ reduced, pointer, shadowRef, visualRef, facing, gaze, blush, da
       FACES[name].eyes.forEach((eye, i) => {
         const lid = lidRefs[name][i].current;
         if (!lid) return;
-        const shut = Math.max(closure, mv.glow);
+        const shut = Math.max(closure, mv.shut);
         lid.position.y = eye.y + lidOffset(eye, shut);
         lid.visible = shut > 0.001;
       });
