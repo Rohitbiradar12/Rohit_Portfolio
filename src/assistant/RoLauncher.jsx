@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useReducedMotion from "../hooks/useReducedMotion";
 import RoGhost from "./RoGhost";
+import { BEAT, DANCE_SECONDS } from "./dance";
 import "./ro-launcher.css";
 
 const BUBBLE_MS = 5500;
@@ -11,13 +12,17 @@ const DOCK_GAP = 18;
 const AHEAD_LEFT = { x: -1, y: 0.15 };
 const AHEAD_RIGHT = { x: 1, y: 0.15 };
 const AT_CHAT = { x: 0.9, y: 0.15 };
+const BEAM_MS = 1800; // reduced motion: Ro beams instead of dancing
+const RIPPLE_IMPACT = 140; // px/s: only the big jump and the finale ripple the ground
+const BOW_LINE = "thank you, thank you. i'm here all week.";
+const NOTES = ["♪", "♫", "♪", "♬"];
 
 // Keyed by section id. Each thought shows at most once per visit.
 const THOUGHTS = {
   about: "that's rohit — boston-based, backend-first, MS CS at northeastern.",
   projects: "these are the projects — every card links to a live build or repo.",
   experience: "AWS, then torry harris. click a role to see what he actually built.",
-  achievements: "awards and certs. the azure one links to the credential.",
+  achievements: "the receipts. rows with a link go straight to the public record.",
   skills: "the toolbox. ask me where any of these were used for real.",
   game: "need a break? this one's playable — arrow keys or swipe.",
   resume: "want the one-pager? view it here or grab the PDF.",
@@ -34,6 +39,7 @@ const Icon = ({ d }) => (
 const ITEMS = [
   { id: "chat", label: "Chat with Ro", sub: "Ask about Rohit's work", icon: ["M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z", "M8.5 12h.01M12 12h.01M15.5 12h.01"] },
   { id: "compare", label: "Match a role", sub: "Map a job description to his work", icon: ["M9 6V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1", "M4 6h16a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1z", "M3 12h18"] },
+  { id: "dance", label: "Make Ro dance", sub: "A little dance break", icon: ["M9 18V5l11-2v13", "M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z", "M17 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"] },
   { id: "game", label: "Play a game", sub: "Jump to Code Runner", icon: ["M6 11h4M8 9v4", "M15 12h.01M18 10h.01", "M17.3 5H6.7a4 4 0 0 0-4 3.6l-.6 5.8A3 3 0 0 0 7.2 17l1.3-1.6a2 2 0 0 1 1.6-.8h3.8a2 2 0 0 1 1.6.8l1.3 1.6a3 3 0 0 0 5.1-2.6l-.6-5.8A4 4 0 0 0 17.3 5z"] },
 ];
 
@@ -44,6 +50,11 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
   const [phase, setPhase] = useState("home"); // home → out → docked → back → home
   const [hovered, setHovered] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
+  const [dance, setDance] = useState(0); // non-zero while dancing; a new value restarts the routine
+  const danceTimer = useRef(null);
+  const dancing = useRef(false); // mirrors `dance` for the callbacks below
+  const [ripple, setRipple] = useState(0);
+  const visualRef = useRef(null);
   const phaseRef = useRef("home");
   const flight = useRef([]);
   const rootRef = useRef(null);
@@ -54,7 +65,7 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
   const lastBubble = useRef(-Infinity);
   const seen = useRef(new Set());
   const blocked = useRef(false);
-  blocked.current = menuOpen || assistantOpen || phase !== "home";
+  blocked.current = menuOpen || assistantOpen || phase !== "home" || dance !== 0;
 
   const say = useCallback((key, text) => {
     if (blocked.current || seen.current.has(key) || performance.now() - lastBubble.current < BUBBLE_GAP_MS) return;
@@ -83,8 +94,33 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
 
   useEffect(() => {
     if (menuOpen || assistantOpen) dismissBubble();
-    if (assistantOpen) { setMenuOpen(false); setHovered(false); }
+    if (assistantOpen) { setMenuOpen(false); setHovered(false); dancing.current = false; setDance(0); clearTimeout(danceTimer.current); }
   }, [menuOpen, assistantOpen]);
+
+  useEffect(() => () => clearTimeout(danceTimer.current), []);
+
+  // Ro ends the dance itself once its physics has come to rest (`onDanceEnd`); the timer is only
+  // the reduced-motion beam and a safety net.
+  const endDance = useCallback(() => {
+    clearTimeout(danceTimer.current);
+    if (!dancing.current) return;
+    dancing.current = false;
+    setDance(0);
+    // Take a bow (this one isn't rationed like the section comments).
+    clearTimeout(bubbleTimer.current);
+    setBubble({ key: "bow", text: BOW_LINE });
+    bubbleTimer.current = setTimeout(() => setBubble(null), 3200);
+  }, []);
+
+  const startDance = () => {
+    dismissBubble();
+    clearTimeout(danceTimer.current);
+    dancing.current = true;
+    setDance(performance.now());
+    danceTimer.current = setTimeout(endDance, reduced ? BEAM_MS : DANCE_SECONDS * 1000 + 1500);
+  };
+
+  const landed = useCallback((impact) => { if (impact > RIPPLE_IMPACT) setRipple(performance.now()); }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -158,6 +194,7 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
 
   const choose = (id) => {
     closeMenu();
+    if (id === "dance") return startDance();
     if (id !== "game") return onSelect(id);
     const section = document.getElementById("game");
     section?.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
@@ -173,7 +210,7 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
   };
 
   return (
-    <div ref={rootRef} className="ro-root" data-open={menuOpen || undefined} data-docked={phase !== "home" || undefined}>
+    <div ref={rootRef} className="ro-root" data-open={menuOpen || undefined} data-docked={phase !== "home" || undefined} data-dancing={dance ? "" : undefined}>
       {bubble && (
         <div key={bubble.key} className="ro-bubble" role="status" onClick={dismissBubble}>
           <p>{bubble.text}</p>
@@ -194,8 +231,14 @@ export default function RoLauncher({ assistantOpen, thinking, onSelect }) {
 
       <div className="ro-stage">
         <div ref={shadowRef} className="ro-shadow" aria-hidden="true" />
-        <div className="ro-visual" aria-hidden="true">
-          <RoGhost reduced={reduced} paused={assistantOpen && phase === "home"} shadowRef={shadowRef} facing={facing} gaze={gaze} blush={(hovered || keyboardFocus) && phase === "home"} />
+        {ripple !== 0 && dance !== 0 && <span key={ripple} className="ro-ripple" aria-hidden="true" />}
+        {dance !== 0 && !reduced && (
+          <span key={dance} className="ro-notes" style={{ "--beat": `${BEAT}s` }} aria-hidden="true">
+            {NOTES.map((note, i) => <i key={i} style={{ "--i": i }}>{note}</i>)}
+          </span>
+        )}
+        <div ref={visualRef} className="ro-visual" aria-hidden="true">
+          <RoGhost reduced={reduced} paused={assistantOpen && phase === "home"} shadowRef={shadowRef} visualRef={visualRef} facing={facing} gaze={gaze} blush={(hovered || keyboardFocus) && phase === "home"} dance={dance} onLand={landed} onDanceEnd={endDance} />
         </div>
         <button
           ref={triggerRef}

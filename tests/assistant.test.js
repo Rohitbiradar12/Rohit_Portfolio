@@ -159,3 +159,9 @@ test("project-scoped questions send only that project's facts", () => {
   assert.ok(prompt.includes("ElevenLabs") && !prompt.includes("Cogcoin") && !prompt.includes("Torry Harris"));
   assert.ok(prompt.length < instructions("chat", null, "Tell me about the CallPilot project").length);
 });
+
+test("hackathon placements reach Ro when a visitor asks about awards", () => {
+  const context = JSON.stringify(contextFor(null, "What awards or hackathon prizes has Rohit won?"));
+  assert.match(context, /People's Choice/);
+  assert.match(context, /2nd place at HackNation/);
+});

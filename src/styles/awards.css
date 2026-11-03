@@ -1,0 +1,366 @@
+/* ─── Awards & Certifications: an editorial index ───────────────────────────
+   Hairline rows: number · thumbnail · recognition (title, issuer, one line) · type · year · record.
+   Everything is visible without hovering; hover and keyboard focus only highlight the row (others
+   dim, an accent panel rises behind it). Each row takes its type's colour as --accent. */
+
+.aw-section {
+  --aw-cols: 40px 64px minmax(0, 1fr) 150px 88px 120px;
+  --aw-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aw-intro {
+  max-width: 36rem;
+  margin: 1.1rem auto 0;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.aw-head {
+  display: grid;
+  grid-template-columns: var(--aw-cols);
+  column-gap: 24px;
+  margin-top: 3.5rem;
+  padding: 0 18px 14px;
+  font: 600 10.5px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.aw-head span:last-child {
+  text-align: right;
+}
+
+.aw-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aw-row {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: var(--aw-cols);
+  align-items: center;
+  column-gap: 24px;
+  padding: 26px 18px;
+  transition: opacity 0.45s ease;
+}
+
+/* The accent panel that rises behind the active row. */
+.aw-row::before {
+  content: "";
+  position: absolute;
+  inset: 1px 0 0;
+  z-index: -1;
+  border-radius: 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 55%, transparent);
+  opacity: 0;
+  transform: scaleY(0.2);
+  transform-origin: bottom;
+  transition: transform 0.6s var(--aw-ease), opacity 0.4s ease;
+}
+
+.aw-rule {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.07));
+  transform-origin: left;
+}
+
+.aw-rule.is-last {
+  position: relative;
+  display: block;
+}
+
+.aw-num {
+  font: 500 12px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color 0.4s ease;
+}
+
+/* ── Thumbnail ── */
+.aw-thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+  transition: border-color 0.4s ease, transform 0.5s var(--aw-ease);
+}
+
+.aw-thumb.is-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* The badge file has its own #f7f7f7 backdrop; matching it hides the box. */
+.aw-thumb.is-badge {
+  background: #f7f7f7;
+}
+
+.aw-thumb.is-badge img {
+  width: auto;
+  height: 86%;
+}
+
+.aw-thumb.is-emblem {
+  color: var(--accent);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent) 32%, #17121f), #0d0a13 80%);
+}
+
+.aw-thumb.is-emblem svg {
+  width: 48%;
+  height: auto;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 55%, transparent));
+}
+
+/* ── Text ── */
+.aw-main {
+  min-width: 0;
+  transition: transform 0.6s var(--aw-ease);
+}
+
+.aw-title {
+  font-size: clamp(1.3rem, 0.95rem + 1vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  color: #f3eff9;
+}
+
+.aw-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+/* A placement: always gold, whatever the row's type colour. */
+.aw-prize {
+  --gold: #f3c55e;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--gold) 20%, transparent), color-mix(in srgb, var(--gold) 6%, transparent));
+  box-shadow: 0 0 18px -6px color-mix(in srgb, var(--gold) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: #fbe3a6;
+  font-size: 0.74rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.aw-prize svg {
+  width: 14px;
+  height: 14px;
+}
+
+.aw-issuer {
+  margin-top: 5px;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.46);
+}
+
+.aw-line {
+  max-width: 58ch;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.aw-meta {
+  display: contents;
+}
+
+.aw-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.aw-kind i {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.aw-year {
+  font: 500 13px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Record link ── */
+.aw-proof {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 6px;
+  padding: 8px 12px 8px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+}
+
+/* The whole row is the link when there's a record (the pill itself is never transformed, so the
+   stretched area stays anchored to the row). */
+.aw-proof::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.aw-proof:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 75%, #fff);
+  outline-offset: 3px;
+}
+
+.aw-arrow {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.45s var(--aw-ease);
+}
+
+.aw-proof.is-none {
+  padding-right: 18px;
+  border: 0;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.aw-proof.is-none::after {
+  content: none;
+}
+
+/* ── Active row: hovered, or holding keyboard focus ── */
+.aw-row:is(:hover, :has(:focus-visible))::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.aw-row:is(:hover, :has(:focus-visible)) .aw-num {
+  color: var(--accent);
+}
+
+.aw-row:is(:hover, :has(:focus-visible)) .aw-thumb {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.aw-row:is(:hover, :has(:focus-visible)) .aw-proof:not(.is-none) {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: #fff;
+}
+
+.aw-row:is(:hover, :has(:focus-visible)) .aw-arrow {
+  transform: translate(2px, -2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .aw-list:is(:hover, :has(:focus-visible)) .aw-row:not(:hover, :has(:focus-visible)) {
+    opacity: 0.42;
+  }
+  .aw-row:is(:hover, :has(:focus-visible)) .aw-main {
+    transform: translateX(6px);
+  }
+  .aw-row:is(:hover, :has(:focus-visible)) .aw-thumb {
+    transform: scale(1.06);
+  }
+  .aw-row.has-proof {
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 1024px) {
+  .aw-section {
+    --aw-cols: 28px 56px minmax(0, 1fr) 124px 64px 104px;
+  }
+  .aw-head,
+  .aw-row {
+    column-gap: 16px;
+  }
+  .aw-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+}
+
+/* Phones: thumbnail beside a stacked row. */
+@media (max-width: 760px) {
+  .aw-head {
+    display: none;
+  }
+  .aw-list {
+    margin-top: 2.25rem;
+  }
+  .aw-row {
+    grid-template-columns: 60px minmax(0, 1fr);
+    grid-template-areas:
+      "thumb meta"
+      "thumb main"
+      "thumb proof";
+    align-items: start;
+    column-gap: 16px;
+    row-gap: 6px;
+    padding: 22px 2px;
+  }
+  .aw-num,
+  .aw-proof.is-none {
+    display: none;
+  }
+  .aw-thumb {
+    grid-area: thumb;
+    width: 60px;
+    height: 60px;
+  }
+  .aw-meta {
+    grid-area: meta;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .aw-kind {
+    font-size: 0.75rem;
+  }
+  .aw-year {
+    font-size: 11.5px;
+  }
+  .aw-main {
+    grid-area: main;
+  }
+  .aw-title {
+    font-size: 1.25rem;
+  }
+  .aw-proof {
+    grid-area: proof;
+    justify-self: start;
+    margin-top: 8px;
+  }
+}

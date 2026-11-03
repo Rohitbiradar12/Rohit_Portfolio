@@ -129,14 +129,14 @@ test("normal-motion page and project controls remain usable", async ({ page }) =
   await page.keyboard.press("Escape");
   await page.screenshot({ path: "test-results/portfolio-projects.png" });
 });
-test("Ro menu is keyboard operable and routes to chat, role match and the game", async ({ page }) => {
+test("Ro menu is keyboard operable and routes to chat, role match, the dance and the game", async ({ page }) => {
   const ro = page.getByRole("button", { name: "Ask Ro", exact: true });
   await ro.focus(); await page.keyboard.press("Enter");
   await expect(ro).toHaveAttribute("aria-expanded", "true");
   const items = page.getByRole("menuitem");
-  await expect(items).toHaveCount(3);
+  await expect(items).toHaveCount(4);
   await page.keyboard.press("ArrowDown"); await expect(items.nth(1)).toBeFocused();
-  await page.keyboard.press("ArrowUp"); await page.keyboard.press("ArrowUp"); await expect(items.nth(2)).toBeFocused();
+  await page.keyboard.press("ArrowUp"); await page.keyboard.press("ArrowUp"); await expect(items.nth(3)).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("menu")).toHaveCount(0); await expect(ro).toBeFocused();
   await openRo(page, "Match a role");
@@ -168,4 +168,37 @@ test("a project's ask button scopes the opening question to that project", async
   await expect(page.getByRole("dialog", { name: "Ask Ro" }).getByText("CallPilot is a voice agent.")).toBeVisible();
   expect(body).toMatchObject({ projectId: "project-4", history: [] });
   expect(body.message).toContain("CallPilot");
+});
+test("awards index links each public record and keeps details readable on phones", async ({ page }) => {
+  const rows = page.locator("#achievements .aw-row");
+  await expect(rows).toHaveCount(6);
+  await expect(rows.nth(0).locator(".aw-prize")).toHaveText("People's Choice");
+  await expect(rows.nth(1).locator(".aw-prize")).toHaveText("2nd Place");
+  await expect(page.getByRole("link", { name: /Verify: Azure Fundamentals/ })).toHaveAttribute("href", /credly\.com\/badges\//);
+  for (const link of await page.locator("#achievements .aw-proof[href]").all()) {
+    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await rows.first().scrollIntoViewIfNeeded();
+  await expect(rows.first().locator(".aw-line")).toBeVisible();
+  const width = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(width).toBeLessThanOrEqual(390);
+});
+
+test("Ro dances on request, then takes a bow; with reduced motion it only beams", async ({ page }) => {
+  const root = page.locator(".ro-root");
+  await openRo(page, "Make Ro dance");
+  await expect(root).toHaveAttribute("data-dancing", "");
+  await expect(page.locator(".ro-notes")).toHaveCount(0); // reduced motion: no notes, no moves
+  await expect(page.getByRole("status").filter({ hasText: "thank you, thank you" })).toBeVisible({ timeout: 5000 });
+  await expect(root).not.toHaveAttribute("data-dancing", "");
+
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.reload();
+  await openRo(page, "Make Ro dance");
+  await expect(page.locator(".ro-notes i")).toHaveCount(4);
+  await expect.poll(() => page.locator(".ro-visual").evaluate((el) => el.style.transform), { timeout: 5000 }).toContain("translate3d(");
+  await expect(page.getByRole("status").filter({ hasText: "thank you, thank you" })).toBeVisible({ timeout: 15000 });
+  await expect(page.locator(".ro-notes")).toHaveCount(0);
 });

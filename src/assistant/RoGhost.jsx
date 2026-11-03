@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import SceneBoundary from "../components/SceneBoundary";
 import { GHOST_EYES as TRACED_EYES, GHOST_OUTLINE as TRACED_OUTLINE } from "./ghostShape";
+import { createDance } from "./dance";
 
 // The traced logo looks right. Mirroring negates x and reverses the point order, which keeps each
 // loop's winding (outline clockwise, eyes counter-clockwise).
@@ -32,6 +33,10 @@ const FLOAT_PERIOD = 3.6;
 const TURN_SECONDS = 0.55;
 const CAP_Z = DEPTH / 2 + BEVEL_THICKNESS; // the flat front face
 const BLUSH = { rx: 0.27, ry: 0.15, below: 0.16, outward: 0.07 };
+const FEET_Y = -2; // squash and stretch pivot here, so Ro lands on the same spot
+const HIP_Y = -0.8; // lean and bow pivot here, low in the body like a centre of mass
+const STILL = { x: 0, y: 0, height: 0, lean: 0, spin: 0, bow: 0, sy: 1, sx: 1, look: null, happy: 0, flush: 0 };
+const BEAM = { ...STILL, happy: 1, flush: 1 }; // reduced motion: no moves, just a happy face
 
 // Rosy cheeks sit just below each eye, nudged outward from the pair.
 function cheekPositions(eyes) {
@@ -161,9 +166,17 @@ function Face({ face, parts, groupRef, pupilRefs, cheekMaterial, lidRefs, lidMat
   );
 }
 
-function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
+function Ghost({ reduced, pointer, shadowRef, visualRef, facing, gaze, blush, dance, onLand, onDanceEnd }) {
   const floatRef = useRef();
+  const leanRef = useRef();
+  const squashRef = useRef();
   const turnRef = useRef();
+  // One physics simulation per performance (see dance.js); `calm` fades the idle float out while
+  // dancing so hops start and land on solid ground, and `glow` eases the happy face in and out.
+  const moves = useRef({ id: 0, sim: null, ended: false, calm: 1, glow: 0 });
+  const landRef = useRef(onLand);
+  landRef.current = onLand;
+  const pivot = useMemo(() => ({ hip: new THREE.Vector3(), turned: new THREE.Vector3() }), []);
   const faceRefs = { left: useRef(), right: useRef() };
   const pupilRefs = { left: [useRef(), useRef()], right: [useRef(), useRef()] };
   const lidRefs = { left: [useRef(), useRef()], right: [useRef(), useRef()] };
@@ -191,7 +204,7 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
     return () => window.removeEventListener("resize", measure);
   }, [gl, size]);
   // With reduced motion the scene renders on demand, so redraw when the pose changes.
-  useEffect(() => invalidate(), [facing, gaze, blush, invalidate]);
+  useEffect(() => invalidate(), [facing, gaze, blush, dance, invalidate]);
 
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime;
@@ -211,6 +224,34 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
       if (s >= 2) tr.start = null;
     }
     turnRef.current.rotation.y = angle;
+
+    // Dancing. With reduced motion Ro only beams (happy eyes and a blush) instead of moving.
+    const mv = moves.current;
+    if (dance !== mv.id) {
+      mv.id = dance;
+      mv.sim = dance && !reduced ? createDance({ onLand: (impact) => landRef.current?.(impact) }) : null;
+      mv.ended = false;
+    }
+    const pose = mv.sim ? mv.sim.step(delta) : dance ? BEAM : STILL;
+    if (mv.sim?.done && !mv.ended) { mv.ended = true; onDanceEnd?.(); }
+    const settle = reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 9);
+    mv.glow += (pose.happy - mv.glow) * settle;
+    mv.calm += ((mv.sim ? 0 : 1) - mv.calm) * (reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 5));
+
+    // Lean and bow turn about the hips: rotate, then shift so the hip point stays put.
+    const leanGroup = leanRef.current;
+    leanGroup.rotation.set(pose.bow, 0, pose.lean);
+    pivot.hip.set(0, HIP_Y, 0);
+    pivot.turned.copy(pivot.hip).applyEuler(leanGroup.rotation);
+    leanGroup.position.copy(pivot.hip).sub(pivot.turned);
+    // Squash and stretch about the feet (volume-preserving widths come from the sim); spin on top.
+    const squashGroup = squashRef.current;
+    squashGroup.rotation.y = pose.spin;
+    squashGroup.scale.set(pose.sx, pose.sy, pose.sx);
+    squashGroup.position.y = FEET_Y * (1 - pose.sy);
+    // Travel and hops move the whole canvas, so Ro never clips at its edges.
+    const visual = visualRef?.current;
+    if (visual) visual.style.transform = Math.abs(pose.x) + Math.abs(pose.y) > 0.01 ? `translate3d(${pose.x.toFixed(2)}px, ${pose.y.toFixed(2)}px, 0)` : "";
     faceRefs.left.current.visible = tr.shown === "left";
     faceRefs.right.current.visible = tr.shown === "right";
 
@@ -226,21 +267,24 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
         const reach = Math.min(1, dist / 320); // close → straight ahead
         if (dist) { tx = (dx / dist) * reach; ty = (-dy / dist) * reach; }
       }
+    } else if (pose.look) {
+      tx = pose.look.x; ty = pose.look.y;
     } else if (gaze === "thinking") {
       tx = reduced ? 0 : 0.35 * Math.sin(t * 1.3);
       ty = 0.85;
     } else {
       tx = gaze.x; ty = gaze.y;
     }
-    const glide = reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 3.2);
+    const glide = reduced || pose.look ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 3.2); // the sim springs the pupils itself
     const l = look.current;
     l.x += (tx - l.x) * glide;
     l.y += (ty - l.y) * glide;
 
     // Hovered: the cheeks flush pink and the pupils widen a little, as if flustered.
     flush.current += ((blush ? 1 : 0) - flush.current) * (reduced ? 1 : 1 - Math.exp(-Math.min(delta, 1 / 30) * 7));
-    cheeks.opacity = flush.current;
-    cheeks.visible = flush.current > 0.01;
+    const rosy = Math.max(flush.current, mv.glow);
+    cheeks.opacity = rosy;
+    cheeks.visible = rosy > 0.01;
     const dilate = 1 + 0.12 * flush.current;
 
     for (const name of Object.keys(FACES)) {
@@ -275,26 +319,33 @@ function Ghost({ reduced, pointer, shadowRef, facing, gaze, blush }) {
       FACES[name].eyes.forEach((eye, i) => {
         const lid = lidRefs[name][i].current;
         if (!lid) return;
-        lid.position.y = eye.y + lidOffset(eye, closure);
-        lid.visible = closure > 0;
+        const shut = Math.max(closure, mv.glow);
+        lid.position.y = eye.y + lidOffset(eye, shut);
+        lid.visible = shut > 0.001;
       });
 
     if (reduced) return;
-    const wave = Math.sin((t * Math.PI * 2) / FLOAT_PERIOD);
+    const wave = Math.sin((t * Math.PI * 2) / FLOAT_PERIOD) * mv.calm;
     floatRef.current.position.y = 0.2 + wave * FLOAT_PX * (viewport.height / size.height);
     const shadow = shadowRef.current;
     if (shadow) {
-      shadow.style.opacity = String(0.55 - wave * 0.2);
-      shadow.style.transform = `translateX(-50%) scale(${0.975 - wave * 0.125})`;
+      // The shadow stays on the ground under Ro, shrinking and fading with height like a real one.
+      const lift = pose.height;
+      shadow.style.opacity = String((0.55 - wave * 0.2) / (1 + lift / 28));
+      shadow.style.transform = `translateX(calc(-50% + ${pose.x.toFixed(2)}px)) scale(${(0.975 - wave * 0.125) / (1 + lift / 55)})`;
     }
   });
 
   return (
     <group ref={floatRef} position={[0, 0.2, 0]}>
-      <group ref={turnRef}>
-        {Object.entries(FACES).map(([name, face]) => (
-          <Face key={name} face={face} parts={parts[name]} groupRef={faceRefs[name]} pupilRefs={pupilRefs[name]} cheekMaterial={cheeks} lidRefs={lidRefs[name]} lidMaterial={lidMaterial} />
-        ))}
+      <group ref={leanRef}>
+        <group ref={squashRef}>
+          <group ref={turnRef}>
+            {Object.entries(FACES).map(([name, face]) => (
+              <Face key={name} face={face} parts={parts[name]} groupRef={faceRefs[name]} pupilRefs={pupilRefs[name]} cheekMaterial={cheeks} lidRefs={lidRefs[name]} lidMaterial={lidMaterial} />
+            ))}
+          </group>
+        </group>
       </group>
     </group>
   );
@@ -327,7 +378,7 @@ export function GhostFallback({ facing = "left" }) {
   );
 }
 
-export default function RoGhost({ reduced, paused, shadowRef, facing = "left", gaze = "cursor", blush = false }) {
+export default function RoGhost({ reduced, paused, shadowRef, visualRef, facing = "left", gaze = "cursor", blush = false, dance = 0, onLand, onDanceEnd }) {
   const pointer = useRef({ x: 0, y: 0, active: false });
   const invalidate = useRef(null);
 
@@ -356,7 +407,7 @@ export default function RoGhost({ reduced, paused, shadowRef, facing = "left", g
         fallback={<GhostFallback facing={facing} />}
       >
         <Lights />
-        <Ghost reduced={reduced} pointer={pointer} shadowRef={shadowRef} facing={facing} gaze={gaze} blush={blush} />
+        <Ghost reduced={reduced} pointer={pointer} shadowRef={shadowRef} visualRef={visualRef} facing={facing} gaze={gaze} blush={blush} dance={dance} onLand={onLand} onDanceEnd={onDanceEnd} />
       </Canvas>
     </SceneBoundary>
   );

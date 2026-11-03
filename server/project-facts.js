@@ -79,11 +79,11 @@ export const projectFacts = {
   "project-4": {
     verified: [{ repo: "Rohitbiradar12/Call-Pilot", commit: "835a2fec2e9d4a5b9957fc3445159f208bf1c6ca" }],
     keywords: {
-      names: ["callpilot", "call pilot", "call-pilot", "voice agent", "voice", "appointment", "hackathon"],
+      names: ["callpilot", "call pilot", "call-pilot", "voice agent", "voice", "appointment", "hackathon", "hacknation", "2nd place", "second place", "prize", "won", "award", "awards"],
       tech: ["fastapi", "python", "elevenlabs", "twilio", "supabase", "google places", "google calendar", "calendar", "websocket", "websockets", "docker", "react", "vite", "zustand", "groq", "jwt", "ai", "llm"],
     },
     summary:
-      "CallPilot: an AI voice agent that finds local service providers, phones several at once, negotiates a time, checks the user's Google Calendar and books the appointment, with a live dashboard. Two-person hackathon project (HackNation) built with Shravankumar Janawade.",
+      "CallPilot: an AI voice agent that finds local service providers, phones several at once, negotiates a time, checks the user's Google Calendar and books the appointment, with a live dashboard. Two-person hackathon project built with Shravankumar Janawade; it won 2nd place at HackNation (2026).",
     links: "Live demo and code are linked under the answer.",
     details: [
       "Rohit's part, from his commits: the Supabase database layer and schema (users, providers, campaigns, calls, bookings with row-level security), saving data from the call orchestration, tool and webhook flows, webhook connectivity fixes, Supabase-backed sign-in, and front-end pages (landing, dashboard, settings, navbar, theme toggle, location picker).",
@@ -110,11 +110,11 @@ export const projectFacts = {
   "project-5": {
     verified: [{ repo: "Rohitbiradar12/CogAgent-Marketplace", commit: "ba101b75995e85bab141e62e340cf2382a5a52d8" }],
     keywords: {
-      names: ["cogagent", "cog agent", "cogcoin", "cog", "marketplace", "bitcoin", "hackathon", "swarm", "oracle"],
+      names: ["cogagent", "cog agent", "cogcoin", "cog", "marketplace", "bitcoin", "hackathon", "swarm", "oracle", "people's choice", "peoples choice", "prize", "won", "award", "awards"],
       tech: ["node", "node.js", "express", "socket.io", "supabase", "claude", "anthropic", "allium", "bitcoinjs", "react", "vite", "zustand", "blockchain", "crypto", "web3", "ai", "llm", "agents"],
     },
     summary:
-      "CogAgent Marketplace: an AI-agent marketplace driven by live Bitcoin data, built for the MIT Bitcoin Hackathon 2026 by Rohit and Shravan Janwade (about half the commits each). Agents are hired, ranked and composed into swarms, and users compete in Cogcoin \"proof-of-language\" sentence rounds tied to each new Bitcoin block.",
+      "CogAgent Marketplace: an AI-agent marketplace driven by live Bitcoin data, built for the MIT Bitcoin Hackathon 2026 by Rohit and Shravan Janwade (about half the commits each); it won the People's Choice award there. Agents are hired, ranked and composed into swarms, and users compete in Cogcoin \"proof-of-language\" sentence rounds tied to each new Bitcoin block.",
     links: "Live demo and code are linked under the answer.",
     details: [
       "Rohit's part, from his commits: the front-end shell (API client, Socket.IO connection, Zustand store, router), the mining visualizer, competition, oracle, swarm and trigger pages and dashboard panels, the Allium live-Bitcoin integration, wiring the swarm task executor to Socket.IO, Supabase schema and seed updates, and the Vercel deployment fix. The rest of the code comes from his teammate's commits.",

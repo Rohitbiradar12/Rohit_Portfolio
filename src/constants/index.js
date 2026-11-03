@@ -300,7 +300,7 @@ const projects = [
   {
     id: 4,
     title: "CallPilot",
-    des: "Hackathon team project: an AI voice agent that finds local providers, calls them in parallel, negotiates a time, checks Google Calendar and books the appointment. Built with ElevenLabs voice AI, Twilio, FastAPI, React and Supabase.",
+    des: "2nd place at HackNation, built with a teammate: an AI voice agent that finds local providers, calls them in parallel, negotiates a time, checks Google Calendar and books the appointment. Built with ElevenLabs voice AI, Twilio, FastAPI, React and Supabase.",
     img: "/images/call-pilot.webp",
     iconLists: ["/images/logos/react.png", "/images/logos/python.svg", "/images/logos/postgres.png"],
     link: "https://call-pilot-pearl.vercel.app/",
@@ -309,7 +309,7 @@ const projects = [
   {
     id: 5,
     title: "CogAgent Marketplace",
-    des: "AI-agent marketplace driven by live Bitcoin block data, built with a teammate at the MIT Bitcoin Hackathon 2026: Claude-powered agent swarms, Cogcoin sentence-mining rounds on every block, price oracles and a real-time dashboard. React, Node.js, Express, Socket.IO and Supabase.",
+    des: "AI-agent marketplace driven by live Bitcoin block data, built with a teammate at the MIT Bitcoin Hackathon 2026, where it won People's Choice: Claude-powered agent swarms, Cogcoin sentence-mining rounds on every block, price oracles and a real-time dashboard. React, Node.js, Express, Socket.IO and Supabase.",
     img: "/images/cogagent.webp",
     iconLists: ["/images/logos/react.png", "/images/logos/node.png", "/images/logos/javascript.svg"],
     link: "https://cog-agent-marketplace.vercel.app/",
